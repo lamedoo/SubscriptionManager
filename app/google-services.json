@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "181885740728",
+    "project_id": "subscription-manager-ecd30",
+    "storage_bucket": "subscription-manager-ecd30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181885740728:android:a4ee9d919972b66d5d764d",
+        "android_client_info": {
+          "package_name": "com.lukakordzaia.subscriptionmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181885740728-hk43250l52uclp238bmek1biig6e3ao6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lukakordzaia.subscriptionmanager",
+            "certificate_hash": "6f0905f81fce9bffccc05fc8ecb91557ab131b52"
+          }
+        },
+        {
+          "client_id": "181885740728-0u4pcqnhdt4tt60jiach2kuk4b494gte.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtevLsi6O3aHWzTLurkmn_1Y9KgcPdDPk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181885740728-0u4pcqnhdt4tt60jiach2kuk4b494gte.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
