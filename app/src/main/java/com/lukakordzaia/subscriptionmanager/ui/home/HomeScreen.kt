@@ -19,12 +19,11 @@ import com.lukakordzaia.subscriptionmanager.ui.theme.Shapes
 import com.lukakordzaia.subscriptionmanager.utils.Constants
 
 @Composable
-fun HomeScreen(
-    addButtonClick: () -> Unit
-) {
+fun HomeScreen(vm: HomeViewModel) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         val (list, bottomLayout, addButton) = createRefs()
 
@@ -44,27 +43,6 @@ fun HomeScreen(
                     top.linkTo(parent.top)
                 }
         )
-        BottomLayout(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(70.dp)
-                .background(Color(0xFF000000))
-                .constrainAs(bottomLayout) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                }
-                .padding(10.dp)
-        )
-        AddButton(
-            modifier = Modifier
-                .padding(bottom = 20.dp, end = 10.dp)
-                .constrainAs(addButton) {
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                },
-            click = addButtonClick
-        )
     }
 }
 
@@ -79,37 +57,10 @@ fun SubscriptionList(subscriptions: List<SubscriptionDomain>, modifier: Modifier
     }
 }
 
-@Composable
-fun BottomLayout(modifier: Modifier) {
-    Column(
-        modifier = modifier
-    ) {
-    }
-}
-
-@Composable
-fun AddButton(modifier: Modifier, click: () -> Unit) {
-    Column(
-        modifier = modifier,
-    ) {
-        Button(
-            contentPadding = PaddingValues(20.dp),
-            onClick = click,
-            shape = Shapes.large,
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add button",
-                modifier = Modifier.size(40.dp)
-            )
-        }
-    }
-}
-
 @Preview(
     showSystemUi = true
 )
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen {}
+
 }

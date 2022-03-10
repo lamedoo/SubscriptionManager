@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SubscriptionManager">
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.SubscriptionManager">
             <intent-filter>

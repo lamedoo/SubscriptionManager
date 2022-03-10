@@ -43,7 +43,7 @@ fun SubscriptionItem(item: SubscriptionDomain) {
                     start.linkTo(parent.start)
                 },
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Text(
             text = item.description,

@@ -54,10 +54,11 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
     implementation "androidx.activity:activity-compose:$activity_compose"
     implementation "androidx.constraintlayout:constraintlayout-compose:$compose_constraint"
-    implementation "androidx.navigation:navigation-compose:2.4.1"
+    implementation "androidx.navigation:navigation-compose:$navigation_compose"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_systemui"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
@@ -71,7 +72,9 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    api "io.insert-koin:koin-android:$koin"
+    implementation "io.insert-koin:koin-android:$koin"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin"
+    implementation "io.insert-koin:koin-androidx-compose:$koin"
 
     api "com.github.bumptech.glide:glide:$glide_version"
 
