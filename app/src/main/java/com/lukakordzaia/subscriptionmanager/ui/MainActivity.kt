@@ -13,10 +13,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.lukakordzaia.subscriptionmanager.helpers.Navigation
 import com.lukakordzaia.subscriptionmanager.ui.theme.SubscriptionManagerTheme
 import com.lukakordzaia.subscriptionmanager.ui.addsubscription.AddSubscriptionScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -43,30 +45,30 @@ fun MainContent() {
 @ExperimentalMaterialApi
 @Composable
 fun AddSubscriptionScaffold() {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
+    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, confirmStateChange = { false })
+    val coroutineScope = rememberCoroutineScope()
 
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = { AddSubscriptionScreen() },
-        sheetPeekHeight = 0.dp,
+    ModalBottomSheetLayout(
+        sheetState = modalBottomSheetState,
+        sheetContent = { AddSubscriptionScreen(getViewModel(), modalBottomSheetState, coroutineScope) },
         sheetShape = RoundedCornerShape(50.dp, 50.dp, 0.dp, 0.dp)
     ) {
-        MainScaffold(bottomSheetScaffoldState)
+        MainScaffold(modalBottomSheetState, coroutineScope)
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun MainScaffold(state: BottomSheetScaffoldState) {
+fun MainScaffold(state: ModalBottomSheetState, scope: CoroutineScope) {
     val navController = rememberNavController()
-
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         bottomBar = { BottomNavigationComponent(navController = navController) } ,
-        floatingActionButton = { AddButton(state = state, scope = coroutineScope) },
+        floatingActionButton = { AddButton(click = {
+            scope.launch {
+                state.animateTo(ModalBottomSheetValue.Expanded)
+            }
+        }) },
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center
     ) {
@@ -76,18 +78,15 @@ fun MainScaffold(state: BottomSheetScaffoldState) {
 
 @ExperimentalMaterialApi
 @Composable
-fun AddButton(state: BottomSheetScaffoldState, scope: CoroutineScope) {
+fun AddButton(
+    click: () -> Unit
+) {
     FloatingActionButton(
         content = { AddButtonView() },
-        onClick = {
-            scope.launch {
-                state.bottomSheetState.expand()
-            }
-        }
+        onClick = click
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun AddButtonView() {
     Icon(

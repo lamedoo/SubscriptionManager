@@ -2,4 +2,12 @@
     <string name="app_name">Subscription Manager</string>
     <string name="home">Home</string>
     <string name="statistics">Statistics</string>
+    <string name="new_sub_title">Add new subscription</string>
+    <string name="link">Link</string>
+    <string name="name">Name</string>
+    <string name="plan">Plan</string>
+    <string name="amount">Amount</string>
+    <string name="period">Period</string>
+    <string name="currency">Currency</string>
+    <string name="date">Date</string>
 </resources>
