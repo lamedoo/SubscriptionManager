@@ -27,3 +27,10 @@ val bottomNavLabelStyle = TextStyle(
     fontFamily = mainLight,
     fontWeight = FontWeight.Bold
 )
+
+val generalButtonStyle = TextStyle(
+    fontFamily = mainBold,
+    fontWeight = FontWeight.Light,
+    color = _FFFFFF,
+    fontSize = 18.sp
+)

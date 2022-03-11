@@ -9,8 +9,8 @@ sealed class AddSubscriptionEvent: UiEvent {
     data class ChangeLink(val link: String): AddSubscriptionEvent()
     data class ChangeName(val name: String): AddSubscriptionEvent()
     data class ChangePlan(val plan: String): AddSubscriptionEvent()
-    data class ChangeAmount(val amount: Double): AddSubscriptionEvent()
-    data class ChangePeriod(val period: Constants.PeriodType): AddSubscriptionEvent()
+    data class ChangeAmount(val amount: String): AddSubscriptionEvent()
+    data class ChangePeriod(val period: String): AddSubscriptionEvent()
     data class ChangeCurrency(val currency: String): AddSubscriptionEvent()
     data class ChangeDate(val date: String): AddSubscriptionEvent()
     object AddSubscription: AddSubscriptionEvent()
@@ -21,8 +21,8 @@ data class AddSubscriptionState(
     val linkField: String,
     val nameField: String,
     val planField: String,
-    val amountField: Double,
-    val periodField: Constants.PeriodType,
+    val amountField: String,
+    val periodField: String,
     val currencyField: String,
     val dateField: String,
     val keyboardIsVisible: Boolean
@@ -33,8 +33,8 @@ data class AddSubscriptionState(
             linkField = "",
             nameField = "",
             planField = "",
-            amountField = 0.0,
-            periodField = Constants.PeriodType.MONTH,
+            amountField = "",
+            periodField = "",
             currencyField = "USD",
             dateField = "",
             keyboardIsVisible = false

@@ -10,4 +10,9 @@
     <string name="period">Period</string>
     <string name="currency">Currency</string>
     <string name="date">Date</string>
+    <string name="add_subscription">Add subscription</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="year">Year</string>
 </resources>

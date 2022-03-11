@@ -1,6 +1,11 @@
 package com.lukakordzaia.subscriptionmanager.ui.addsubscription
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.widget.CalendarView
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,18 +15,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.lukakordzaia.subscriptionmanager.R
 import com.lukakordzaia.subscriptionmanager.ui.theme.titleStyle
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.viewinterop.AndroidView
 import com.lukakordzaia.subscriptionmanager.ui.theme._A6AEC0
 import com.lukakordzaia.subscriptionmanager.ui.theme._F1F1F5
-import com.lukakordzaia.subscriptionmanager.utils.hideKeyboard
+import com.lukakordzaia.subscriptionmanager.ui.theme.generalButtonStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -31,15 +43,13 @@ fun AddSubscriptionScreen(
     scope: CoroutineScope,
 ) {
     val state = vm.state.collectAsState()
-
-    if (!state.value.keyboardIsVisible) {
-        hideKeyboard()
-    }
+    val focusManager = LocalFocusManager.current
 
     HandleBack(
         state = bottomSheetState
     ) {
         scope.launch {
+            focusManager.clearFocus()
             vm.emptyState()
             bottomSheetState.hide()
         }
@@ -52,7 +62,7 @@ fun AddSubscriptionScreen(
             .padding(20.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        val (topTitle, close, link, name, plan, amount, period, currency, date) = createRefs()
+        val (topTitle, close, link, name, plan, amount, period, currency, date, button) = createRefs()
 
         TopTitle(
             modifier = Modifier
@@ -71,6 +81,7 @@ fun AddSubscriptionScreen(
                 },
             close = {
                 scope.launch {
+                    focusManager.clearFocus()
                     vm.emptyState()
                     bottomSheetState.hide()
                 }
@@ -83,7 +94,7 @@ fun AddSubscriptionScreen(
                 }
                 .fillMaxWidth(),
             value = state.value.linkField,
-            onChange = { value -> vm.setLink(value) }
+            onChange = { value -> vm.setLink(value) },
         )
         NameField(
             modifier = Modifier
@@ -92,7 +103,7 @@ fun AddSubscriptionScreen(
                 }
                 .fillMaxWidth(),
             value = state.value.nameField,
-            onChange = { value -> vm.setName(value) }
+            onChange = { value -> vm.setName(value) },
         )
         PlanField(
             modifier = Modifier
@@ -101,7 +112,7 @@ fun AddSubscriptionScreen(
                 }
                 .fillMaxWidth(),
             value = state.value.planField,
-            onChange = { value -> vm.setPlan(value) }
+            onChange = { value -> vm.setPlan(value) },
         )
         AmountField(
             modifier = Modifier
@@ -109,8 +120,8 @@ fun AddSubscriptionScreen(
                     top.linkTo(plan.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
-            value = state.value.amountField.toString(),
-            onChange = { value -> vm.setAmount(value) }
+            value = state.value.amountField,
+            onChange = { value -> vm.setAmount(value) },
         )
         PeriodField(
             modifier = Modifier
@@ -118,8 +129,8 @@ fun AddSubscriptionScreen(
                     top.linkTo(amount.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
-            value = state.value.periodField.toString(),
-            onChange = { value -> vm.setPeriod(value) }
+            value = state.value.periodField,
+            onChange = { value -> vm.setPeriod(value) },
         )
         DateField(
             modifier = Modifier
@@ -128,7 +139,15 @@ fun AddSubscriptionScreen(
                 }
                 .fillMaxWidth(),
             value = state.value.dateField,
-            onChange = { value -> vm.setDate(value) }
+            onChange = { value -> vm.setDate(value) },
+        )
+        AddButton(
+            modifier = Modifier
+                .constrainAs(button) {
+                    top.linkTo(date.bottom, margin = 30.dp)
+                }
+                .fillMaxWidth(),
+            click = { vm.addSubscription() }
         )
     }
 }
@@ -165,7 +184,12 @@ private fun LinkField(
     value: String,
     onChange: (link: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.link, value = value, onChange = onChange)
+    AddSubscriptionTextField(
+        modifier = modifier,
+        label = R.string.link,
+        value = value,
+        onChange = onChange
+    )
 }
 
 @Composable
@@ -174,7 +198,12 @@ private fun NameField(
     value: String,
     onChange: (name: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.name, value = value, onChange = onChange)
+    AddSubscriptionTextField(
+        modifier = modifier,
+        label = R.string.name,
+        value = value,
+        onChange = onChange,
+    )
 }
 
 @Composable
@@ -183,7 +212,12 @@ private fun PlanField(
     value: String,
     onChange: (plan: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.plan, value = value, onChange = onChange)
+    AddSubscriptionTextField(
+        modifier = modifier,
+        label = R.string.plan,
+        value = value,
+        onChange = onChange,
+    )
 }
 
 @Composable
@@ -192,7 +226,13 @@ private fun AmountField(
     value: String,
     onChange: (amount: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.amount, value = value, onChange = onChange)
+    AddSubscriptionTextField(
+        modifier = modifier,
+        label = R.string.amount,
+        value = if (value == "0.0") "" else value,
+        onChange = onChange,
+        keyboardType = KeyboardType.Number
+    )
 }
 
 @Composable
@@ -201,7 +241,41 @@ private fun PeriodField(
     value: String,
     onChange: (period: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.period, value = value, onChange = onChange)
+    val periodList = listOf(
+        stringResource(id = R.string.month),
+        stringResource(id = R.string.day),
+        stringResource(id = R.string.week),
+        stringResource(id = R.string.year)
+    )
+    val isOpen = remember { mutableStateOf(false) } // initial value
+    val openCloseOfDropDownList: (Boolean) -> Unit = {
+        isOpen.value = it
+    }
+    Box(
+        modifier = modifier
+    ) {
+        AddSubscriptionTextField(
+            modifier = modifier,
+            label = R.string.period,
+            value = value,
+            onChange = onChange
+        )
+        DropDownlist(
+            requestOpen = isOpen.value,
+            list = periodList,
+            openCloseOfDropDownList,
+            onChange
+        )
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .padding(10.dp)
+                .clickable(
+                    onClick = { isOpen.value = true }
+                )
+        )
+    }
 }
 
 @Composable
@@ -210,7 +284,12 @@ private fun CurrencyField(
     value: String,
     onChange: (currency: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.currency, value = value, onChange = onChange)
+    AddSubscriptionTextField(
+        modifier = modifier,
+        label = R.string.currency,
+        value = value,
+        onChange = onChange
+    )
 }
 
 @Composable
@@ -219,7 +298,31 @@ private fun DateField(
     value: String,
     onChange: (date: String) -> Unit
 ) {
-    AddSubscriptionTextField(modifier = modifier, label = R.string.date, value = value, onChange = onChange)
+    val c = Calendar.getInstance()
+    val timePickerDialog = DatePickerDialog(LocalContext.current,
+        {_, year: Int, month : Int, day: Int ->
+            onChange("$day/$month/$year")
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
+    )
+    Box(
+        modifier = modifier
+    ) {
+        AddSubscriptionTextField(
+            modifier = modifier,
+            label = R.string.date,
+            value = value,
+            onChange = onChange
+        )
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .padding(10.dp)
+                .clickable(
+                    onClick = { timePickerDialog.show() }
+                )
+        )
+    }
 }
 
 
@@ -229,10 +332,14 @@ private fun AddSubscriptionTextField(
     modifier: Modifier,
     label: Int,
     value: String,
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    focusRequester: FocusRequester = remember { FocusRequester() },
     onChange: (link: String) -> Unit
 ) {
     TextField(
-        modifier = modifier,
+        modifier = modifier
+            .focusRequester(focusRequester),
         value = value,
         onValueChange = {
             onChange(it)
@@ -248,7 +355,63 @@ private fun AddSubscriptionTextField(
             disabledIndicatorColor = Color.Transparent,
             cursorColor = MaterialTheme.colors.onPrimary
         ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType,
+            imeAction = imeAction
+        )
+    )
+}
+
+@Composable
+private fun DropDownlist(
+    requestOpen: Boolean = false,
+    list: List<String>,
+    request: (Boolean) -> Unit,
+    selectedString: (String) -> Unit
+) {
+    DropdownMenu(
+        modifier = Modifier
+            .fillMaxWidth(),
+        expanded = requestOpen,
+        onDismissRequest = { request(false) }
+    ) {
+        list.forEach {
+            DropdownMenuItem(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = {
+                    request(false)
+                    selectedString(it)
+                }
+            ) {
+                Text(text = it, modifier = Modifier.wrapContentWidth())
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddButton(
+    modifier: Modifier,
+    click: () -> Unit
+) {
+    Button(
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.secondary
+        ),
+        content = { AddButtonView() },
+        onClick = click
+    )
+}
+
+@Composable
+private fun AddButtonView() {
+    Text(
+        modifier = Modifier
+            .padding(12.dp),
+        text = stringResource(id = R.string.add_subscription),
+        style = generalButtonStyle
     )
 }
 

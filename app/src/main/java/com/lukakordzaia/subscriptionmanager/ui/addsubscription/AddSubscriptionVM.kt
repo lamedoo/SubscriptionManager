@@ -30,11 +30,11 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
     }
 
     fun setAmount(amount: String) {
-        reducer.sendEvent(AddSubscriptionEvent.ChangeAmount(amount.toDouble()))
+        reducer.sendEvent(AddSubscriptionEvent.ChangeAmount(amount))
     }
 
     fun setPeriod(period: String) {
-        reducer.sendEvent(AddSubscriptionEvent.ChangePeriod(period as Constants.PeriodType))
+        reducer.sendEvent(AddSubscriptionEvent.ChangePeriod(period))
     }
 
     fun setCurrency(currency: String) {
@@ -43,6 +43,10 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
 
     fun setDate(date: String) {
         reducer.sendEvent(AddSubscriptionEvent.ChangeDate(date))
+    }
+
+    fun addSubscription() {
+        reducer.sendEvent(AddSubscriptionEvent.AddSubscription)
     }
 
     inner class AddSubscriptionReducer(initial: AddSubscriptionState): Reducer<AddSubscriptionState, AddSubscriptionEvent>(initial) {
