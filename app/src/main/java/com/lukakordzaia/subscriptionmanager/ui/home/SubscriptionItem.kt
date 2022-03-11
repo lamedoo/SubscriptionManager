@@ -2,14 +2,11 @@ package com.lukakordzaia.subscriptionmanager.ui.home
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +43,7 @@ fun SubscriptionItem(item: SubscriptionDomain) {
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = item.description,
+            text = item.plan,
             modifier = Modifier
                 .constrainAs(description) {
                     top.linkTo(name.bottom, margin = 5.dp)
@@ -83,10 +80,11 @@ fun SubscriptionItemPreview() {
     SubscriptionItem(item = SubscriptionDomain(
         subscriptionType = "Spotify",
         name = "Spotify",
-        description = "Family Plan",
+        plan = "Family Plan",
         color = Color(0xFF1DB954),
         currency = "USD",
         amount = 14.99,
-        periodType = Constants.PeriodType.MONTH
+        periodType = Constants.PeriodType.MONTH,
+        date = 131231231293
     ))
 }

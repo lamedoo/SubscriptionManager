@@ -1,0 +1,1 @@
+package com.lukakordzaia.subscriptionmanager.ui.theme

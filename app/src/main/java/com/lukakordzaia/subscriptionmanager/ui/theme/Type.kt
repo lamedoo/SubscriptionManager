@@ -1,5 +1,6 @@
 package com.lukakordzaia.subscriptionmanager.ui.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -13,16 +14,16 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     )
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
-    ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-    */
+)
+
+val titleStyle = TextStyle(
+    fontFamily = mainLight,
+    fontWeight = FontWeight.Bold,
+    color = _1F1F1F,
+    fontSize = 20.sp
+)
+
+val bottomNavLabelStyle = TextStyle(
+    fontFamily = mainLight,
+    fontWeight = FontWeight.Bold
 )

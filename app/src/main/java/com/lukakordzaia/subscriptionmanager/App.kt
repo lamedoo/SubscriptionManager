@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui
+package com.lukakordzaia.subscriptionmanager
 
 import android.app.Application
 import com.lukakordzaia.subscriptionmanager.BuildConfig
