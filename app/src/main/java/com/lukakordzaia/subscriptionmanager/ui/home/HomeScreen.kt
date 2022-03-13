@@ -29,7 +29,7 @@ fun HomeScreen(vm: HomeVM) {
             color = Color(0xFF1DB954),
             currency = "USD",
             amount = 14.99,
-            periodType = Constants.PeriodType.MONTH,
+            periodType = "Month",
             date = 122032321)),
             modifier = Modifier
                 .padding(top = 10.dp)

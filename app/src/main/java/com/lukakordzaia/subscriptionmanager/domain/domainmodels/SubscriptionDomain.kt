@@ -10,6 +10,6 @@ data class SubscriptionDomain(
     val color: Color,
     val currency: String,
     val amount: Double,
-    val periodType: Constants.PeriodType,
+    val periodType: String,
     val date: Long,
 )

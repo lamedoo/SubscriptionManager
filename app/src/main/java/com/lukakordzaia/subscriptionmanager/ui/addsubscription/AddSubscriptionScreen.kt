@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -14,8 +15,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -43,6 +43,7 @@ fun AddSubscriptionScreen(
 ) {
     val state = vm.state.collectAsState()
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     HandleBack(
         state = bottomSheetState
@@ -95,6 +96,7 @@ fun AddSubscriptionScreen(
                 .fillMaxWidth(0.67F),
             value = state.value.nameField,
             onChange = { value -> vm.setName(value) },
+            focusRequester = focusRequester
         )
         PlanField(
             modifier = Modifier
@@ -105,6 +107,7 @@ fun AddSubscriptionScreen(
                 .fillMaxWidth(0.67F),
             value = state.value.planField,
             onChange = { value -> vm.setPlan(value) },
+            focusRequester = focusRequester
         )
         ColorField(
             modifier = Modifier
@@ -129,6 +132,7 @@ fun AddSubscriptionScreen(
                 .fillMaxWidth(0.67F),
             value = state.value.amountField,
             onChange = { value -> vm.setAmount(value) },
+            focusRequester = focusRequester
         )
         CurrencyField(
             modifier = Modifier
@@ -138,7 +142,8 @@ fun AddSubscriptionScreen(
                 }
                 .fillMaxWidth(0.3F),
             value = state.value.currencyField,
-            onChange = { value -> vm.setCurrency(value) }
+            onChange = { value -> vm.setCurrency(value) },
+            focusRequester = focusRequester
         )
         PeriodField(
             modifier = Modifier
@@ -150,6 +155,7 @@ fun AddSubscriptionScreen(
             periodDialogState = state.value.periodDialogIsOpen,
             onDialogStateChange = { state -> vm.setPeriodDialogState(state) },
             onChange = { value -> vm.setPeriod(value) },
+            focusRequester = focusRequester
         )
         DateField(
             modifier = Modifier
@@ -159,6 +165,7 @@ fun AddSubscriptionScreen(
                 .fillMaxWidth(),
             value = state.value.dateField,
             onChange = { value -> vm.setDate(value) },
+            focusRequester = focusRequester
         )
         LinkField(
             modifier = Modifier
@@ -168,6 +175,7 @@ fun AddSubscriptionScreen(
                 .fillMaxWidth(),
             value = state.value.linkField,
             onChange = { value -> vm.setLink(value) },
+            focusRequester = focusRequester
         )
         AddButton(
             modifier = Modifier
@@ -207,30 +215,18 @@ private fun CloseButton(
 }
 
 @Composable
-private fun LinkField(
-    modifier: Modifier,
-    value: String,
-    onChange: (link: String) -> Unit
-) {
-    AddSubscriptionTextField(
-        modifier = modifier,
-        label = R.string.link,
-        value = value,
-        onChange = onChange
-    )
-}
-
-@Composable
 private fun NameField(
     modifier: Modifier,
     value: String,
-    onChange: (name: String) -> Unit
+    onChange: (name: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
     AddSubscriptionTextField(
         modifier = modifier,
         label = R.string.name,
         value = value,
         onChange = onChange,
+        focusRequester = focusRequester
     )
 }
 
@@ -238,13 +234,15 @@ private fun NameField(
 private fun PlanField(
     modifier: Modifier,
     value: String,
-    onChange: (plan: String) -> Unit
+    onChange: (plan: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
     AddSubscriptionTextField(
         modifier = modifier,
         label = R.string.plan,
         value = value,
         onChange = onChange,
+        focusRequester = focusRequester
     )
 }
 
@@ -252,7 +250,8 @@ private fun PlanField(
 private fun AmountField(
     modifier: Modifier,
     value: String,
-    onChange: (amount: String) -> Unit
+    onChange: (amount: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
     AddSubscriptionTextField(
         modifier = modifier,
@@ -260,7 +259,8 @@ private fun AmountField(
         value = if (value == "0.0") "" else value,
         onChange = onChange,
         imeAction = ImeAction.Done,
-        keyboardType = KeyboardType.Number
+        keyboardType = KeyboardType.Number,
+        focusRequester = focusRequester
     )
 }
 
@@ -268,13 +268,32 @@ private fun AmountField(
 private fun CurrencyField(
     modifier: Modifier,
     value: String,
-    onChange: (currency: String) -> Unit
+    onChange: (currency: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
     AddSubscriptionTextField(
         modifier = modifier,
         label = R.string.currency,
         value = value,
-        onChange = onChange
+        onChange = onChange,
+        focusRequester = focusRequester
+    )
+}
+
+@Composable
+private fun LinkField(
+    modifier: Modifier,
+    value: String,
+    onChange: (link: String) -> Unit,
+    focusRequester: FocusRequester
+) {
+    AddSubscriptionTextField(
+        modifier = modifier,
+        label = R.string.link,
+        value = value,
+        onChange = onChange,
+        focusRequester = focusRequester,
+        imeAction = ImeAction.Done
     )
 }
 
@@ -285,9 +304,11 @@ private fun AddSubscriptionTextField(
     value: String,
     imeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
-    focusRequester: FocusRequester = remember { FocusRequester() },
-    onChange: (link: String) -> Unit
+    focusRequester: FocusRequester,
+    onChange: (link: String) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     TextField(
         modifier = modifier
             .focusRequester(focusRequester),
@@ -309,6 +330,10 @@ private fun AddSubscriptionTextField(
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
             imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+            onDone = { focusManager.clearFocus() }
         )
     )
 }
@@ -317,7 +342,8 @@ private fun AddSubscriptionTextField(
 private fun DateField(
     modifier: Modifier,
     value: String,
-    onChange: (date: String) -> Unit
+    onChange: (date: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
     val c = Calendar.getInstance()
     val timePickerDialog = DatePickerDialog(LocalContext.current,
@@ -332,13 +358,13 @@ private fun DateField(
             modifier = modifier,
             label = R.string.date,
             value = value,
-            onChange = onChange
+            onChange = onChange,
+            focusRequester = focusRequester
         )
         Spacer(
             modifier = Modifier
                 .matchParentSize()
                 .background(Color.Transparent)
-                .padding(10.dp)
                 .clickable(
                     onClick = { timePickerDialog.show() }
                 )
@@ -352,7 +378,8 @@ private fun PeriodField(
     value: String,
     periodDialogState: Boolean,
     onDialogStateChange: (Boolean) -> Unit,
-    onChange: (period: String) -> Unit
+    onChange: (period: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
     val periodList = listOf(
         stringResource(id = R.string.month),
@@ -368,7 +395,8 @@ private fun PeriodField(
             modifier = modifier,
             label = R.string.period,
             value = value,
-            onChange = onChange
+            onChange = onChange,
+            focusRequester = focusRequester
         )
         DropDownList(
             requestOpen = periodDialogState,
