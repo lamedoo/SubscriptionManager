@@ -11,9 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SubscriptionManager">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.SubscriptionManager">
+            android:theme="@style/Theme.SubscriptionManager" />
+        <activity
+                android:name=".ui.login.LoginActivity"
+                android:exported="true"
+                android:noHistory="true"
+                android:theme="@style/Theme.SubscriptionManager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

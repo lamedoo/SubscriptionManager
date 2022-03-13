@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui.addsubscription
+package com.lukakordzaia.subscriptionmanager.ui.main.addsubscription
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler

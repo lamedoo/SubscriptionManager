@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui.addsubscription
+package com.lukakordzaia.subscriptionmanager.ui.main.addsubscription
 
 import com.godaddy.android.colorpicker.HsvColor
 import com.lukakordzaia.subscriptionmanager.base.BaseViewModel

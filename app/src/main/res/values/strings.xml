@@ -17,4 +17,10 @@
     <string name="year">Year</string>
     <string name="choose_color">Choose color</string>
     <string name="color">Color</string>
+    <string name="welcome">Welcome</string>
+    <string name="subscription_manager">Subscription Manager</string>
+    <string name="login_to_continue">Login to continue</string>
+    <string name="google">Google</string>
+    <string name="success_login">Login was successful</string>
+    <string name="failed_login">Login was unsuccesfful. Pleasy try again later</string>
 </resources>

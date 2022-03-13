@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui
+package com.lukakordzaia.subscriptionmanager.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,14 +13,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.lukakordzaia.subscriptionmanager.helpers.Navigation
+import com.lukakordzaia.subscriptionmanager.base.BaseComponentActivity
 import com.lukakordzaia.subscriptionmanager.ui.theme.SubscriptionManagerTheme
-import com.lukakordzaia.subscriptionmanager.ui.addsubscription.AddSubscriptionScreen
+import com.lukakordzaia.subscriptionmanager.ui.main.addsubscription.AddSubscriptionScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

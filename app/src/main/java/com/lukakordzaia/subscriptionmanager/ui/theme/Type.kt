@@ -38,6 +38,5 @@ val generalButtonStyle = TextStyle(
 val smallButtonStyle = TextStyle(
     fontFamily = mainLight,
     fontWeight = FontWeight.Bold,
-    color = _FFFFFF,
-    fontSize = 14.sp
+    color = _FFFFFF
 )

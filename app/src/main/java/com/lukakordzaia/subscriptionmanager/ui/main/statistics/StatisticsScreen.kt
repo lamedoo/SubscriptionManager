@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui.statistics
+package com.lukakordzaia.subscriptionmanager.ui.main.statistics
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth

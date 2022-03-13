@@ -82,6 +82,8 @@ dependencies {
     implementation "com.godaddy.android.colorpicker:compose-color-picker-android:$compose_color_picker"
 
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

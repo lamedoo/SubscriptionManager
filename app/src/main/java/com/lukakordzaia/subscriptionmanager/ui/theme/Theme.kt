@@ -57,3 +57,27 @@ fun SubscriptionManagerTheme(
         content = content
     )
 }
+
+@Composable
+fun LoginTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
+    }
+
+    rememberSystemUiController().apply {
+        setStatusBarColor(color = _5A67CE)
+        setNavigationBarColor(color = _5A67CE)
+    }
+
+    MaterialTheme(
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
+}

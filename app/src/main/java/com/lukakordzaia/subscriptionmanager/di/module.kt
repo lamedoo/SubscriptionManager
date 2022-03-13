@@ -1,8 +1,8 @@
 package com.lukakordzaia.subscriptionmanager.di
 
-import com.lukakordzaia.subscriptionmanager.ui.home.HomeVM
+import com.lukakordzaia.subscriptionmanager.ui.main.home.HomeVM
 import com.lukakordzaia.subscriptionmanager.helpers.Navigation
-import com.lukakordzaia.subscriptionmanager.ui.addsubscription.AddSubscriptionVM
+import com.lukakordzaia.subscriptionmanager.ui.main.addsubscription.AddSubscriptionVM
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

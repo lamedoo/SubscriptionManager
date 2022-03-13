@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui
+package com.lukakordzaia.subscriptionmanager.ui.main
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -10,12 +10,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.lukakordzaia.subscriptionmanager.ui.home.HomeScreen
-import com.lukakordzaia.subscriptionmanager.ui.home.HomeVM
-import com.lukakordzaia.subscriptionmanager.ui.statistics.StatisticsScreen
+import com.lukakordzaia.subscriptionmanager.ui.main.home.HomeScreen
+import com.lukakordzaia.subscriptionmanager.ui.main.home.HomeVM
+import com.lukakordzaia.subscriptionmanager.ui.main.statistics.StatisticsScreen
 import com.lukakordzaia.subscriptionmanager.helpers.Navigation
-import com.lukakordzaia.subscriptionmanager.ui.addsubscription.AddSubscriptionScreen
-import com.lukakordzaia.subscriptionmanager.ui.addsubscription.AddSubscriptionVM
 import com.lukakordzaia.subscriptionmanager.ui.theme._A6AEC0
 import com.lukakordzaia.subscriptionmanager.ui.theme.bottomNavLabelStyle
 import org.koin.androidx.compose.getViewModel

@@ -1,12 +1,9 @@
-package com.lukakordzaia.subscriptionmanager.ui.home
+package com.lukakordzaia.subscriptionmanager.ui.main.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -17,10 +14,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionDomain
-import com.lukakordzaia.subscriptionmanager.ui.theme.Shapes
 import com.lukakordzaia.subscriptionmanager.ui.theme._FFFFFF
 import com.lukakordzaia.subscriptionmanager.utils.BoldText
-import com.lukakordzaia.subscriptionmanager.utils.Constants
 import com.lukakordzaia.subscriptionmanager.utils.LightText
 
 @Composable

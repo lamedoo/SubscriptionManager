@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui.home
+package com.lukakordzaia.subscriptionmanager.ui.main.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionDomain
-import com.lukakordzaia.subscriptionmanager.utils.Constants
 
 @Composable
 fun HomeScreen(vm: HomeVM) {
