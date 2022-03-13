@@ -1,10 +1,10 @@
 package com.lukakordzaia.subscriptionmanager.ui.addsubscription
 
+import com.godaddy.android.colorpicker.HsvColor
 import com.lukakordzaia.subscriptionmanager.base.BaseViewModel
 import com.lukakordzaia.subscriptionmanager.events.AddSubscriptionEvent
 import com.lukakordzaia.subscriptionmanager.events.AddSubscriptionState
 import com.lukakordzaia.subscriptionmanager.helpers.Reducer
-import com.lukakordzaia.subscriptionmanager.utils.Constants
 import kotlinx.coroutines.flow.StateFlow
 
 class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEvent>() {
@@ -45,8 +45,20 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
         reducer.sendEvent(AddSubscriptionEvent.ChangeDate(date))
     }
 
+    fun setColor(color: HsvColor) {
+        reducer.sendEvent(AddSubscriptionEvent.ChangeColor(color))
+    }
+
     fun addSubscription() {
         reducer.sendEvent(AddSubscriptionEvent.AddSubscription)
+    }
+
+    fun setColorDialogState(state: Boolean) {
+        reducer.sendEvent(AddSubscriptionEvent.ColorDialogState(state))
+    }
+
+    fun setPeriodDialogState(state: Boolean) {
+        reducer.sendEvent(AddSubscriptionEvent.PeriodDialogState(state))
     }
 
     inner class AddSubscriptionReducer(initial: AddSubscriptionState): Reducer<AddSubscriptionState, AddSubscriptionEvent>(initial) {
@@ -61,6 +73,12 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
                 is AddSubscriptionEvent.ChangeName -> {
                     setState(oldState.copy(nameField = event.name, keyboardIsVisible = true))
                 }
+                is AddSubscriptionEvent.ColorDialogState -> {
+                    setState(oldState.copy(colorDialogIsOpen = event.state))
+                }
+                is AddSubscriptionEvent.ChangeColor -> {
+                    setState(oldState.copy(colorField = event.color, keyboardIsVisible = false))
+                }
                 is AddSubscriptionEvent.ChangeAmount -> {
                     setState(oldState.copy(amountField = event.amount, keyboardIsVisible = true))
                 }
@@ -69,6 +87,9 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
                 }
                 is AddSubscriptionEvent.ChangeDate -> {
                     setState(oldState.copy(dateField = event.date, keyboardIsVisible = true))
+                }
+                is AddSubscriptionEvent.PeriodDialogState -> {
+                    setState(oldState.copy(periodDialogIsOpen = event.state))
                 }
                 is AddSubscriptionEvent.ChangePeriod -> {
                     setState(oldState.copy(periodField = event.period, keyboardIsVisible = true))

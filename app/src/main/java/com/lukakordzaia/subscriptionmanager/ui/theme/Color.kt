@@ -13,3 +13,5 @@ val _1F1F1F = Color(0xFF1F1F1F)
 val _C4C9D7 = Color(0xFFC4C9D7)
 val _A6AEC0 = Color(0xFFA6AEC0)
 val _5A67CE = Color(0xFF5A67CE)
+
+val fieldLabel = _A6AEC0

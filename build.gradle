@@ -11,6 +11,7 @@ buildscript {
         activity_compose = '1.4.0'
         navigation_compose = '2.4.1'
         accompanist_systemui = '0.24.3-alpha'
+        compose_color_picker = '0.4.2'
         lifecycle_runtime = '2.4.1'
         androidx_core_version = "1.7.0"
         retrofit_version = "2.9.0"

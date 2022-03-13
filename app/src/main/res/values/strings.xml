@@ -15,4 +15,6 @@
     <string name="day">Day</string>
     <string name="week">Week</string>
     <string name="year">Year</string>
+    <string name="choose_color">Choose color</string>
+    <string name="color">Color</string>
 </resources>
