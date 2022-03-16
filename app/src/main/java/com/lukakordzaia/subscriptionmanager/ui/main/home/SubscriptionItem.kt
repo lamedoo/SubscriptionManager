@@ -13,13 +13,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionDomain
+import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.subscriptionmanager.ui.theme._FFFFFF
 import com.lukakordzaia.subscriptionmanager.utils.BoldText
+import com.lukakordzaia.subscriptionmanager.utils.Constants
 import com.lukakordzaia.subscriptionmanager.utils.LightText
 
 @Composable
-fun SubscriptionItem(item: SubscriptionDomain) {
+fun SubscriptionItem(item: SubscriptionItemDomain) {
     ItemWrapper(
         itemColor = item.color,
         itemName = item.name,
@@ -37,7 +38,7 @@ private fun ItemWrapper(
     itemPlan: String,
     itemCurrency: String,
     itemAmount: Double,
-    itemPeriod: String
+    itemPeriod: Constants.PeriodType
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -91,7 +92,7 @@ private fun ItemWrapper(
                     start.linkTo(amount.start)
                     top.linkTo(amount.bottom)
                 },
-            period = itemPeriod
+            period = itemPeriod.toString()
         )
 
         createVerticalChain(
@@ -161,6 +162,6 @@ fun SubscriptionItemPreview() {
         itemPlan = "Family Plan",
         itemCurrency = "USD",
         itemAmount = 14.99,
-        itemPeriod = "Month"
+        itemPeriod = Constants.PeriodType.MONTH
     )
 }

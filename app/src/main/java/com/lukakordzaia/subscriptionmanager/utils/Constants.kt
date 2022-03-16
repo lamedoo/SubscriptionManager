@@ -12,4 +12,8 @@ object Constants {
             fun getPeriodType(type: Int): PeriodType = values().firstOrNull { it.type == type } ?: UNKNOWN
         }
     }
+
+    const val USERS_COLLECTION = "users"
+    const val EMAIL = "email"
+    const val SUBSCRIPTIONS_COLLECTION = "subscriptions"
 }

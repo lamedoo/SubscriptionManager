@@ -1,37 +1,28 @@
 package com.lukakordzaia.subscriptionmanager.ui.login
 
 import android.content.Intent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Absolute.Center
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat.startActivity
 import com.lukakordzaia.subscriptionmanager.R
-import com.lukakordzaia.subscriptionmanager.events.LoginState
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.main.MainActivity
 import com.lukakordzaia.subscriptionmanager.ui.theme._1F1F1F
 import com.lukakordzaia.subscriptionmanager.ui.theme.smallButtonStyle
 import com.lukakordzaia.subscriptionmanager.utils.BoldText
 import com.lukakordzaia.subscriptionmanager.utils.LightText
-import com.lukakordzaia.subscriptionmanager.utils.ProgressBar
+import com.lukakordzaia.subscriptionmanager.utils.ProgressDialog
 
 @Composable
 fun LoginScreen(
@@ -40,19 +31,19 @@ fun LoginScreen(
 ) {
     val state = vm.state.collectAsState()
 
+    StateObserver(
+        isLoading = state.value.isLoading,
+        isLoggedIn = state.value.isLoggedIn,
+        isUserAdded = state.value.isUserAdded,
+        onLoginSuccess = { vm.addUser() }
+    )
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        val (welcomeTitle, googleButton, progressBar) = createRefs()
-
-        StateObserver(
-            isLoading = state.value.isLoading,
-            isLoggedIn = state.value.isLoggedIn,
-            isUserAdded = state.value.isUserAdded,
-            onLoginSuccess = { vm.addUser() }
-        )
+        val (welcomeTitle, googleButton) = createRefs()
 
         WelcomeTitle(
             modifier = Modifier
@@ -142,8 +133,8 @@ private fun StateObserver(
     val context = LocalContext.current
 
     when (isLoading) {
-        LoadingState.LOADING -> ProgressBar(showDialog = true)
-        LoadingState.LOADED -> ProgressBar(showDialog = false)
+        LoadingState.LOADING -> ProgressDialog(showDialog = true)
+        LoadingState.LOADED -> ProgressDialog(showDialog = false)
         LoadingState.ERROR -> {}
         else -> {}
     }

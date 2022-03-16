@@ -30,9 +30,17 @@ class LoginVM(
         checkUserLogin()
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     fun userLogin(idToken: String) {
-        reducer.sendEvent(LoginEvent.ChangeLoading(LoadingState.LOADING))
+        reducer.sendEvent(LoginEvent.UserLoginToFirebase(idToken))
+    }
+
+    fun addUser() {
+        reducer.sendEvent(LoginEvent.AddUserToFirestore)
+    }
+
+    @OptIn(InternalCoroutinesApi::class)
+    private fun userLoginFirebase(idToken: String) {
+        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
 
         val credential = GoogleAuthProvider.getCredential(idToken, null)
 
@@ -45,26 +53,26 @@ class LoginVM(
             ).collect {
                 when (it) {
                     is ResultDomain.Success -> {
-                        reducer.sendEvent(LoginEvent.FirebaseLogin(it.data))
+                        reducer.sendEvent(LoginEvent.ChangeLoginState(it.data))
                     }
                     is ResultDomain.Error -> {
-                        reducer.sendEvent(LoginEvent.ChangeLoading(LoadingState.ERROR))
+                        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.ERROR))
                     }
                 }
             }
         }
     }
 
-    fun addUser() {
+    private fun addUseFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
             addUserFirestoreUseCase.invoke(auth.currentUser).collect {
                 when (it) {
                     is ResultDomain.Success -> {
-                        reducer.sendEvent(LoginEvent.AddUserFirestore(it.data))
-                        reducer.sendEvent(LoginEvent.ChangeLoading(LoadingState.LOADED))
+                        reducer.sendEvent(LoginEvent.ChangeUserAddedState(it.data))
+                        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADED))
                     }
                     is ResultDomain.Error -> {
-                        reducer.sendEvent(LoginEvent.ChangeLoading(LoadingState.ERROR))
+                        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.ERROR))
                     }
                 }
             }
@@ -73,22 +81,28 @@ class LoginVM(
 
     private fun checkUserLogin() {
         if (auth.currentUser != null) {
-            reducer.sendEvent(LoginEvent.ChangeLoading(LoadingState.LOADING))
-            reducer.sendEvent(LoginEvent.FirebaseLogin(true))
+            reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
+            reducer.sendEvent(LoginEvent.ChangeLoginState(true))
         }
     }
 
     inner class LoginReducer(initial: LoginState): Reducer<LoginState, LoginEvent>(initial) {
         override fun reduce(oldState: LoginState, event: LoginEvent) {
             when (event) {
-                is LoginEvent.ChangeLoading -> {
+                is LoginEvent.ChangeLoadingState -> {
                     setState(oldState.copy(isLoading = event.state))
                 }
-                is LoginEvent.FirebaseLogin -> {
+                is LoginEvent.ChangeLoginState -> {
                     setState(oldState.copy(isLoggedIn = event.isLoggedIn))
                 }
-                is LoginEvent.AddUserFirestore -> {
+                is LoginEvent.ChangeUserAddedState -> {
                     setState(oldState.copy(isUserAdded = event.isAdded))
+                }
+                is LoginEvent.UserLoginToFirebase -> {
+                    userLoginFirebase(event.idToken)
+                }
+                is LoginEvent.AddUserToFirestore -> {
+                    addUseFirestore()
                 }
             }
         }

@@ -57,7 +57,7 @@ fun BoldText(
 }
 
 @Composable
-fun ProgressBar(
+fun ProgressDialog(
     showDialog: Boolean,
 ) {
     if (showDialog) {

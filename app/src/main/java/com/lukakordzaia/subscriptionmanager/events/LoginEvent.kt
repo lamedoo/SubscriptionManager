@@ -5,9 +5,11 @@ import com.lukakordzaia.subscriptionmanager.helpers.UiState
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 
 sealed class LoginEvent: UiEvent {
-    data class ChangeLoading(val state: LoadingState): LoginEvent()
-    data class FirebaseLogin(val isLoggedIn: Boolean): LoginEvent()
-    data class AddUserFirestore(val isAdded: Boolean): LoginEvent()
+    data class ChangeLoadingState(val state: LoadingState): LoginEvent()
+    data class UserLoginToFirebase(val idToken: String): LoginEvent()
+    object AddUserToFirestore: LoginEvent()
+    data class ChangeLoginState(val isLoggedIn: Boolean): LoginEvent()
+    data class ChangeUserAddedState(val isAdded: Boolean): LoginEvent()
 }
 
 data class LoginState(

@@ -3,7 +3,6 @@ package com.lukakordzaia.subscriptionmanager.base
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lukakordzaia.subscriptionmanager.helpers.Reducer
 import com.lukakordzaia.subscriptionmanager.helpers.UiEvent
 import com.lukakordzaia.subscriptionmanager.helpers.UiState
 import kotlinx.coroutines.flow.Flow

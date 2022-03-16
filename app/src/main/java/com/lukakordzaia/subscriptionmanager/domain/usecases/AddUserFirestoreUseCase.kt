@@ -2,7 +2,6 @@ package com.lukakordzaia.subscriptionmanager.domain.usecases
 
 import com.google.firebase.auth.FirebaseUser
 import com.lukakordzaia.subscriptionmanager.base.BaseFlowUseCase
-import com.lukakordzaia.subscriptionmanager.base.BaseUseCase
 import com.lukakordzaia.subscriptionmanager.domain.repository.login.LoginRepository
 import com.lukakordzaia.subscriptionmanager.network.ResultDomain
 import kotlinx.coroutines.flow.Flow

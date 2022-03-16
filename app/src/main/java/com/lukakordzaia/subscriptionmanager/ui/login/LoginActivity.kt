@@ -8,14 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.lukakordzaia.subscriptionmanager.R
 import com.lukakordzaia.subscriptionmanager.base.BaseComponentActivity
-import com.lukakordzaia.subscriptionmanager.ui.main.MainActivity
 import com.lukakordzaia.subscriptionmanager.ui.theme.LoginTheme
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
