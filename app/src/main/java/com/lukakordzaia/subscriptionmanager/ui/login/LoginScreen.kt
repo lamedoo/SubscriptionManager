@@ -1,35 +1,58 @@
 package com.lukakordzaia.subscriptionmanager.ui.login
 
+import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Arrangement.Absolute.Center
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.core.content.ContextCompat.startActivity
 import com.lukakordzaia.subscriptionmanager.R
+import com.lukakordzaia.subscriptionmanager.events.LoginState
+import com.lukakordzaia.subscriptionmanager.network.LoadingState
+import com.lukakordzaia.subscriptionmanager.ui.main.MainActivity
 import com.lukakordzaia.subscriptionmanager.ui.theme._1F1F1F
 import com.lukakordzaia.subscriptionmanager.ui.theme.smallButtonStyle
 import com.lukakordzaia.subscriptionmanager.utils.BoldText
 import com.lukakordzaia.subscriptionmanager.utils.LightText
+import com.lukakordzaia.subscriptionmanager.utils.ProgressBar
 
 @Composable
 fun LoginScreen(
-    onGButtonClick: () -> Unit
+    vm: LoginVM,
+    onGButtonClick: () -> Unit,
 ) {
+    val state = vm.state.collectAsState()
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        val (welcomeTitle, googleButton) = createRefs()
+        val (welcomeTitle, googleButton, progressBar) = createRefs()
+
+        StateObserver(
+            isLoading = state.value.isLoading,
+            isLoggedIn = state.value.isLoggedIn,
+            isUserAdded = state.value.isUserAdded,
+            onLoginSuccess = { vm.addUser() }
+        )
 
         WelcomeTitle(
             modifier = Modifier
@@ -88,7 +111,7 @@ private fun WelcomeTitle(
 @Composable
 private fun GoogleButton(
     modifier: Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     Button(
         modifier = modifier,
@@ -109,3 +132,27 @@ private fun GoogleButton(
     }
 }
 
+@Composable
+private fun StateObserver(
+    isLoading: LoadingState?,
+    isLoggedIn: Boolean,
+    isUserAdded: Boolean,
+    onLoginSuccess: () -> Unit
+) {
+    val context = LocalContext.current
+
+    when (isLoading) {
+        LoadingState.LOADING -> ProgressBar(showDialog = true)
+        LoadingState.LOADED -> ProgressBar(showDialog = false)
+        LoadingState.ERROR -> {}
+        else -> {}
+    }
+
+    if (isLoggedIn) {
+        onLoginSuccess.invoke()
+    }
+
+    if (isUserAdded) {
+        startActivity(context, Intent(context, MainActivity::class.java), null)
+    }
+}

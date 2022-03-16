@@ -23,4 +23,5 @@
     <string name="google">Google</string>
     <string name="success_login">Login was successful</string>
     <string name="failed_login">Login was unsuccesfful. Pleasy try again later</string>
+    <string name="loading">Loading</string>
 </resources>

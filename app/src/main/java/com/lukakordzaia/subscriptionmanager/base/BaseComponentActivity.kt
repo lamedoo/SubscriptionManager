@@ -6,5 +6,4 @@ import com.google.firebase.ktx.Firebase
 
 abstract class BaseComponentActivity : ComponentActivity() {
     protected var auth = Firebase.auth
-
 }

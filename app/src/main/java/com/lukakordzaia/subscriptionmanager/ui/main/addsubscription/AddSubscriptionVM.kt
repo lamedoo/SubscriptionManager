@@ -8,7 +8,7 @@ import com.lukakordzaia.subscriptionmanager.helpers.Reducer
 import kotlinx.coroutines.flow.StateFlow
 
 class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEvent>() {
-    private var reducer = AddSubscriptionReducer(AddSubscriptionState.initial())
+    private val reducer = AddSubscriptionReducer(AddSubscriptionState.initial())
 
     override val state: StateFlow<AddSubscriptionState>
         get() = reducer.state
