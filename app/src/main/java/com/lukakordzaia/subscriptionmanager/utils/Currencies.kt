@@ -2,10 +2,10 @@ package com.lukakordzaia.subscriptionmanager.utils
 
 object Currencies {
     enum class Currency(val code: String, val symbol: String) {
-        GEL(Currencies.GEL, LARI_SYMBOL),
-        USD(Currencies.USD, DOLLAR_SYMBOL),
-        EUR(Currencies.EUR, EURO_SYMBOL),
-        GBP(Currencies.GBP, POUND_SYMBOL);
+        GEL(Currencies.GEL, GEL_SYMBOL),
+        USD(Currencies.USD, USD_SYMBOL),
+        EUR(Currencies.EUR, EUR_SYMBOL),
+        GBP(Currencies.GBP, GBP_SYMBOL);
 
         companion object {
             fun getCurrencySymbol(code: String): String {
@@ -20,10 +20,11 @@ object Currencies {
         }
     }
 
-    const val LARI_SYMBOL = "\u20BE"
-    const val DOLLAR_SYMBOL = "$"
-    const val EURO_SYMBOL = "€"
-    const val POUND_SYMBOL = "£"
+    const val GEL_SYMBOL = "\u20BE"
+    const val USD_SYMBOL = "$"
+    const val EUR_SYMBOL = "€"
+    const val GBP_SYMBOL = "£"
+
     const val GEL = "GEL"
     const val EUR = "EUR"
     const val USD = "USD"

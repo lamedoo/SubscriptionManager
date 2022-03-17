@@ -47,7 +47,7 @@ data class AddSubscriptionState(
             nameField = "",
             planField = "",
             amountField = "",
-            periodField = 3,
+            periodField = 2,
             currencyField = "USD",
             dateField = "",
             colorField = null,
