@@ -16,7 +16,17 @@ object Currencies {
                 return values().find { it.symbol == symbol }?.code ?: symbol
             }
 
-            fun getCurrencyList(): List<Currency> = values().toList()
+            fun getCurrencyName(code: String): String {
+                return values().find { it.code == code.uppercase() }?.let {
+                    "${it.code} (${it.symbol})"
+                } ?: run { code }
+            }
+
+            fun getCurrencyList(): List<String> {
+                return values().map {
+                    "${it.code} (${it.symbol})"
+                }
+            }
         }
     }
 

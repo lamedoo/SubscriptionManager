@@ -16,6 +16,7 @@ sealed class AddSubscriptionEvent: UiEvent {
     data class ChangeAmount(val amount: String): AddSubscriptionEvent()
     data class PeriodDialogState(val state: Boolean): AddSubscriptionEvent()
     data class ChangePeriod(val period: Int): AddSubscriptionEvent()
+    data class CurrencyDialogState(val state: Boolean): AddSubscriptionEvent()
     data class ChangeCurrency(val currency: String): AddSubscriptionEvent()
     data class ChangeDate(val date: String): AddSubscriptionEvent()
     data class ColorDialogState(val state: Boolean): AddSubscriptionEvent()
@@ -37,6 +38,7 @@ data class AddSubscriptionState(
     val keyboardIsVisible: Boolean,
     val colorDialogIsOpen: Boolean,
     val periodDialogIsOpen: Boolean,
+    val currencyDialogIsOpen: Boolean,
     val errorDialogIsOpen: Boolean,
     val isUploaded: Boolean,
 ): UiState {
@@ -54,6 +56,7 @@ data class AddSubscriptionState(
             keyboardIsVisible = false,
             colorDialogIsOpen = false,
             periodDialogIsOpen = false,
+            currencyDialogIsOpen = false,
             errorDialogIsOpen = false,
             isUploaded = false
         )

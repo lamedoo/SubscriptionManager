@@ -34,6 +34,8 @@ import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.theme.*
 import com.lukakordzaia.subscriptionmanager.utils.CommonDialog
 import com.lukakordzaia.subscriptionmanager.utils.Constants
+import com.lukakordzaia.subscriptionmanager.utils.Constants.PeriodType.Companion.transformFromPeriodType
+import com.lukakordzaia.subscriptionmanager.utils.Currencies
 import com.lukakordzaia.subscriptionmanager.utils.ProgressDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -160,7 +162,9 @@ fun AddSubscriptionScreen(
                 }
                 .fillMaxWidth(0.3F),
             value = state.value.currencyField,
-            onChange = { value -> vm.setCurrency(value) },
+            currencyDialogState = state.value.currencyDialogIsOpen,
+            onDialogStateChange = { state -> vm.setCurrencyDialogState(state) },
+            onChange = { value -> vm.setCurrency(value.substring(0, 3)) },
             focusRequester = focusRequester
         )
         PeriodField(
@@ -283,22 +287,6 @@ private fun AmountField(
 }
 
 @Composable
-private fun CurrencyField(
-    modifier: Modifier,
-    value: String,
-    onChange: (currency: String) -> Unit,
-    focusRequester: FocusRequester
-) {
-    AddSubscriptionTextField(
-        modifier = modifier,
-        label = R.string.currency,
-        value = value,
-        onChange = onChange,
-        focusRequester = focusRequester
-    )
-}
-
-@Composable
 private fun LinkField(
     modifier: Modifier,
     value: String,
@@ -317,7 +305,7 @@ private fun LinkField(
 
 @Composable
 private fun AddSubscriptionTextField(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     label: Int,
     value: String,
     imeAction: ImeAction = ImeAction.Next,
@@ -385,6 +373,39 @@ private fun DateField(
                 .background(Color.Transparent)
                 .clickable(
                     onClick = { timePickerDialog.show() }
+                )
+        )
+    }
+}
+
+@Composable
+private fun CurrencyField(
+    modifier: Modifier,
+    value: String,
+    currencyDialogState: Boolean,
+    onDialogStateChange: (Boolean) -> Unit,
+    onChange: (currency: String) -> Unit,
+    focusRequester: FocusRequester
+) {
+    Box(modifier = modifier) {
+        AddSubscriptionTextField(
+            label = R.string.currency,
+            value = Currencies.Currency.getCurrencyName(value),
+            onChange = onChange,
+            focusRequester = focusRequester
+        )
+        DropDownList(
+            requestOpen = currencyDialogState,
+            list = Currencies.Currency.getCurrencyList(),
+            onDialogStateChange,
+            onChange
+        )
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .clickable(
+                    onClick = { onDialogStateChange(true) }
                 )
         )
     }
@@ -603,13 +624,3 @@ private fun transformToPeriodType(context: Context, type: String): Int {
     }
 }
 
-@Composable
-private fun transformFromPeriodType(type: Constants.PeriodType): String {
-    return when (type) {
-        Constants.PeriodType.DAY -> stringResource(id = R.string.day)
-        Constants.PeriodType.WEEK -> stringResource(id = R.string.week)
-        Constants.PeriodType.MONTH -> stringResource(id = R.string.month)
-        Constants.PeriodType.YEAR -> stringResource(id = R.string.year)
-        else -> stringResource(id = R.string.unknown)
-    }
-}

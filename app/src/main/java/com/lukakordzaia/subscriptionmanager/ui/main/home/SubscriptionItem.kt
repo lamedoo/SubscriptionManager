@@ -17,6 +17,8 @@ import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItem
 import com.lukakordzaia.subscriptionmanager.ui.theme._FFFFFF
 import com.lukakordzaia.subscriptionmanager.utils.BoldText
 import com.lukakordzaia.subscriptionmanager.utils.Constants
+import com.lukakordzaia.subscriptionmanager.utils.Constants.PeriodType.Companion.transformFromPeriodType
+import com.lukakordzaia.subscriptionmanager.utils.Currencies
 import com.lukakordzaia.subscriptionmanager.utils.LightText
 
 @Composable
@@ -92,7 +94,7 @@ private fun ItemWrapper(
                     start.linkTo(amount.start)
                     top.linkTo(amount.bottom)
                 },
-            period = itemPeriod.toString()
+            period = itemPeriod
         )
 
         createVerticalChain(
@@ -136,7 +138,7 @@ private fun ItemAmount(
 ) {
     BoldText(
         modifier = modifier,
-        text = "$currency $amount",
+        text = "${Currencies.Currency.getCurrencySymbol(currency)} $amount",
         fontSize = 15.sp
     )
 }
@@ -144,11 +146,11 @@ private fun ItemAmount(
 @Composable
 private fun ItemPeriod(
     modifier: Modifier,
-    period: String
+    period: Constants.PeriodType
 ) {
     LightText(
         modifier = modifier,
-        text = period,
+        text = transformFromPeriodType(type = period),
         fontWeight = FontWeight.Bold
     )
 }

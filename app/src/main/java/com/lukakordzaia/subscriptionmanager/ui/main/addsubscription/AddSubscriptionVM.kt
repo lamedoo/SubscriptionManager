@@ -77,6 +77,10 @@ class AddSubscriptionVM(
         reducer.sendEvent(AddSubscriptionEvent.PeriodDialogState(state))
     }
 
+    fun setCurrencyDialogState(state: Boolean) {
+        reducer.sendEvent(AddSubscriptionEvent.CurrencyDialogState(state))
+    }
+
     fun setErrorDialogState(state: Boolean) {
         reducer.sendEvent(AddSubscriptionEvent.ChangeErrorDialogState(state))
     }
@@ -133,6 +137,9 @@ class AddSubscriptionVM(
                 }
                 is AddSubscriptionEvent.ChangeAmount -> {
                     setState(oldState.copy(amountField = event.amount, keyboardIsVisible = true))
+                }
+                is AddSubscriptionEvent.CurrencyDialogState -> {
+                    setState(oldState.copy(currencyDialogIsOpen = event.state, keyboardIsVisible = false))
                 }
                 is AddSubscriptionEvent.ChangeCurrency -> {
                     setState(oldState.copy(currencyField = event.currency, keyboardIsVisible = true))
