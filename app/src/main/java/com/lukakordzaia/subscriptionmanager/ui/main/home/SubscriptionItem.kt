@@ -24,7 +24,7 @@ fun SubscriptionItem(item: SubscriptionItemDomain) {
     ItemWrapper(
         itemColor = item.color,
         itemName = item.name,
-        itemPlan = item.plan,
+        itemPlan = item.plan!!,
         itemCurrency = item.currency,
         itemAmount = item.amount,
         itemPeriod = item.periodType
@@ -33,7 +33,7 @@ fun SubscriptionItem(item: SubscriptionItemDomain) {
 
 @Composable
 private fun ItemWrapper(
-    itemColor: Color,
+    itemColor: Color?,
     itemName: String,
     itemPlan: String,
     itemCurrency: String,
@@ -64,7 +64,7 @@ private fun ItemWrapper(
                     start.linkTo(parent.start)
                 },
             name = itemName,
-            nameColor = itemColor
+            nameColor = itemColor ?: MaterialTheme.colors.onPrimary
         )
         ItemPlan(
             modifier = Modifier

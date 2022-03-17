@@ -1,6 +1,7 @@
 package com.lukakordzaia.subscriptionmanager.ui.main.addsubscription
 
 import android.app.DatePickerDialog
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +30,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.Dimension
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
+import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.theme.*
+import com.lukakordzaia.subscriptionmanager.utils.CommonDialog
+import com.lukakordzaia.subscriptionmanager.utils.Constants
+import com.lukakordzaia.subscriptionmanager.utils.ProgressDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -44,6 +49,19 @@ fun AddSubscriptionScreen(
     val state = vm.state.collectAsState()
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+
+    StateObservers(
+        isLoading = state.value.isLoading,
+        errorDialogState = state.value.errorDialogIsOpen,
+        onDialogStateChange = { value -> vm.setErrorDialogState(value) },
+        onDone = {
+            scope.launch {
+                vm.emptyState()
+                bottomSheetState.hide()
+            }
+        }
+    )
 
     HandleBack(
         state = bottomSheetState
@@ -118,7 +136,7 @@ fun AddSubscriptionScreen(
                     height = Dimension.fillToConstraints
                 }
                 .fillMaxWidth(0.3F),
-            value = state.value.colorField?.toColor() ?: MaterialTheme.colors.background,
+            value = state.value.colorField ?: MaterialTheme.colors.background,
             colorDialogState = state.value.colorDialogIsOpen,
             onDialogStateChange = { state -> vm.setColorDialogState(state) },
             onChange = { value -> vm.setColor(value) }
@@ -154,7 +172,7 @@ fun AddSubscriptionScreen(
             value = state.value.periodField,
             periodDialogState = state.value.periodDialogIsOpen,
             onDialogStateChange = { state -> vm.setPeriodDialogState(state) },
-            onChange = { value -> vm.setPeriod(value) },
+            onChange = { value -> vm.setPeriod(transformToPeriodType(context, value)) },
             focusRequester = focusRequester
         )
         DateField(
@@ -375,7 +393,7 @@ private fun DateField(
 @Composable
 private fun PeriodField(
     modifier: Modifier,
-    value: String,
+    value: Int,
     periodDialogState: Boolean,
     onDialogStateChange: (Boolean) -> Unit,
     onChange: (period: String) -> Unit,
@@ -394,7 +412,7 @@ private fun PeriodField(
         AddSubscriptionTextField(
             modifier = modifier,
             label = R.string.period,
-            value = value,
+            value = transformFromPeriodType(type = Constants.PeriodType.getPeriodType(value)),
             onChange = onChange,
             focusRequester = focusRequester
         )
@@ -449,7 +467,7 @@ private fun ColorField(
     value: Color,
     colorDialogState: Boolean,
     onDialogStateChange: (Boolean) -> Unit,
-    onChange: (color: HsvColor) -> Unit
+    onChange: (color: Color) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -479,7 +497,7 @@ private fun ColorField(
 private fun ColorPickerDialog(
     requestOpen: Boolean,
     request: (Boolean) -> Unit,
-    onChange: (color: HsvColor) -> Unit
+    onChange: (color: Color) -> Unit
 ) {
     val chosenColor = remember { mutableStateOf(HsvColor.Companion.DEFAULT) }
 
@@ -511,7 +529,7 @@ private fun ColorPickerDialog(
                         backgroundColor = MaterialTheme.colors.secondary
                     ),
                     onClick = {
-                        onChange(chosenColor.value)
+                        onChange(chosenColor.value.toColor())
                         request(false)
                     }
                 ) {
@@ -555,5 +573,43 @@ private fun HandleBack(
 ) {
     BackHandler(enabled = state.isVisible) {
         onBack.invoke()
+    }
+}
+
+@Composable
+private fun StateObservers(
+    isLoading: LoadingState?,
+    errorDialogState: Boolean,
+    onDialogStateChange: (Boolean) -> Unit,
+    onDone: () -> Unit
+) {
+    when (isLoading) {
+        LoadingState.LOADING -> ProgressDialog(showDialog = true)
+        LoadingState.LOADED -> {
+            ProgressDialog(showDialog = false)
+            onDone.invoke()
+        }
+        LoadingState.ERROR -> CommonDialog(showDialog = errorDialogState, onDismiss = { state -> onDialogStateChange(state) })
+    }
+}
+
+private fun transformToPeriodType(context: Context, type: String): Int {
+    return when (type) {
+        context.getString(R.string.day) -> 0
+        context.getString(R.string.week) -> 1
+        context.getString(R.string.month) -> 2
+        context.getString(R.string.year) -> 3
+        else -> 4
+    }
+}
+
+@Composable
+private fun transformFromPeriodType(type: Constants.PeriodType): String {
+    return when (type) {
+        Constants.PeriodType.DAY -> stringResource(id = R.string.day)
+        Constants.PeriodType.WEEK -> stringResource(id = R.string.week)
+        Constants.PeriodType.MONTH -> stringResource(id = R.string.month)
+        Constants.PeriodType.YEAR -> stringResource(id = R.string.year)
+        else -> stringResource(id = R.string.unknown)
     }
 }

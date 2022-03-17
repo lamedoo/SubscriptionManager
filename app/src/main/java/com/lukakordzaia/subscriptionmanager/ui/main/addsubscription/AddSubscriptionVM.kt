@@ -1,13 +1,29 @@
 package com.lukakordzaia.subscriptionmanager.ui.main.addsubscription
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.viewModelScope
 import com.godaddy.android.colorpicker.HsvColor
 import com.lukakordzaia.subscriptionmanager.base.BaseViewModel
+import com.lukakordzaia.subscriptionmanager.domain.usecases.AddSubscriptionUseCase
 import com.lukakordzaia.subscriptionmanager.events.AddSubscriptionEvent
 import com.lukakordzaia.subscriptionmanager.events.AddSubscriptionState
+import com.lukakordzaia.subscriptionmanager.events.LoginEvent
 import com.lukakordzaia.subscriptionmanager.helpers.Reducer
+import com.lukakordzaia.subscriptionmanager.network.LoadingState
+import com.lukakordzaia.subscriptionmanager.network.ResultDomain
+import com.lukakordzaia.subscriptionmanager.network.networkmodels.AddSubscriptionItemNetwork
+import com.lukakordzaia.subscriptionmanager.utils.Constants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
-class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEvent>() {
+class AddSubscriptionVM(
+    private val addSubscriptionUseCase: AddSubscriptionUseCase
+): BaseViewModel<AddSubscriptionState, AddSubscriptionEvent>() {
     private val reducer = AddSubscriptionReducer(AddSubscriptionState.initial())
 
     override val state: StateFlow<AddSubscriptionState>
@@ -33,7 +49,7 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
         reducer.sendEvent(AddSubscriptionEvent.ChangeAmount(amount))
     }
 
-    fun setPeriod(period: String) {
+    fun setPeriod(period: Int) {
         reducer.sendEvent(AddSubscriptionEvent.ChangePeriod(period))
     }
 
@@ -45,7 +61,7 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
         reducer.sendEvent(AddSubscriptionEvent.ChangeDate(date))
     }
 
-    fun setColor(color: HsvColor) {
+    fun setColor(color: Color) {
         reducer.sendEvent(AddSubscriptionEvent.ChangeColor(color))
     }
 
@@ -59,6 +75,42 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
 
     fun setPeriodDialogState(state: Boolean) {
         reducer.sendEvent(AddSubscriptionEvent.PeriodDialogState(state))
+    }
+
+    fun setErrorDialogState(state: Boolean) {
+        reducer.sendEvent(AddSubscriptionEvent.ChangeErrorDialogState(state))
+    }
+
+    private fun addSubscriptionFirestore() {
+        reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADING))
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val dateFormat = SimpleDateFormat("d/m/yyyy")
+
+            addSubscriptionUseCase.invoke(AddSubscriptionUseCase.Params(
+                auth.currentUser!!.uid,
+                subscription = AddSubscriptionItemNetwork(
+                    id = UUID.randomUUID().toString(),
+                    name = state.value.nameField,
+                    plan = state.value.planField,
+                    color = state.value.colorField?.toArgb(),
+                    amount = state.value.amountField.toDouble(),
+                    currency = state.value.currencyField,
+                    periodType = state.value.periodField,
+                    date = dateFormat.parse(state.value.dateField).time
+                )
+            )).collect {
+                when (it) {
+                    is ResultDomain.Success -> {
+                        reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADED))
+                    }
+                    is ResultDomain.Error -> {
+                        setErrorDialogState(true)
+                        reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.ERROR))
+                    }
+                }
+            }
+        }
     }
 
     inner class AddSubscriptionReducer(initial: AddSubscriptionState): Reducer<AddSubscriptionState, AddSubscriptionEvent>(initial) {
@@ -97,8 +149,14 @@ class AddSubscriptionVM: BaseViewModel<AddSubscriptionState, AddSubscriptionEven
                 is AddSubscriptionEvent.ChangePlan -> {
                     setState(oldState.copy(planField = event.plan, keyboardIsVisible = true))
                 }
+                is AddSubscriptionEvent.ChangeErrorDialogState -> {
+                    setState(oldState.copy(errorDialogIsOpen = event.state, keyboardIsVisible = false))
+                }
+                is AddSubscriptionEvent.ChangeLoadingState -> {
+                    setState(oldState.copy(isLoading = event.state, keyboardIsVisible = false))
+                }
                 is AddSubscriptionEvent.AddSubscription -> {
-
+                    addSubscriptionFirestore()
                 }
             }
         }

@@ -26,4 +26,7 @@
     <string name="loading">Loading</string>
     <string name="no_subscriptions_title">You don\'t have subscriptions yet</string>
     <string name="no_subscriptions_desc">Press \"+\" to create first one</string>
+    <string name="unknown">Unknown</string>
+    <string name="common_error">Something went wrong. Please try again later</string>
+    <string name="ok">OK</string>
 </resources>
