@@ -103,7 +103,8 @@ class AddSubscriptionVM(
                         amount = state.value.amountField.field.toDouble(),
                         currency = state.value.currencyField,
                         periodType = state.value.periodField,
-                        date = if (state.value.dateField.isNotEmpty()) dateFormat.parse(state.value.dateField).time else null
+                        date = if (state.value.dateField.isNotEmpty()) dateFormat.parse(state.value.dateField).time else null,
+                        updateDate = Calendar.getInstance().time.time
                     )
                 )).collect {
                     when (it) {

@@ -12,6 +12,6 @@ class GetSubscriptionsUseCase(
     private val repository: HomeRepository
 ): BaseFlowUseCase<String, List<SubscriptionItemNetwork>, List<SubscriptionItemDomain>>() {
     override suspend fun invoke(args: String?): Flow<ResultDomain<List<SubscriptionItemDomain>, String>> {
-        return transformToDomain(repository.getUserSubscriptions(args!!)) { it.transformToDomain() }
+        return transformToDomain(repository.getUserSubscriptions(args!!)) { data -> data.transformToDomain().sortedByDescending { it.updateDate } }
     }
 }
