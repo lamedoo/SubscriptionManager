@@ -55,6 +55,7 @@ fun AddSubscriptionScreen(
 
     StateObservers(
         isLoading = state.value.isLoading,
+        isUploaded = state.value.isUploaded,
         errorDialogState = state.value.errorDialogIsOpen,
         onDialogStateChange = { value -> vm.setErrorDialogState(value) },
         onDone = {
@@ -114,9 +115,10 @@ fun AddSubscriptionScreen(
                     start.linkTo(parent.start)
                 }
                 .fillMaxWidth(0.67F),
-            value = state.value.nameField,
+            value = state.value.nameField.field,
             onChange = { value -> vm.setName(value) },
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
+            isError = state.value.nameField.isError
         )
         PlanField(
             modifier = Modifier
@@ -150,9 +152,10 @@ fun AddSubscriptionScreen(
                     start.linkTo(parent.start)
                 }
                 .fillMaxWidth(0.67F),
-            value = state.value.amountField,
+            value = state.value.amountField.field,
             onChange = { value -> vm.setAmount(value) },
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
+            isError = state.value.amountField.isError
         )
         CurrencyField(
             modifier = Modifier
@@ -241,14 +244,16 @@ private fun NameField(
     modifier: Modifier,
     value: String,
     onChange: (name: String) -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    isError: Boolean
 ) {
     AddSubscriptionTextField(
         modifier = modifier,
         label = R.string.name,
         value = value,
         onChange = onChange,
-        focusRequester = focusRequester
+        focusRequester = focusRequester,
+        isError = isError
     )
 }
 
@@ -273,7 +278,8 @@ private fun AmountField(
     modifier: Modifier,
     value: String,
     onChange: (amount: String) -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    isError: Boolean
 ) {
     AddSubscriptionTextField(
         modifier = modifier,
@@ -282,7 +288,8 @@ private fun AmountField(
         onChange = onChange,
         imeAction = ImeAction.Done,
         keyboardType = KeyboardType.Number,
-        focusRequester = focusRequester
+        focusRequester = focusRequester,
+        isError = isError
     )
 }
 
@@ -312,6 +319,7 @@ private fun AddSubscriptionTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     focusRequester: FocusRequester,
     onChange: (link: String) -> Unit,
+    isError: Boolean = false,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -323,7 +331,7 @@ private fun AddSubscriptionTextField(
             onChange(it)
         },
         singleLine = true,
-        label = { Text(text = stringResource(id = label), color = fieldLabel) },
+        label = { Text(text = stringResource(id = label)) },
         shape = MaterialTheme.shapes.small,
         colors = TextFieldDefaults.textFieldColors(
             textColor = MaterialTheme.colors.onPrimary,
@@ -331,7 +339,10 @@ private fun AddSubscriptionTextField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
-            cursorColor = MaterialTheme.colors.onPrimary
+            cursorColor = MaterialTheme.colors.onPrimary,
+            errorLabelColor = MaterialTheme.colors.error,
+            focusedLabelColor = fieldLabel,
+            unfocusedLabelColor = fieldLabel
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
@@ -340,7 +351,8 @@ private fun AddSubscriptionTextField(
         keyboardActions = KeyboardActions(
             onNext = { focusManager.moveFocus(FocusDirection.Down) },
             onDone = { focusManager.clearFocus() }
-        )
+        ),
+        isError = isError
     )
 }
 
@@ -600,6 +612,7 @@ private fun HandleBack(
 @Composable
 private fun StateObservers(
     isLoading: LoadingState?,
+    isUploaded: Boolean,
     errorDialogState: Boolean,
     onDialogStateChange: (Boolean) -> Unit,
     onDone: () -> Unit
@@ -608,9 +621,13 @@ private fun StateObservers(
         LoadingState.LOADING -> ProgressDialog(showDialog = true)
         LoadingState.LOADED -> {
             ProgressDialog(showDialog = false)
-            onDone.invoke()
         }
         LoadingState.ERROR -> CommonDialog(showDialog = errorDialogState, onDismiss = { state -> onDialogStateChange(state) })
+        else -> {}
+    }
+
+    if (isUploaded) {
+        onDone.invoke()
     }
 }
 

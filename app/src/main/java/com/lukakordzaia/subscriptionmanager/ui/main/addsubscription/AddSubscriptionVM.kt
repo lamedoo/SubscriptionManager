@@ -10,6 +10,7 @@ import com.lukakordzaia.subscriptionmanager.events.AddSubscriptionEvent
 import com.lukakordzaia.subscriptionmanager.events.AddSubscriptionState
 import com.lukakordzaia.subscriptionmanager.events.LoginEvent
 import com.lukakordzaia.subscriptionmanager.helpers.Reducer
+import com.lukakordzaia.subscriptionmanager.helpers.StringWithError
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.network.ResultDomain
 import com.lukakordzaia.subscriptionmanager.network.networkmodels.AddSubscriptionItemNetwork
@@ -38,7 +39,7 @@ class AddSubscriptionVM(
     }
 
     fun setName(name: String) {
-        reducer.sendEvent(AddSubscriptionEvent.ChangeName(name))
+        reducer.sendEvent(AddSubscriptionEvent.ChangeName(StringWithError(name, false)))
     }
 
     fun setPlan(plan: String) {
@@ -46,7 +47,7 @@ class AddSubscriptionVM(
     }
 
     fun setAmount(amount: String) {
-        reducer.sendEvent(AddSubscriptionEvent.ChangeAmount(amount))
+        reducer.sendEvent(AddSubscriptionEvent.ChangeAmount(StringWithError(amount, false)))
     }
 
     fun setPeriod(period: Int) {
@@ -86,34 +87,51 @@ class AddSubscriptionVM(
     }
 
     private fun addSubscriptionFirestore() {
-        reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADING))
-
         viewModelScope.launch(Dispatchers.IO) {
-            val dateFormat = SimpleDateFormat("d/m/yyyy")
+            val dateFormat = SimpleDateFormat("d/m/yyyy", Locale.getDefault())
 
-            addSubscriptionUseCase.invoke(AddSubscriptionUseCase.Params(
-                auth.currentUser!!.uid,
-                subscription = AddSubscriptionItemNetwork(
-                    id = UUID.randomUUID().toString(),
-                    name = state.value.nameField,
-                    plan = state.value.planField,
-                    color = state.value.colorField?.toArgb(),
-                    amount = state.value.amountField.toDouble(),
-                    currency = state.value.currencyField,
-                    periodType = state.value.periodField,
-                    date = dateFormat.parse(state.value.dateField).time
-                )
-            )).collect {
-                when (it) {
-                    is ResultDomain.Success -> {
-                        reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADED))
-                    }
-                    is ResultDomain.Error -> {
-                        setErrorDialogState(true)
-                        reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.ERROR))
+            if (validateFields()) {
+                reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADING))
+
+                addSubscriptionUseCase.invoke(AddSubscriptionUseCase.Params(
+                    auth.currentUser!!.uid,
+                    subscription = AddSubscriptionItemNetwork(
+                        id = UUID.randomUUID().toString(),
+                        name = state.value.nameField.field,
+                        plan = state.value.planField,
+                        color = state.value.colorField?.toArgb(),
+                        amount = state.value.amountField.field.toDouble(),
+                        currency = state.value.currencyField,
+                        periodType = state.value.periodField,
+                        date = if (state.value.dateField.isNotEmpty()) dateFormat.parse(state.value.dateField).time else null
+                    )
+                )).collect {
+                    when (it) {
+                        is ResultDomain.Success -> {
+                            reducer.sendEvent(AddSubscriptionEvent.UploadDone)
+                            reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADED))
+                        }
+                        is ResultDomain.Error -> {
+                            setErrorDialogState(true)
+                            reducer.sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.ERROR))
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private fun validateFields(): Boolean {
+        return with(state.value) {
+            if (nameField.field.isEmpty()) {
+                reducer.sendEvent(AddSubscriptionEvent.ChangeName(StringWithError("", true)))
+            }
+
+            if (amountField.field.isEmpty()) {
+                reducer.sendEvent(AddSubscriptionEvent.ChangeAmount(StringWithError("", true)))
+            }
+
+            return@with !(nameField.field.isEmpty() || amountField.field.isEmpty())
         }
     }
 
@@ -164,6 +182,9 @@ class AddSubscriptionVM(
                 }
                 is AddSubscriptionEvent.AddSubscription -> {
                     addSubscriptionFirestore()
+                }
+                is AddSubscriptionEvent.UploadDone -> {
+                    setState(oldState.copy(isUploaded = true))
                 }
             }
         }
