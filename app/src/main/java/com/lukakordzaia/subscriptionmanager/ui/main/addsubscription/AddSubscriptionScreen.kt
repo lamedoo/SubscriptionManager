@@ -374,7 +374,7 @@ private fun DateField(
     ) {
         AddSubscriptionTextField(
             modifier = modifier,
-            label = R.string.date,
+            label = R.string.payment_day,
             value = value,
             onChange = onChange,
             focusRequester = focusRequester

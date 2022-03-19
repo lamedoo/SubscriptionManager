@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 class HomeVM(
     private val getSubscriptionsUseCase: GetSubscriptionsUseCase
@@ -51,6 +52,15 @@ class HomeVM(
         }
     }
 
+    fun setScrollOffset(visibleItem: Int) {
+        reducer.sendEvent(HomeEvent.ChangeScrollOffset(
+            min(
+                1f,
+                1 - (((visibleItem * 10) / 100F) + ((visibleItem * 100) / 1000F) + ((visibleItem * 1000) / 10000F))
+            )
+        ))
+    }
+
     inner class HomeReducer(initial: HomeState): Reducer<HomeState, HomeEvent>(initial) {
         override fun reduce(oldState: HomeState, event: HomeEvent) {
             when (event) {
@@ -65,6 +75,9 @@ class HomeVM(
                 }
                 is HomeEvent.ChangeLoadingState -> {
                     setState(oldState.copy(isLoading = event.state))
+                }
+                is HomeEvent.ChangeScrollOffset -> {
+                    setState(oldState.copy(scrollOffset = event.offset))
                 }
             }
         }

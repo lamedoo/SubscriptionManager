@@ -46,9 +46,9 @@ private fun ItemWrapper(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
             .shadow(
-                elevation = 2.dp,
+                elevation = 4.dp,
                 shape = MaterialTheme.shapes.medium
             )
             .background(
