@@ -20,9 +20,9 @@ import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.main.MainActivity
 import com.lukakordzaia.subscriptionmanager.ui.theme._1F1F1F
 import com.lukakordzaia.subscriptionmanager.ui.theme.smallButtonStyle
-import com.lukakordzaia.subscriptionmanager.utils.BoldText
-import com.lukakordzaia.subscriptionmanager.utils.LightText
-import com.lukakordzaia.subscriptionmanager.utils.ProgressDialog
+import com.lukakordzaia.subscriptionmanager.customcomposables.LightText
+import com.lukakordzaia.subscriptionmanager.customcomposables.ProgressDialog
+import com.lukakordzaia.subscriptionmanager.customcomposables.BoldText
 
 @Composable
 fun LoginScreen(

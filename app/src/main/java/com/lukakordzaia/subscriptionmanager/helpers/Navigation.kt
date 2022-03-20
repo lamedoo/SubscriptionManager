@@ -6,16 +6,17 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.lukakordzaia.subscriptionmanager.R
+import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.subscriptionmanager.ui.main.home.HomeScreen
 import com.lukakordzaia.subscriptionmanager.ui.main.home.HomeVM
 import com.lukakordzaia.subscriptionmanager.ui.main.statistics.StatisticsScreen
 import com.lukakordzaia.subscriptionmanager.ui.main.subscriptiondetails.SubscriptionDetailsScreen
+import com.lukakordzaia.subscriptionmanager.ui.main.subscriptiondetails.SubscriptionDetailsVM
+import com.lukakordzaia.subscriptionmanager.utils.fromJson
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import org.koin.androidx.compose.getViewModel
@@ -34,12 +35,17 @@ class Navigation {
     }
 
     companion object {
+        // Destinations
         const val HOME = "home"
         const val STATISTICS = "statistics"
         const val SUBSCRIPTION_DETAILS = "subscription_details"
 
+        // Routes
         const val BOTTOM_NAV_ROUTE = "bottom_route"
         const val DETAILS_ROUTE = "details_route"
+
+        // Args
+        const val SUBSCRIPTION_ARG = "subscription"
 
         val bottomNav = listOf(
             BottomNav.Home,
@@ -64,8 +70,19 @@ fun BottomNavGraph(navController: NavHostController) {
 
 fun NavGraphBuilder.subscriptionDetailsNavGraph(navController: NavHostController) {
     navigation(startDestination = Navigation.SUBSCRIPTION_DETAILS, route = Navigation.DETAILS_ROUTE) {
-        composable(route = Navigation.SUBSCRIPTION_DETAILS + "/{subscriptionId}") {
-            SubscriptionDetailsScreen(subscriptionId = it.arguments?.getString("subscriptionId"))
+        composable(
+            route = Navigation.SUBSCRIPTION_DETAILS + "/{${Navigation.SUBSCRIPTION_ARG}}",
+            arguments = listOf(navArgument(Navigation.SUBSCRIPTION_ARG) { type = NavType.StringType })
+        ) {
+            it.arguments?.getString(Navigation.SUBSCRIPTION_ARG)?.let { jsonString ->
+                val subscription = jsonString.fromJson(SubscriptionItemDomain::class.java)
+                val viewModel = getViewModel<SubscriptionDetailsVM>()
+                SubscriptionDetailsScreen(
+                    subscription = subscription,
+                    navController = navController,
+                    vm = viewModel
+                )
+            }
         }
     }
 }

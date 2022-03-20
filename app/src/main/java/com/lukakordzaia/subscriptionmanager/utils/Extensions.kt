@@ -23,86 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.google.gson.Gson
 import com.lukakordzaia.subscriptionmanager.R
 import com.lukakordzaia.subscriptionmanager.ui.theme.mainBold
 import com.lukakordzaia.subscriptionmanager.ui.theme.mainLight
 
-@Composable
-fun LightText(
-    modifier: Modifier = Modifier,
-    text: String,
-    fontSize: TextUnit = 12.sp,
-    fontWeight: FontWeight = FontWeight.Light,
-    color: Color = MaterialTheme.colors.onPrimary
-) {
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        fontSize = fontSize,
-        fontFamily = mainLight,
-        fontWeight = fontWeight
-    )
+fun <A> String.fromJson(type: Class<A>): A {
+    return Gson().fromJson(this, type)
 }
 
-@Composable
-fun BoldText(
-    modifier: Modifier = Modifier,
-    text: String,
-    fontSize: TextUnit = 12.sp,
-    color: Color = MaterialTheme.colors.onPrimary
-) {
-    Text(
-        modifier = modifier,
-        text = text,
-        color = color,
-        fontSize = fontSize,
-        fontFamily = mainBold,
-    )
-}
-
-@Composable
-fun ProgressDialog(
-    showDialog: Boolean,
-) {
-    if (showDialog) {
-        Dialog(
-            onDismissRequest = {},
-            DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-        ) {
-            Box(
-                contentAlignment= Alignment.Center,
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.White, shape = RoundedCornerShape(8.dp))
-            ) {
-                CircularProgressIndicator(
-                    strokeWidth = 5.dp,
-                    color = MaterialTheme.colors.secondary
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun CommonDialog(
-    showDialog: Boolean,
-    onDismiss: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        Dialog(
-            onDismissRequest = { onDismiss(true) }
-        ) {
-            Column(
-                modifier = Modifier
-                    .size(80.dp)
-            ) {
-                Text(text = stringResource(id = R.string.common_error))
-                Button(onClick = { onDismiss(true) }) {
-                    Text(text = stringResource(id = R.string.ok))
-                }
-            }
-        }
-    }
+fun <A> A.toJson(): String? {
+    return Gson().toJson(this)
 }

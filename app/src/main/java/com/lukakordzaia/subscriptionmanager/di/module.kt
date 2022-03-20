@@ -14,6 +14,7 @@ import com.lukakordzaia.subscriptionmanager.ui.main.home.HomeVM
 import com.lukakordzaia.subscriptionmanager.helpers.Navigation
 import com.lukakordzaia.subscriptionmanager.ui.login.LoginVM
 import com.lukakordzaia.subscriptionmanager.ui.main.addsubscription.AddSubscriptionVM
+import com.lukakordzaia.subscriptionmanager.ui.main.subscriptiondetails.SubscriptionDetailsVM
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -21,6 +22,7 @@ val viewModelModule = module {
     viewModel { HomeVM(get()) }
     viewModel { AddSubscriptionVM(get()) }
     viewModel { LoginVM(get(), get()) }
+    viewModel { SubscriptionDetailsVM() }
 }
 
 val repositoryModule = module {

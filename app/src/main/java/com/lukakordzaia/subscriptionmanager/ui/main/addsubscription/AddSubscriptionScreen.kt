@@ -32,11 +32,11 @@ import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.theme.*
-import com.lukakordzaia.subscriptionmanager.utils.CommonDialog
+import com.lukakordzaia.subscriptionmanager.customcomposables.CommonDialog
 import com.lukakordzaia.subscriptionmanager.utils.Constants
 import com.lukakordzaia.subscriptionmanager.utils.Constants.PeriodType.Companion.transformFromPeriodType
 import com.lukakordzaia.subscriptionmanager.utils.Currencies
-import com.lukakordzaia.subscriptionmanager.utils.ProgressDialog
+import com.lukakordzaia.subscriptionmanager.customcomposables.ProgressDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*

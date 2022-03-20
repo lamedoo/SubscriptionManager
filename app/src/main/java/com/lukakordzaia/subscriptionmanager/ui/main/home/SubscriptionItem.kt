@@ -9,43 +9,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.lukakordzaia.subscriptionmanager.customcomposables.BoldText
+import com.lukakordzaia.subscriptionmanager.customcomposables.LightText
 import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.subscriptionmanager.ui.theme._FFFFFF
-import com.lukakordzaia.subscriptionmanager.utils.BoldText
-import com.lukakordzaia.subscriptionmanager.utils.Constants
+import com.lukakordzaia.subscriptionmanager.utils.*
 import com.lukakordzaia.subscriptionmanager.utils.Constants.PeriodType.Companion.transformFromPeriodType
-import com.lukakordzaia.subscriptionmanager.utils.Currencies
-import com.lukakordzaia.subscriptionmanager.utils.LightText
 
 @Composable
 fun SubscriptionItem(item: SubscriptionItemDomain, click: (String) -> Unit) {
+    val subscription = item.toJson()
+
     ItemWrapper(
-        itemId = item.id,
+        item = item,
         itemColor = item.color,
         itemName = item.name,
         itemPlan = item.plan!!,
         itemCurrency = item.currency,
         itemAmount = item.amount,
         itemPeriod = item.periodType,
-        click = click
+        click = { subscription?.let { click(subscription) } }
     )
 }
 
 @Composable
 private fun ItemWrapper(
-    itemId: String,
+    item: SubscriptionItemDomain,
     itemColor: Color?,
     itemName: String,
     itemPlan: String,
     itemCurrency: String,
     itemAmount: Double,
     itemPeriod: Constants.PeriodType,
-    click: (String) -> Unit
+    click: () -> Unit?
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -62,7 +62,7 @@ private fun ItemWrapper(
             )
             .padding(10.dp)
             .clickable {
-                click(itemId)
+                click.invoke()
             }
     ) {
         val (name, description, amount, period) = createRefs()
@@ -163,17 +163,17 @@ private fun ItemPeriod(
     )
 }
 
-@Preview
-@Composable
-fun SubscriptionItemPreview() {
-    ItemWrapper(
-        itemId = "123",
-        itemColor = Color(0xFFFFFFFF),
-        itemName = "Spotify",
-        itemPlan = "Family Plan",
-        itemCurrency = "USD",
-        itemAmount = 14.99,
-        itemPeriod = Constants.PeriodType.MONTH,
-        click = { "123" }
-    )
-}
+//@Preview
+//@Composable
+//fun SubscriptionItemPreview() {
+//    ItemWrapper(
+//        itemId = "123",
+//        itemColor = Color(0xFFFFFFFF),
+//        itemName = "Spotify",
+//        itemPlan = "Family Plan",
+//        itemCurrency = "USD",
+//        itemAmount = 14.99,
+//        itemPeriod = Constants.PeriodType.MONTH,
+//        click = { "123" }
+//    )
+//}
