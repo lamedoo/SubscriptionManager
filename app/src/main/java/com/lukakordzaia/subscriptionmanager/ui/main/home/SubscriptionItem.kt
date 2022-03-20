@@ -1,6 +1,7 @@
 package com.lukakordzaia.subscriptionmanager.ui.main.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,25 +23,29 @@ import com.lukakordzaia.subscriptionmanager.utils.Currencies
 import com.lukakordzaia.subscriptionmanager.utils.LightText
 
 @Composable
-fun SubscriptionItem(item: SubscriptionItemDomain) {
+fun SubscriptionItem(item: SubscriptionItemDomain, click: (String) -> Unit) {
     ItemWrapper(
+        itemId = item.id,
         itemColor = item.color,
         itemName = item.name,
         itemPlan = item.plan!!,
         itemCurrency = item.currency,
         itemAmount = item.amount,
-        itemPeriod = item.periodType
+        itemPeriod = item.periodType,
+        click = click
     )
 }
 
 @Composable
 private fun ItemWrapper(
+    itemId: String,
     itemColor: Color?,
     itemName: String,
     itemPlan: String,
     itemCurrency: String,
     itemAmount: Double,
-    itemPeriod: Constants.PeriodType
+    itemPeriod: Constants.PeriodType,
+    click: (String) -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -56,6 +61,9 @@ private fun ItemWrapper(
                 shape = MaterialTheme.shapes.medium
             )
             .padding(10.dp)
+            .clickable {
+                click(itemId)
+            }
     ) {
         val (name, description, amount, period) = createRefs()
         
@@ -159,11 +167,13 @@ private fun ItemPeriod(
 @Composable
 fun SubscriptionItemPreview() {
     ItemWrapper(
+        itemId = "123",
         itemColor = Color(0xFFFFFFFF),
         itemName = "Spotify",
         itemPlan = "Family Plan",
         itemCurrency = "USD",
         itemAmount = 14.99,
-        itemPeriod = Constants.PeriodType.MONTH
+        itemPeriod = Constants.PeriodType.MONTH,
+        click = { "123" }
     )
 }

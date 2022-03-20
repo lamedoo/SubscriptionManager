@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,16 +20,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.lukakordzaia.subscriptionmanager.R
 import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItemDomain
+import com.lukakordzaia.subscriptionmanager.helpers.Navigation
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.theme.*
 import com.lukakordzaia.subscriptionmanager.utils.BoldText
+import com.lukakordzaia.subscriptionmanager.utils.Currencies
 import com.lukakordzaia.subscriptionmanager.utils.LightText
 import com.lukakordzaia.subscriptionmanager.utils.ProgressDialog
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun HomeScreen(
+    navController: NavHostController,
     vm: HomeVM
 ) {
     val state = vm.state.collectAsState()
@@ -52,7 +61,8 @@ fun HomeScreen(
                 },
             subscriptionItems = state.value.subscriptionItems,
             scrollOffset = state.value.scrollOffset,
-            changeScrollOffset = { index -> vm.setScrollOffset(index) }
+            changeScrollOffset = { index -> vm.setScrollOffset(index) },
+            click = { subscriptionId -> navController.navigate("${Navigation.SUBSCRIPTION_DETAILS}/$subscriptionId") }
         )
 
         EmptyList(
@@ -75,7 +85,8 @@ fun CollapsingHomeScreen(
     modifier: Modifier,
     subscriptionItems: List<SubscriptionItemDomain>,
     scrollOffset: Float,
-    changeScrollOffset: (Int) -> Unit
+    changeScrollOffset: (Int) -> Unit,
+    click: (String) -> Unit
 ){
     val items = (1..100).map { "Item $it" }
 
@@ -111,7 +122,7 @@ fun CollapsingHomeScreen(
                 }
             }
             items(subscriptionItems) { subscription ->
-                SubscriptionItem(item = subscription)
+                SubscriptionItem(item = subscription, click)
             }
 //            items(items) {
 //                Text(
@@ -127,17 +138,45 @@ fun CollapsingHomeScreen(
 
 @Composable
 private fun TopBar(
-    monthlyAmount: Double = 1000.00,
+    monthlyAmount: Double = 248.22,
+    currency: String = Currencies.Currency.USD.symbol,
     scrollOffset: Float
 ) {
     val barSize by animateDpAsState(targetValue = max(100.dp, 150.dp + (scrollOffset.dp * 50F) ))
 
-    Column(
+    ConstraintLayout(
         modifier = Modifier
-            .size(max(100.dp, barSize))
+            .fillMaxWidth()
+            .height(max(100.dp, barSize))
             .background(MaterialTheme.colors.background)
     ) {
-        Text(text = "$monthlyAmount")
+        val (month, amount, account, search) = createRefs()
+
+        val monthFormat = SimpleDateFormat("MMMM")
+
+        LightText(
+            modifier = Modifier
+                .constrainAs(month) {
+                    bottom.linkTo(amount.top)
+                    start.linkTo(amount.start)
+                    end.linkTo(amount.end)
+                },
+            text = monthFormat.format(Calendar.getInstance().time),
+            color = _A6AEC0,
+            fontSize = 14.sp
+        )
+        BoldText(
+            modifier = Modifier
+                .constrainAs(amount) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            text = " $currency$monthlyAmount",
+            color = MaterialTheme.colors.secondary,
+            fontSize = 55.sp,
+        )
     }
 }
 

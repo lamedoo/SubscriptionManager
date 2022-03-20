@@ -3,17 +3,22 @@ package com.lukakordzaia.subscriptionmanager.ui.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lukakordzaia.subscriptionmanager.base.BaseComponentActivity
+import com.lukakordzaia.subscriptionmanager.helpers.BottomNavGraph
+import com.lukakordzaia.subscriptionmanager.helpers.Navigation
 import com.lukakordzaia.subscriptionmanager.ui.theme.SubscriptionManagerTheme
 import com.lukakordzaia.subscriptionmanager.ui.main.addsubscription.AddSubscriptionScreen
 import kotlinx.coroutines.CoroutineScope
@@ -60,15 +65,25 @@ fun AddSubscriptionScaffold() {
 @ExperimentalMaterialApi
 @Composable
 fun MainScaffold(state: ModalBottomSheetState, scope: CoroutineScope) {
+    val bottomBarState = remember { (mutableStateOf(true)) }
+
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    when (navBackStackEntry?.destination?.route) {
+        Navigation.HOME, Navigation.STATISTICS -> bottomBarState.value = true
+        else -> bottomBarState.value = false
+    }
 
     Scaffold(
-        bottomBar = { BottomNavigationComponent(navController = navController) } ,
-        floatingActionButton = { AddButton(click = {
-            scope.launch {
-                state.animateTo(ModalBottomSheetValue.Expanded)
-            }
-        }) },
+        bottomBar = { BottomNavigationComponent(navController = navController, bottomBarState) } ,
+        floatingActionButton = { AddButton(
+            bottomBarState = bottomBarState,
+            click = {
+                scope.launch {
+                    state.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            }) },
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center
     ) {
@@ -79,12 +94,19 @@ fun MainScaffold(state: ModalBottomSheetState, scope: CoroutineScope) {
 @ExperimentalMaterialApi
 @Composable
 fun AddButton(
+    bottomBarState: MutableState<Boolean>,
     click: () -> Unit
 ) {
-    FloatingActionButton(
-        content = { AddButtonView() },
-        onClick = click
-    )
+    AnimatedVisibility(
+        visible = bottomBarState.value,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
+    ) {
+        FloatingActionButton(
+            content = { AddButtonView() },
+            onClick = click
+        )
+    }
 }
 
 @Composable
