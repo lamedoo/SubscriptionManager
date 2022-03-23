@@ -89,50 +89,42 @@ fun CollapsingHomeScreen(
     changeScrollOffset: (Int) -> Unit,
     click: (String) -> Unit
 ){
-    val items = (1..100).map { "Item $it" }
+    if (subscriptionItems.isNotEmpty()) {
+        val scrollState = rememberLazyListState()
+        changeScrollOffset(scrollState.firstVisibleItemIndex)
 
-    val scrollState = rememberLazyListState()
-    changeScrollOffset(scrollState.firstVisibleItemIndex)
-
-    Column(
-        modifier = modifier
-    ) {
-        TopBar(scrollOffset = scrollOffset)
-        Spacer(modifier = Modifier.height(2.dp))
-        LazyColumn(
-            state = scrollState,
-            modifier = Modifier
-                .background(color = _FFFFFF, shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                .fillMaxHeight()
+        Column(
+            modifier = modifier
         ) {
-            stickyHeader {
-                Box(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .background(color = _FFFFFF, shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                        .padding(bottom = 20.dp)
-                        .fillMaxWidth()
-                ) {
-                    Spacer(
+            TopBar(scrollOffset = scrollOffset)
+            Spacer(modifier = Modifier.height(2.dp))
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .background(color = _FFFFFF, shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+                    .fillMaxHeight()
+            ) {
+                stickyHeader {
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .width(100.dp)
-                            .height(3.dp)
-                            .background(_C4C9D7)
-                    )
+                            .height(50.dp)
+                            .background(color = _FFFFFF, shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+                            .padding(bottom = 20.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .width(100.dp)
+                                .height(3.dp)
+                                .background(_C4C9D7)
+                        )
+                    }
+                }
+                items(subscriptionItems) { subscription ->
+                    SubscriptionItem(item = subscription, click)
                 }
             }
-            items(subscriptionItems) { subscription ->
-                SubscriptionItem(item = subscription, click)
-            }
-//            items(items) {
-//                Text(
-//                    text = it,
-//                    Modifier
-//                        .fillMaxWidth()
-//                        .padding(8.dp)
-//                )
-//            }
         }
     }
 }

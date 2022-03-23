@@ -5,47 +5,51 @@ import com.lukakordzaia.subscriptionmanager.base.BaseViewModel
 import com.lukakordzaia.subscriptionmanager.domain.usecases.GetSubscriptionsUseCase
 import com.lukakordzaia.subscriptionmanager.events.HomeEvent
 import com.lukakordzaia.subscriptionmanager.events.HomeState
-import com.lukakordzaia.subscriptionmanager.helpers.Reducer
+import com.lukakordzaia.subscriptionmanager.helpers.Navigation
+import com.lukakordzaia.subscriptionmanager.helpers.SingleEvent
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.network.ResultDomain
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class HomeVM(
     private val getSubscriptionsUseCase: GetSubscriptionsUseCase
-): BaseViewModel<HomeState, HomeEvent>() {
-    private val reducer = HomeReducer(HomeState.initial())
+): BaseViewModel<HomeState, HomeEvent, SingleEvent>() {
 
-    override val state: StateFlow<HomeState>
-        get() = reducer.state
+    override fun createInitialState(): HomeState {
+        return HomeState.initial()
+    }
 
     init {
         getUserSubscriptions()
     }
 
     private fun getUserSubscriptions() {
-        reducer.sendEvent(HomeEvent.GetUserSubscriptions)
+        sendEvent(HomeEvent.GetUserSubscriptions)
+    }
+
+    fun navigateToDetails() {
+        sendEvent(HomeEvent.NavigateToDetails)
     }
 
     private fun userSubscriptionsFirestore() {
-        reducer.sendEvent(HomeEvent.ChangeLoadingState(LoadingState.LOADING))
+        sendEvent(HomeEvent.ChangeLoadingState(LoadingState.LOADING))
 
         viewModelScope.launch(Dispatchers.IO) {
             getSubscriptionsUseCase.invoke(auth.currentUser?.uid).collect {
                 when (it) {
                     is ResultDomain.Success -> {
                         if (it.data.isNullOrEmpty()) {
-                            reducer.sendEvent(HomeEvent.SubscriptionsIsEmpty)
+                            sendEvent(HomeEvent.SubscriptionsIsEmpty)
                         } else {
-                            reducer.sendEvent(HomeEvent.SetSubscriptions(it.data))
+                            sendEvent(HomeEvent.SetSubscriptions(it.data))
                         }
-                        reducer.sendEvent(HomeEvent.ChangeLoadingState(LoadingState.LOADED))
+                        sendEvent(HomeEvent.ChangeLoadingState(LoadingState.LOADED))
                     }
                     is ResultDomain.Error -> {
-                        reducer.sendEvent(HomeEvent.ChangeLoadingState(LoadingState.ERROR))
+                        sendEvent(HomeEvent.ChangeLoadingState(LoadingState.ERROR))
                     }
                 }
             }
@@ -53,7 +57,7 @@ class HomeVM(
     }
 
     fun setScrollOffset(visibleItem: Int) {
-        reducer.sendEvent(HomeEvent.ChangeScrollOffset(
+        sendEvent(HomeEvent.ChangeScrollOffset(
             min(
                 1f,
                 1 - (((visibleItem * 10) / 100F) + ((visibleItem * 100) / 1000F) + ((visibleItem * 1000) / 10000F))
@@ -61,24 +65,25 @@ class HomeVM(
         ))
     }
 
-    inner class HomeReducer(initial: HomeState): Reducer<HomeState, HomeEvent>(initial) {
-        override fun reduce(oldState: HomeState, event: HomeEvent) {
-            when (event) {
-                is HomeEvent.GetUserSubscriptions -> {
-                    userSubscriptionsFirestore()
-                }
-                is HomeEvent.SubscriptionsIsEmpty -> {
-                    setState(oldState.copy(noSubscriptions = true))
-                }
-                is HomeEvent.SetSubscriptions -> {
-                    setState(oldState.copy(subscriptionItems = event.items, noSubscriptions = false))
-                }
-                is HomeEvent.ChangeLoadingState -> {
-                    setState(oldState.copy(isLoading = event.state))
-                }
-                is HomeEvent.ChangeScrollOffset -> {
-                    setState(oldState.copy(scrollOffset = event.offset))
-                }
+    override fun handleEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.GetUserSubscriptions -> {
+                userSubscriptionsFirestore()
+            }
+            is HomeEvent.SubscriptionsIsEmpty -> {
+                setState { copy(noSubscriptions = true) }
+            }
+            is HomeEvent.SetSubscriptions -> {
+                setState { copy(subscriptionItems = event.items, noSubscriptions = false) }
+            }
+            is HomeEvent.ChangeLoadingState -> {
+                setState { copy(isLoading = event.state) }
+            }
+            is HomeEvent.ChangeScrollOffset -> {
+                setState { copy(scrollOffset = event.offset) }
+            }
+            is HomeEvent.NavigateToDetails -> {
+                setSingleEvent { SingleEvent.Navigation(Navigation.SUBSCRIPTION_DETAILS) }
             }
         }
     }

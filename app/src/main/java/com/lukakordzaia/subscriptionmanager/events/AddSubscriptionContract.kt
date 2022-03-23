@@ -1,12 +1,10 @@
 package com.lukakordzaia.subscriptionmanager.events
 
 import androidx.compose.ui.graphics.Color
-import com.godaddy.android.colorpicker.HsvColor
 import com.lukakordzaia.subscriptionmanager.helpers.StringWithError
 import com.lukakordzaia.subscriptionmanager.helpers.UiEvent
 import com.lukakordzaia.subscriptionmanager.helpers.UiState
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
-import com.lukakordzaia.subscriptionmanager.utils.Constants
 
 sealed class AddSubscriptionEvent: UiEvent {
     object EmptyFields: AddSubscriptionEvent()
@@ -28,7 +26,7 @@ sealed class AddSubscriptionEvent: UiEvent {
 }
 
 data class AddSubscriptionState(
-    val isLoading: LoadingState?,
+    val isLoading: LoadingState,
     val linkField: String,
     val nameField: StringWithError,
     val planField: String,
@@ -46,7 +44,7 @@ data class AddSubscriptionState(
 ): UiState {
     companion object {
         fun initial() = AddSubscriptionState(
-            isLoading = null,
+            isLoading = LoadingState.LOADED,
             linkField = "",
             nameField = StringWithError("", false),
             planField = "",

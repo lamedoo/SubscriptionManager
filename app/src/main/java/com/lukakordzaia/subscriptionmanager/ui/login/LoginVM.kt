@@ -7,7 +7,7 @@ import com.lukakordzaia.subscriptionmanager.domain.usecases.AddUserFirestoreUseC
 import com.lukakordzaia.subscriptionmanager.domain.usecases.UserLoginUseCase
 import com.lukakordzaia.subscriptionmanager.events.LoginEvent
 import com.lukakordzaia.subscriptionmanager.events.LoginState
-import com.lukakordzaia.subscriptionmanager.helpers.Reducer
+import com.lukakordzaia.subscriptionmanager.helpers.SingleEvent
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.network.ResultDomain
 import com.lukakordzaia.subscriptionmanager.network.networkmodels.UserLoginRequestNetwork
@@ -20,27 +20,27 @@ import kotlinx.coroutines.launch
 class LoginVM(
     private val userLoginUseCase: UserLoginUseCase,
     private val addUserFirestoreUseCase: AddUserFirestoreUseCase
-) : BaseViewModel<LoginState, LoginEvent>() {
-    private val reducer = LoginReducer(LoginState.initial())
+) : BaseViewModel<LoginState, LoginEvent, SingleEvent>() {
 
-    override val state: StateFlow<LoginState>
-        get() = reducer.state
+    override fun createInitialState(): LoginState {
+        return LoginState.initial()
+    }
 
     init {
         checkUserLogin()
     }
 
     fun userLogin(idToken: String) {
-        reducer.sendEvent(LoginEvent.UserLoginToFirebase(idToken))
+        sendEvent(LoginEvent.UserLoginToFirebase(idToken))
     }
 
     fun addUser() {
-        reducer.sendEvent(LoginEvent.AddUserToFirestore)
+        sendEvent(LoginEvent.AddUserToFirestore)
     }
 
     @OptIn(InternalCoroutinesApi::class)
     private fun userLoginFirebase(idToken: String) {
-        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
+        sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
 
         val credential = GoogleAuthProvider.getCredential(idToken, null)
 
@@ -53,10 +53,10 @@ class LoginVM(
             ).collect {
                 when (it) {
                     is ResultDomain.Success -> {
-                        reducer.sendEvent(LoginEvent.ChangeLoginState(it.data))
+                        sendEvent(LoginEvent.ChangeLoginState(it.data))
                     }
                     is ResultDomain.Error -> {
-                        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.ERROR))
+                        sendEvent(LoginEvent.ChangeLoadingState(LoadingState.ERROR))
                     }
                 }
             }
@@ -68,11 +68,11 @@ class LoginVM(
             addUserFirestoreUseCase.invoke(auth.currentUser).collect {
                 when (it) {
                     is ResultDomain.Success -> {
-                        reducer.sendEvent(LoginEvent.ChangeUserAddedState(it.data))
-                        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADED))
+                        sendEvent(LoginEvent.ChangeUserAddedState(it.data))
+                        sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADED))
                     }
                     is ResultDomain.Error -> {
-                        reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.ERROR))
+                        sendEvent(LoginEvent.ChangeLoadingState(LoadingState.ERROR))
                     }
                 }
             }
@@ -81,29 +81,27 @@ class LoginVM(
 
     private fun checkUserLogin() {
         if (auth.currentUser != null) {
-            reducer.sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
-            reducer.sendEvent(LoginEvent.ChangeLoginState(true))
+            sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
+            sendEvent(LoginEvent.ChangeLoginState(true))
         }
     }
 
-    inner class LoginReducer(initial: LoginState): Reducer<LoginState, LoginEvent>(initial) {
-        override fun reduce(oldState: LoginState, event: LoginEvent) {
-            when (event) {
-                is LoginEvent.ChangeLoadingState -> {
-                    setState(oldState.copy(isLoading = event.state))
-                }
-                is LoginEvent.ChangeLoginState -> {
-                    setState(oldState.copy(isLoggedIn = event.isLoggedIn))
-                }
-                is LoginEvent.ChangeUserAddedState -> {
-                    setState(oldState.copy(isUserAdded = event.isAdded))
-                }
-                is LoginEvent.UserLoginToFirebase -> {
-                    userLoginFirebase(event.idToken)
-                }
-                is LoginEvent.AddUserToFirestore -> {
-                    addUseFirestore()
-                }
+    override fun handleEvent(event: LoginEvent) {
+        when (event) {
+            is LoginEvent.ChangeLoadingState -> {
+                setState { copy(isLoading = event.state) }
+            }
+            is LoginEvent.ChangeLoginState -> {
+                setState { copy(isLoggedIn = event.isLoggedIn) }
+            }
+            is LoginEvent.ChangeUserAddedState -> {
+                setState { copy(isUserAdded = event.isAdded) }
+            }
+            is LoginEvent.UserLoginToFirebase -> {
+                userLoginFirebase(event.idToken)
+            }
+            is LoginEvent.AddUserToFirestore -> {
+                addUseFirestore()
             }
         }
     }
