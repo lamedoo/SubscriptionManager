@@ -11,12 +11,12 @@ sealed class SubscriptionDetailsEvent: UiEvent {
 }
 
 data class SubscriptionDetailsState(
-    val isLoading: LoadingState?,
+    val isLoading: LoadingState,
     val details: SubscriptionItemDomain?
 ) : UiState {
     companion object {
         fun initial() = SubscriptionDetailsState(
-            isLoading = null,
+            isLoading = LoadingState.LOADED,
             details = null
         )
     }

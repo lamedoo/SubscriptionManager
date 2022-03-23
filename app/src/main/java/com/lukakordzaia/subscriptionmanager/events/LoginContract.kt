@@ -13,13 +13,13 @@ sealed class LoginEvent: UiEvent {
 }
 
 data class LoginState(
-    val isLoading: LoadingState?,
+    val isLoading: LoadingState,
     val isLoggedIn: Boolean,
     val isUserAdded: Boolean
 ): UiState {
     companion object {
         fun initial() = LoginState(
-            isLoading = null,
+            isLoading = LoadingState.LOADED,
             isLoggedIn = false,
             isUserAdded = false
         )
