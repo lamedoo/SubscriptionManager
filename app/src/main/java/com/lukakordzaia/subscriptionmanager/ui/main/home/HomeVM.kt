@@ -30,8 +30,8 @@ class HomeVM(
         sendEvent(HomeEvent.GetUserSubscriptions)
     }
 
-    fun navigateToDetails() {
-        sendEvent(HomeEvent.NavigateToDetails)
+    fun navigateToDetails(subscription: String) {
+        sendEvent(HomeEvent.NavigateToDetails(subscription))
     }
 
     private fun userSubscriptionsFirestore() {
@@ -83,7 +83,7 @@ class HomeVM(
                 setState { copy(scrollOffset = event.offset) }
             }
             is HomeEvent.NavigateToDetails -> {
-                setSingleEvent { SingleEvent.Navigation(Navigation.SUBSCRIPTION_DETAILS) }
+                setSingleEvent { SingleEvent.Navigation("${Navigation.SUBSCRIPTION_DETAILS}/${event.subscription}") }
             }
         }
     }

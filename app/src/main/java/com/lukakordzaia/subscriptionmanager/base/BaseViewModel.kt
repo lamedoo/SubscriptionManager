@@ -1,5 +1,6 @@
 package com.lukakordzaia.subscriptionmanager.base
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

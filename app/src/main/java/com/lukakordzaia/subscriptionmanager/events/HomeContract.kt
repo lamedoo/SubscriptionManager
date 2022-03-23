@@ -11,7 +11,7 @@ sealed class HomeEvent: UiEvent {
     data class SetSubscriptions(val items: List<SubscriptionItemDomain>): HomeEvent()
     data class ChangeLoadingState(val state: LoadingState): HomeEvent()
     data class ChangeScrollOffset(val offset: Float): HomeEvent()
-    object NavigateToDetails: HomeEvent()
+    data class NavigateToDetails(val subscription: String): HomeEvent()
 }
 
 data class HomeState(

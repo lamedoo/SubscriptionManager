@@ -29,4 +29,7 @@
     <string name="unknown">Unknown</string>
     <string name="common_error">Something went wrong. Please try again later</string>
     <string name="ok">OK</string>
+    <string name="payment_amount">Payment amount</string>
+    <string name="first_payment_day">First payment day</string>
+    <string name="next_payment_day">Next payment day</string>
 </resources>

@@ -9,9 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,7 +22,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.lukakordzaia.subscriptionmanager.R
 import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItemDomain
-import com.lukakordzaia.subscriptionmanager.helpers.Navigation
 import com.lukakordzaia.subscriptionmanager.network.LoadingState
 import com.lukakordzaia.subscriptionmanager.ui.theme._A6AEC0
 import com.lukakordzaia.subscriptionmanager.ui.theme._C4C9D7
@@ -33,6 +30,11 @@ import com.lukakordzaia.subscriptionmanager.customcomposables.BoldText
 import com.lukakordzaia.subscriptionmanager.utils.Currencies
 import com.lukakordzaia.subscriptionmanager.customcomposables.LightText
 import com.lukakordzaia.subscriptionmanager.customcomposables.ProgressDialog
+import com.lukakordzaia.subscriptionmanager.helpers.SingleEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,8 +45,10 @@ fun HomeScreen(
 ) {
     val state = vm.state.collectAsState()
 
-    StateObserver(
-        isLoading = state.value.isLoading
+    InitObserver(
+        isLoading = state.value.isLoading,
+        navController = navController,
+        singleEvent = vm.singleEvent
     )
 
     ConstraintLayout(
@@ -63,7 +67,7 @@ fun HomeScreen(
             subscriptionItems = state.value.subscriptionItems,
             scrollOffset = state.value.scrollOffset,
             changeScrollOffset = { index -> vm.setScrollOffset(index) },
-            click = { subscription -> navController.navigate("${Navigation.SUBSCRIPTION_DETAILS}/$subscription") }
+            click = { subscription -> vm.navigateToDetails(subscription) }
         )
 
         EmptyList(
@@ -203,21 +207,25 @@ private fun EmptyList(
 }
 
 @Composable
-private fun StateObserver(
-    isLoading: LoadingState?,
+private fun InitObserver(
+    isLoading: LoadingState,
+    navController: NavHostController,
+    singleEvent: Flow<SingleEvent>
 ) {
+
     when (isLoading) {
         LoadingState.LOADING -> ProgressDialog(showDialog = true)
         LoadingState.LOADED -> ProgressDialog(showDialog = false)
         LoadingState.ERROR -> {}
-        else -> {}
     }
-}
 
-@Preview(
-    showSystemUi = true
-)
-@Composable
-fun HomeScreenPreview() {
-
+    LaunchedEffect(key1 = null) {
+        singleEvent.collectLatest {
+            when (it) {
+                is SingleEvent.Navigation -> {
+                    navController.navigate(it.destination)
+                }
+            }
+        }
+    }
 }
