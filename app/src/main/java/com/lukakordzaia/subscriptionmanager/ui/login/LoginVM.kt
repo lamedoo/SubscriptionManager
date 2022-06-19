@@ -38,7 +38,6 @@ class LoginVM(
         sendEvent(LoginEvent.AddUserToFirestore)
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     private fun userLoginFirebase(idToken: String) {
         sendEvent(LoginEvent.ChangeLoadingState(LoadingState.LOADING))
 
