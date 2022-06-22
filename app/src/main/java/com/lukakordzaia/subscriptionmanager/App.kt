@@ -1,10 +1,9 @@
 package com.lukakordzaia.subscriptionmanager
 
 import android.app.Application
-import com.lukakordzaia.subscriptionmanager.BuildConfig
+import com.lukakordzaia.core_domain.di.useCaseModule
+import com.lukakordzaia.core_network.di.repositoryModule
 import com.lukakordzaia.subscriptionmanager.di.generalModule
-import com.lukakordzaia.subscriptionmanager.di.repositoryModule
-import com.lukakordzaia.subscriptionmanager.di.useCaseModule
 import com.lukakordzaia.subscriptionmanager.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

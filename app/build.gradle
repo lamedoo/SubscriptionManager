@@ -46,49 +46,23 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+//    dynamicFeatures = [':feature_login', ':feature_home', ':feature_add_subscription', ':feature_statistics']
 }
 
 dependencies {
-
-    implementation "androidx.core:core-ktx:$androidx_core_version"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
-    implementation "androidx.activity:activity-compose:$activity_compose"
-    implementation "androidx.constraintlayout:constraintlayout-compose:$compose_constraint"
-    implementation "androidx.navigation:navigation-compose:$navigation_compose"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_systemui"
-
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
-
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation project(":core")
+    implementation project(":core_compose")
+    implementation project(":core_network")
+    implementation project(":core_domain")
+    implementation project(":feature_login")
+    implementation project(":feature_home")
+    implementation project(":feature_statistics")
+    implementation project(":feature_add_subscription")
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     kapt "androidx.room:room-compiler:$room_version"
-
-    implementation "io.insert-koin:koin-android:$koin"
-    implementation "io.insert-koin:koin-androidx-navigation:$koin"
-    implementation "io.insert-koin:koin-androidx-compose:$koin"
-
-    api "com.github.bumptech.glide:glide:$glide_version"
-
-    implementation "com.godaddy.android.colorpicker:compose-color-picker:$compose_color_picker"
-    implementation "com.godaddy.android.colorpicker:compose-color-picker-android:$compose_color_picker"
-
-    implementation platform('com.google.firebase:firebase-bom:29.1.0')
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx'
-
-    implementation 'com.google.code.gson:gson:2.9.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

@@ -1,9 +1,9 @@
 package com.lukakordzaia.subscriptionmanager.events
 
-import com.lukakordzaia.subscriptionmanager.domain.domainmodels.SubscriptionItemDomain
-import com.lukakordzaia.subscriptionmanager.helpers.UiEvent
-import com.lukakordzaia.subscriptionmanager.helpers.UiState
-import com.lukakordzaia.subscriptionmanager.network.LoadingState
+import com.lukakordzaia.core.helpers.UiEvent
+import com.lukakordzaia.core.helpers.UiState
+import com.lukakordzaia.core.utils.LoadingState
+import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 
 sealed class SubscriptionDetailsEvent: UiEvent {
     data class ChangeLoadingState(val state: LoadingState): SubscriptionDetailsEvent()
