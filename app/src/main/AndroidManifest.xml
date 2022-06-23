@@ -13,11 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SubscriptionManager">
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.navigation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.SubscriptionManager" />
         <activity
-                android:name=".ui.login.LoginActivity"
+                android:name=".ui.navigation.LoginActivity"
                 android:exported="true"
                 android:noHistory="true"
                 android:theme="@style/Theme.SubscriptionManager">

@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Subscription Manager</string>
+    <string name="home">Home</string>
+    <string name="statistics">Statistics</string>
+    <string name="new_sub_title">Add new subscription</string>
+    <string name="link">Link</string>
+    <string name="name">Name</string>
+    <string name="plan">Plan</string>
+    <string name="amount">Amount</string>
+    <string name="period">Period</string>
+    <string name="currency">Currency</string>
+    <string name="payment_day">Payment day</string>
+    <string name="add_subscription">Add subscription</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="year">Year</string>
+    <string name="choose_color">Choose color</string>
+    <string name="color">Color</string>
+    <string name="welcome">Welcome</string>
+    <string name="subscription_manager">Subscription Manager</string>
+    <string name="login_to_continue">Login to continue</string>
+    <string name="google">Google</string>
+    <string name="success_login">Login was successful</string>
+    <string name="failed_login">Login was unsuccesfful. Pleasy try again later</string>
+    <string name="loading">Loading</string>
+    <string name="no_subscriptions_title">You don\'t have subscriptions yet</string>
+    <string name="no_subscriptions_desc">Press \"+\" to create first one</string>
+    <string name="unknown">Unknown</string>
+    <string name="common_error">Something went wrong. Please try again later</string>
+    <string name="ok">OK</string>
+    <string name="payment_amount">Payment amount</string>
+    <string name="first_payment_day">First payment day</string>
+    <string name="next_payment_day">Next payment day</string>
+    <string name="title_feature_login">Feature Login</string>
+</resources>

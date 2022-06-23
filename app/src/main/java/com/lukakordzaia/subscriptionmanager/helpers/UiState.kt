@@ -1,3 +1,0 @@
-package com.lukakordzaia.subscriptionmanager.helpers
-
-interface UiState

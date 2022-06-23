@@ -14,3 +14,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Subscription Manager"
 include ':app'
+include ':feature_login'
+include ':core'
+include ':core_compose'
+include ':core_network'
+include ':core_domain'
+include ':feature_home'
+include ':feature_add_subscription'
+include ':feature_statistics'
