@@ -2,32 +2,32 @@ package com.lukakordzaia.feature_home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
 import com.lukakordzaia.core.utils.Currencies
 import com.lukakordzaia.core.utils.toJson
-import com.lukakordzaia.subscriptionmanager.customcomposables.BoldText
-import com.lukakordzaia.subscriptionmanager.customcomposables.LightText
+import com.lukakordzaia.core_compose.custom.BoldText
+import com.lukakordzaia.core_compose.custom.LightText
+import com.lukakordzaia.core_compose.theme._A6AEC0
 
 @Composable
 fun SubscriptionItem(item: com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain, click: (String) -> Unit) {
     val subscription = item.toJson()
 
     ItemWrapper(
-        item = item,
         itemColor = item.color,
         itemName = item.name,
         itemPlan = item.plan!!,
@@ -40,7 +40,6 @@ fun SubscriptionItem(item: com.lukakordzaia.core_domain.domainmodels.Subscriptio
 
 @Composable
 private fun ItemWrapper(
-    item: com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain,
     itemColor: Color?,
     itemName: String,
     itemPlan: String,
@@ -53,30 +52,47 @@ private fun ItemWrapper(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+            .padding(start = 30.dp, end = 20.dp, bottom = 10.dp)
             .shadow(
-                elevation = 4.dp,
-                shape = MaterialTheme.shapes.medium
+                elevation = 2.dp,
+                shape = MaterialTheme.shapes.small
             )
             .background(
-                color = com.lukakordzaia.core_compose.theme._FFFFFF,
-                shape = MaterialTheme.shapes.medium
+                color = MaterialTheme.colors.primary,
+                shape = MaterialTheme.shapes.small
             )
-            .padding(10.dp)
+            .padding(top = 15.dp, bottom = 15.dp, end = 15.dp)
             .clickable {
                 click.invoke()
             }
     ) {
-        val (name, description, amount, period) = createRefs()
-        
+        val (
+            line,
+            name,
+            description,
+            amount,
+            period
+        ) = createRefs()
+
+        ColoredLine(
+            modifier = Modifier
+                .constrainAs(line) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    height = Dimension.fillToConstraints
+                },
+            color = itemColor
+        )
         ItemName(
             modifier = Modifier
                 .constrainAs(name) {
                     top.linkTo(parent.top)
-                    start.linkTo(parent.start)
+                    start.linkTo(line.end, 10.dp)
+                    end.linkTo(amount.start, 10.dp)
+                    width = Dimension.fillToConstraints
                 },
-            name = itemName,
-            nameColor = itemColor ?: MaterialTheme.colors.onPrimary
+            name = itemName
         )
         ItemPlan(
             modifier = Modifier
@@ -115,16 +131,26 @@ private fun ItemWrapper(
 }
 
 @Composable
+private fun ColoredLine(
+    modifier: Modifier,
+    color: Color?
+) {
+    Box(
+        modifier = modifier
+            .width(2.dp)
+            .background(color = color ?: MaterialTheme.colors.secondary)
+    )
+}
+
+@Composable
 private fun ItemName(
     modifier: Modifier,
     name: String,
-    nameColor: Color
 ) {
     BoldText(
         modifier = modifier,
         text = name,
-        color = nameColor,
-        fontSize = 18.sp
+        fontSize = 20.sp
     )
 }
 
@@ -146,10 +172,11 @@ private fun ItemAmount(
     currency: String,
     amount: String
 ) {
-    BoldText(
+    LightText(
         modifier = modifier,
-        text = "${Currencies.Currency.getCurrencySymbol(currency)} $amount",
-        fontSize = 15.sp
+        text = "${Currencies.Currency.getCurrencySymbol(currency)}$amount",
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Bold
     )
 }
 
@@ -161,21 +188,21 @@ private fun ItemPeriod(
     LightText(
         modifier = modifier,
         text = transformFromPeriodType(type = period),
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        color = _A6AEC0
     )
 }
 
-//@Preview
-//@Composable
-//fun SubscriptionItemPreview() {
-//    ItemWrapper(
-//        itemId = "123",
-//        itemColor = Color(0xFFFFFFFF),
-//        itemName = "Spotify",
-//        itemPlan = "Family Plan",
-//        itemCurrency = "USD",
-//        itemAmount = 14.99,
-//        itemPeriod = Constants.PeriodType.MONTH,
-//        click = { "123" }
-//    )
-//}
+@Preview
+@Composable
+fun SubscriptionItemPreview() {
+    ItemWrapper(
+        itemColor = MaterialTheme.colors.onPrimary,
+        itemName = "Spotify",
+        itemPlan = "Family Plan",
+        itemCurrency = "USD",
+        itemAmount = 14.99,
+        itemPeriod = Constants.PeriodType.MONTH,
+        click = {}
+    )
+}

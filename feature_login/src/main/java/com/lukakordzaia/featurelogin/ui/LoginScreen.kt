@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.LoadingState
+import com.lukakordzaia.core_compose.custom.BoldText
+import com.lukakordzaia.core_compose.custom.LightText
 import com.lukakordzaia.core_compose.custom.ProgressDialog
 import com.lukakordzaia.core_compose.theme._1F1F1F
 import com.lukakordzaia.core_compose.theme.smallButtonStyle
-import com.lukakordzaia.subscriptionmanager.customcomposables.BoldText
-import com.lukakordzaia.subscriptionmanager.customcomposables.LightText
 
 @Composable
 fun LoginScreen(

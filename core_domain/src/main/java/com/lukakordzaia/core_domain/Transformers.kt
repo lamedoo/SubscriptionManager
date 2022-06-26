@@ -15,7 +15,7 @@ fun List<SubscriptionItemNetwork>.transformToDomain(): List<com.lukakordzaia.cor
             currency = it.currency!!,
             periodType = Constants.PeriodType.getPeriodType(it.periodType!!),
             date = it.date,
-            subscriptionType = it.subscriptionType,
+            subscriptionType = Constants.SubscriptionType.getSubscriptionType(it.subscriptionType!!),
             updateDate = it.updateDate!!
         )
     }

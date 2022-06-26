@@ -27,4 +27,29 @@ object Constants {
             }
         }
     }
+
+    enum class SubscriptionType(val type: Int) {
+        MUSIC(0),
+        ENTERTAINMENT(1),
+        ONLINE(2),
+        VIDEO_STREAMING(3),
+        PROFESSION(4),
+        OTHER(5);
+
+        companion object {
+            fun getSubscriptionType(type: Int): SubscriptionType = values().firstOrNull { it.type == type } ?: OTHER
+
+            @Composable
+            fun transformFromSubscriptionType(type: SubscriptionType): String {
+                return when (type) {
+                    MUSIC -> stringResource(id = R.string.music)
+                    ENTERTAINMENT -> stringResource(id = R.string.entertainment)
+                    ONLINE -> stringResource(id = R.string.online)
+                    VIDEO_STREAMING -> stringResource(id = R.string.video_streaming)
+                    PROFESSION -> stringResource(id = R.string.profession)
+                    OTHER -> stringResource(id = R.string.other)
+                }
+            }
+        }
+    }
 }

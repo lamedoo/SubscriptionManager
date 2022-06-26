@@ -9,6 +9,6 @@ data class SubscriptionItemNetwork(
     val currency: String? = null,
     val periodType: Int? = null,
     val date: Long? = null,
-    val subscriptionType: String? = null,
+    val subscriptionType: Int? = null,
     val updateDate: Long? = null,
     )

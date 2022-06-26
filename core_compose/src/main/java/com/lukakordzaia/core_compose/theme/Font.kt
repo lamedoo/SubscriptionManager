@@ -10,5 +10,5 @@ val mainLight = FontFamily(
 )
 
 val mainBold = FontFamily(
-    Font(R.font.gilroy_bold, weight = FontWeight.Bold)
+    Font(R.font.gilroy_bold, weight = FontWeight.Light)
 )

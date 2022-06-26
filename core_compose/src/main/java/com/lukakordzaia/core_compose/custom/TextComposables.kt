@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.customcomposables
+package com.lukakordzaia.core_compose.custom
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -15,7 +15,8 @@ fun LightText(
     text: String,
     fontSize: TextUnit = 12.sp,
     fontWeight: FontWeight = FontWeight.Light,
-    color: Color = MaterialTheme.colors.onPrimary
+    color: Color = MaterialTheme.colors.onPrimary,
+    letterSpacing: TextUnit = 0.sp
 ) {
     Text(
         modifier = modifier,
@@ -23,7 +24,8 @@ fun LightText(
         color = color,
         fontSize = fontSize,
         fontFamily = com.lukakordzaia.core_compose.theme.mainLight,
-        fontWeight = fontWeight
+        fontWeight = fontWeight,
+        letterSpacing = letterSpacing
     )
 }
 
@@ -39,6 +41,6 @@ fun BoldText(
         text = text,
         color = color,
         fontSize = fontSize,
-        fontFamily = com.lukakordzaia.core_compose.theme.mainBold,
+        fontFamily = com.lukakordzaia.core_compose.theme.mainBold
     )
 }

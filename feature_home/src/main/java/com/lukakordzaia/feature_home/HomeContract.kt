@@ -3,21 +3,21 @@ package com.lukakordzaia.feature_home
 import com.lukakordzaia.core.helpers.UiEvent
 import com.lukakordzaia.core.helpers.UiState
 import com.lukakordzaia.core.utils.LoadingState
-import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 
 sealed class HomeEvent: UiEvent {
     object GetUserSubscriptions: HomeEvent()
     object SubscriptionsIsEmpty: HomeEvent()
-    data class SetSubscriptions(val items: List<SubscriptionItemDomain>): HomeEvent()
+    data class SetSubscriptions(val items: List<HomeSubscriptionType>): HomeEvent()
     data class ChangeLoadingState(val state: LoadingState): HomeEvent()
     data class ChangeScrollOffset(val offset: Float): HomeEvent()
     data class NavigateToDetails(val subscription: String): HomeEvent()
+    object NavigateToStatistics: HomeEvent()
 }
 
 data class HomeState(
     val isLoading: LoadingState,
     val noSubscriptions: Boolean,
-    val subscriptionItems: List<SubscriptionItemDomain>,
+    val subscriptionItems: List<HomeSubscriptionType>,
     val scrollOffset: Float
 ): UiState {
     companion object {

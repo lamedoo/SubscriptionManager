@@ -10,6 +10,8 @@ import androidx.navigation.compose.composable
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.utils.fromJson
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
+import com.lukakordzaia.feature_home.HomeVM
+import com.lukakordzaia.feature_home.ui.HomeScreen
 import com.lukakordzaia.feature_statistics.StatisticsScreen
 import com.lukakordzaia.subscriptionmanager.ui.navigation.subscriptiondetails.SubscriptionDetailsScreen
 import com.lukakordzaia.subscriptionmanager.ui.navigation.subscriptiondetails.SubscriptionDetailsVM
@@ -25,8 +27,8 @@ fun GeneralNavGraph(padding: PaddingValues, navController: NavHostController) {
         route = NavConstants.BOTTOM_NAV_ROUTE
     ) {
         composable(NavConstants.HOME) {
-            val viewModel = getViewModel<com.lukakordzaia.feature_home.HomeVM>()
-            com.lukakordzaia.feature_home.HomeScreen(navController, viewModel)
+            val viewModel = getViewModel<HomeVM>()
+            HomeScreen(navController, viewModel)
         }
         composable(NavConstants.STATISTICS) {
             StatisticsScreen()

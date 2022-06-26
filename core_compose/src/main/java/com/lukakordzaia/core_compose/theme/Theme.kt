@@ -8,14 +8,15 @@ import androidx.compose.runtime.Composable
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = _FFFFFF,
+    secondary = _5A67CE,
+    onSecondary = _FFFFFF,
+    background = _F1F1F5,
+    onPrimary = _1F1F1F
 )
 
 private val LightColorPalette = lightColors(
     primary = _FFFFFF,
-    primaryVariant = _F1F1F5,
     secondary = _5A67CE,
     onSecondary = _FFFFFF,
     background = _F1F1F5,
@@ -36,11 +37,7 @@ fun SubscriptionManagerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+    val colors = LightColorPalette
 
     rememberSystemUiController().apply {
         setStatusBarColor(color = _F1F1F5)
@@ -62,11 +59,7 @@ fun LoginTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+    val colors = LightColorPalette
 
     rememberSystemUiController().apply {
         setStatusBarColor(color = _5A67CE)

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import com.lukakordzaia.subscriptionmanager.customcomposables.BoldText
+import com.lukakordzaia.core_compose.custom.BoldText
 
 @Composable
 fun SubscriptionDetailsScreen(

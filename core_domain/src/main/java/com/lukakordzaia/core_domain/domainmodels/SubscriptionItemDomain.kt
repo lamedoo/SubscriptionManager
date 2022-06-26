@@ -12,6 +12,6 @@ data class SubscriptionItemDomain(
     val currency: String,
     val periodType: Constants.PeriodType,
     val date: Long?,
-    val subscriptionType: String?,
+    val subscriptionType: Constants.SubscriptionType?,
     val updateDate: Long,
 )
