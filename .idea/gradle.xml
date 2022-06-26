@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/feature_home" />
             <option value="$PROJECT_DIR$/feature_login" />
             <option value="$PROJECT_DIR$/feature_statistics" />
+            <option value="$PROJECT_DIR$/feature_subscription_details" />
           </set>
         </option>
       </GradleProjectSettings>

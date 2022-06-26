@@ -46,7 +46,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-//    dynamicFeatures = [':feature_login', ':feature_home', ':feature_add_subscription', ':feature_statistics']
 }
 
 dependencies {
@@ -58,6 +57,7 @@ dependencies {
     implementation project(":feature_home")
     implementation project(":feature_statistics")
     implementation project(":feature_add_subscription")
+    implementation project(":feature_subscription_details")
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"

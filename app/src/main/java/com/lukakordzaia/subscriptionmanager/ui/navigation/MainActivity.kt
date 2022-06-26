@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lukakordzaia.core.utils.NavConstants
+import com.lukakordzaia.core_compose.theme.SubscriptionManagerTheme
 import com.lukakordzaia.feature_add_subscription.AddSubscriptionScreen
 import com.lukakordzaia.subscriptionmanager.navigation.GeneralNavGraph
 import com.lukakordzaia.subscriptionmanager.navigation.bottomnav.BottomNavigationComponent
@@ -36,7 +37,7 @@ class MainActivity : com.lukakordzaia.core.activity.BaseComponentActivity() {
 @ExperimentalMaterialApi
 @Composable
 fun MainContent() {
-    com.lukakordzaia.core_compose.theme.SubscriptionManagerTheme {
+    SubscriptionManagerTheme {
         Surface(
             color = MaterialTheme.colors.background
         ) {

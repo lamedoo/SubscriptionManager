@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.events
+package com.lukakordzaia.feature_subscription_details
 
 import com.lukakordzaia.core.helpers.UiEvent
 import com.lukakordzaia.core.helpers.UiState

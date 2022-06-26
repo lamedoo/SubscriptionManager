@@ -13,8 +13,8 @@ import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.feature_home.HomeVM
 import com.lukakordzaia.feature_home.ui.HomeScreen
 import com.lukakordzaia.feature_statistics.StatisticsScreen
-import com.lukakordzaia.subscriptionmanager.ui.navigation.subscriptiondetails.SubscriptionDetailsScreen
-import com.lukakordzaia.subscriptionmanager.ui.navigation.subscriptiondetails.SubscriptionDetailsVM
+import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
+import com.lukakordzaia.feature_subscription_details.ui.SubscriptionDetailsScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable

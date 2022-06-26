@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui.navigation.subscriptiondetails
+package com.lukakordzaia.feature_subscription_details.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,10 +18,12 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.lukakordzaia.core_compose.custom.BoldText
+import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
+import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
 
 @Composable
 fun SubscriptionDetailsScreen(
-    subscription: com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain,
+    subscription: SubscriptionItemDomain,
     navController: NavHostController,
     vm: SubscriptionDetailsVM
 ) {

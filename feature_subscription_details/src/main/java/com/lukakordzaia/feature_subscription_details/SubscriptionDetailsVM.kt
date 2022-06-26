@@ -1,9 +1,9 @@
-package com.lukakordzaia.subscriptionmanager.ui.navigation.subscriptiondetails
+package com.lukakordzaia.feature_subscription_details
 
-import com.lukakordzaia.subscriptionmanager.events.SubscriptionDetailsEvent
-import com.lukakordzaia.subscriptionmanager.events.SubscriptionDetailsState
+import com.lukakordzaia.core.helpers.SingleEvent
+import com.lukakordzaia.core.viewmodel.BaseViewModel
 
-class SubscriptionDetailsVM : com.lukakordzaia.core.viewmodel.BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, com.lukakordzaia.core.helpers.SingleEvent>() {
+class SubscriptionDetailsVM : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SingleEvent>() {
     override fun createInitialState(): SubscriptionDetailsState {
         return SubscriptionDetailsState.initial()
     }
