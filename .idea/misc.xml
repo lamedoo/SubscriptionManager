@@ -9,6 +9,8 @@
         <entry key="feature_home/src/main/java/com/lukakordzaia/feature_home/SubscriptionItem.kt" value="0.2518518518518518" />
         <entry key="feature_home/src/main/java/com/lukakordzaia/feature_home/ui/MonthlyCostBar.kt" value="0.3712962962962963" />
         <entry key="feature_home/src/main/java/com/lukakordzaia/feature_home/ui/SubscriptionItem.kt" value="0.375" />
+        <entry key="feature_subscription_details/src/main/java/com/lukakordzaia/feature_subscription_details/ui/DetailsNameAmount.kt" value="0.75" />
+        <entry key="feature_subscription_details/src/main/java/com/lukakordzaia/feature_subscription_details/ui/SubscriptionInfo.kt" value="0.3712962962962963" />
       </map>
     </option>
   </component>

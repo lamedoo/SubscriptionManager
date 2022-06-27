@@ -41,4 +41,8 @@
     <string name="video_streaming">Video Streaming</string>
     <string name="profession">Professional</string>
     <string name="other">Other</string>
+    <string name="subscription_details">Subscription Details</string>
+    <string name="payment_period">Payment period</string>
+    <string name="category">Category</string>
+    <string name="not_available">N/A</string>
 </resources>

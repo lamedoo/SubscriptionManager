@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.ui.navigation
+package com.lukakordzaia.subscriptionmanager.ui
 
 import android.content.ContentValues.TAG
 import android.content.Intent
