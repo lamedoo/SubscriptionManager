@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.lukakordzaia.feature_home'
+    namespace 'com.lukakordzaia.feature_subscriptions'
     compileSdk 32
 
     defaultConfig {

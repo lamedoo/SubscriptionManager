@@ -54,7 +54,7 @@ dependencies {
     implementation project(":core_network")
     implementation project(":core_domain")
     implementation project(":feature_login")
-    implementation project(":feature_home")
+    implementation project(':feature_subscriptions')
     implementation project(":feature_statistics")
     implementation project(":feature_add_subscription")
     implementation project(":feature_subscription_details")

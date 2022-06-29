@@ -6,16 +6,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.lukakordzaia.core.R
 import com.lukakordzaia.core_compose.theme.Shapes
 
 @Composable
 fun GeneralTextButton(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.onPrimary,
+    text: String,
     onClick: () -> Unit
 ) {
     Button(
@@ -28,8 +27,9 @@ fun GeneralTextButton(
         onClick = onClick,
     ) {
         LightText(
-            text = stringResource(id = R.string.in_details),
-            fontWeight = FontWeight.Bold
+            text = text,
+            fontWeight = FontWeight.Bold,
+            color = textColor
         )
     }
 }

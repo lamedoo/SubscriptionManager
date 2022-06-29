@@ -70,7 +70,7 @@ fun MainScaffold(state: ModalBottomSheetState, scope: CoroutineScope) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     when (navBackStackEntry?.destination?.route) {
-        NavConstants.HOME, NavConstants.STATISTICS -> bottomBarState.value = true
+        NavConstants.SUBSCRIPTIONS, NavConstants.STATISTICS -> bottomBarState.value = true
         else -> bottomBarState.value = false
     }
 

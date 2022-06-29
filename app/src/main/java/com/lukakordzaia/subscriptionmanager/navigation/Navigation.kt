@@ -10,11 +10,11 @@ import androidx.navigation.compose.composable
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.utils.fromJson
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
-import com.lukakordzaia.feature_home.HomeVM
-import com.lukakordzaia.feature_home.ui.HomeScreen
 import com.lukakordzaia.feature_statistics.StatisticsScreen
 import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
 import com.lukakordzaia.feature_subscription_details.ui.SubscriptionDetailsScreen
+import com.lukakordzaia.feature_subscriptions.SubscriptionsVM
+import com.lukakordzaia.feature_subscriptions.ui.HomeScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -23,11 +23,11 @@ fun GeneralNavGraph(padding: PaddingValues, navController: NavHostController) {
         modifier = Modifier
             .padding(padding),
         navController = navController,
-        startDestination = NavConstants.HOME,
+        startDestination = NavConstants.SUBSCRIPTIONS,
         route = NavConstants.BOTTOM_NAV_ROUTE
     ) {
-        composable(NavConstants.HOME) {
-            val viewModel = getViewModel<HomeVM>()
+        composable(NavConstants.SUBSCRIPTIONS) {
+            val viewModel = getViewModel<SubscriptionsVM>()
             HomeScreen(navController, viewModel)
         }
         composable(NavConstants.STATISTICS) {
@@ -48,7 +48,7 @@ fun NavGraphBuilder.subscriptionDetailsNavGraph(navController: NavHostController
                 val viewModel = getViewModel<SubscriptionDetailsVM>()
                 SubscriptionDetailsScreen(
                     subscription = subscription,
-                    navController = navController,
+                    navHostController = navController,
                     vm = viewModel
                 )
             }

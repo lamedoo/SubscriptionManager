@@ -16,10 +16,10 @@
             <option value="$PROJECT_DIR$/core_domain" />
             <option value="$PROJECT_DIR$/core_network" />
             <option value="$PROJECT_DIR$/feature_add_subscription" />
-            <option value="$PROJECT_DIR$/feature_home" />
             <option value="$PROJECT_DIR$/feature_login" />
             <option value="$PROJECT_DIR$/feature_statistics" />
             <option value="$PROJECT_DIR$/feature_subscription_details" />
+            <option value="$PROJECT_DIR$/feature_subscriptions" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -8,6 +8,7 @@ import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 sealed class SubscriptionDetailsEvent: UiEvent {
     data class ChangeLoadingState(val state: LoadingState): SubscriptionDetailsEvent()
     data class GetSubscriptionDetails(val subscription: SubscriptionItemDomain): SubscriptionDetailsEvent()
+    data class NavigateToEditSubscription(val details: SubscriptionItemDomain): SubscriptionDetailsEvent()
 }
 
 data class SubscriptionDetailsState(

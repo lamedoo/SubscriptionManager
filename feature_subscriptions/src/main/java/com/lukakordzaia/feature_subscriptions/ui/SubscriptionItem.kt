@@ -1,4 +1,4 @@
-package com.lukakordzaia.feature_home
+package com.lukakordzaia.feature_subscriptions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,7 +52,7 @@ private fun ItemWrapper(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 30.dp, end = 20.dp, bottom = 10.dp)
+            .padding(start = 15.dp, end = 20.dp, bottom = 10.dp)
             .shadow(
                 elevation = 2.dp,
                 shape = MaterialTheme.shapes.small

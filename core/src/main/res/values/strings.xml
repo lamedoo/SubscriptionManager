@@ -45,4 +45,7 @@
     <string name="payment_period">Payment period</string>
     <string name="category">Category</string>
     <string name="not_available">N/A</string>
+    <string name="edit_subscription">Edit Subscription</string>
+    <string name="delete_subscription">Delete Subscription</string>
+    <string name="subscriptions">Subscriptions</string>
 </resources>

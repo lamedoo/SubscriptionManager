@@ -1,6 +1,6 @@
-package com.lukakordzaia.feature_home
+package com.lukakordzaia.feature_subscriptions
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**

@@ -1,4 +1,4 @@
-package com.lukakordzaia.feature_home.ui
+package com.lukakordzaia.feature_subscriptions.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -16,7 +16,7 @@ fun SubscriptionHeaderItem(
 ) {
     BoldText(
         modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 15.dp),
+            .padding(start = 5.dp, end = 20.dp, top = 25.dp, bottom = 15.dp),
         text = stringResource(id = labelRes),
         fontSize = 16.sp
     )

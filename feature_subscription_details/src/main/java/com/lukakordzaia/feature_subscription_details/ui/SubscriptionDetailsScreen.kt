@@ -18,17 +18,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.lukakordzaia.core.utils.Constants
+import com.lukakordzaia.core_compose.ObserveLoadingState
+import com.lukakordzaia.core_compose.ObserveSingleEvents
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
 
 @Composable
 fun SubscriptionDetailsScreen(
     subscription: SubscriptionItemDomain,
-    navController: NavHostController,
+    navHostController: NavHostController,
     vm: SubscriptionDetailsVM
 ) {
     val state = vm.state.collectAsState()
     vm.getSubscriptionDetails(subscription)
+    ObserveSingleEvents(navController = navHostController, singleEvent = vm.singleEvent)
+    ObserveLoadingState(loader = state.value.isLoading)
 
     state.value.details?.let { details ->
         DetailsWrapper(
@@ -40,7 +44,9 @@ fun SubscriptionDetailsScreen(
             nextPaymentDate = details.date.toString(),
             detailSubscriptionType = details.subscriptionType,
             detailPlan = details.plan,
-            click = { navController.popBackStack() }
+            onBackClick = { navHostController.popBackStack() },
+            onEditClick = { vm.navigateToEditSubscription(details) },
+            onDeleteClick = { vm.deleteSubscription() }
         )
     }
 }
@@ -55,7 +61,9 @@ private fun DetailsWrapper(
     nextPaymentDate: String,
     detailSubscriptionType: Constants.SubscriptionType,
     detailPlan: String?,
-    click: () -> Unit
+    onBackClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -69,7 +77,7 @@ private fun DetailsWrapper(
     ) {
         NavigationBar(
             modifier = Modifier,
-            click = click
+            click = onBackClick
         )
         DetailNameAmount(
             modifier = Modifier
@@ -83,11 +91,17 @@ private fun DetailsWrapper(
         )
         SubscriptionInfo(
             modifier = Modifier
-                .padding(top = 30.dp),
+                .padding(top = 30.dp, start = 15.dp, end = 15.dp),
             nextPaymentDate = nextPaymentDate,
             paymentPeriod = detailPeriod,
             subscriptionType = detailSubscriptionType,
             subscriptionPlan = detailPlan
+        )
+        DetailButtons(
+            modifier = Modifier
+                .padding(vertical = 50.dp, horizontal = 20.dp),
+            onEditClick = onEditClick,
+            onDeleteClick = onDeleteClick
         )
     }
 }

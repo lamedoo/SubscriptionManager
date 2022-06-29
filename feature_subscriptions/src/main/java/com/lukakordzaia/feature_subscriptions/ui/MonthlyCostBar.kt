@@ -1,4 +1,4 @@
-package com.lukakordzaia.feature_home.ui
+package com.lukakordzaia.feature_subscriptions.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -99,6 +99,7 @@ private fun MoreButton(
     GeneralTextButton(
         modifier = modifier,
         onClick = onClick,
+        text = stringResource(id = R.string.in_details)
     )
 }
 
