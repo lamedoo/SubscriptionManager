@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,13 +57,13 @@ private fun InfoWrapper(
             shape = MaterialTheme.shapes.medium
             )
     ) {
-        InfoItem(label = R.string.next_payment_day, value = nextPaymentDate)
+        InfoItem(icon = R.drawable.icon_repeat_payment, label = R.string.next_payment_day, value = nextPaymentDate)
         Line()
-        InfoItem(label = R.string.payment_period, value = "${Constants.PeriodType.transformFromPeriodType(type = paymentPeriod)}ly")
+        InfoItem(icon = R.drawable.icon_subscription_period, label = R.string.payment_period, value = "${Constants.PeriodType.transformFromPeriodType(type = paymentPeriod)}ly")
         Line()
-        InfoItem(label = R.string.plan, value = subscriptionPlan ?: stringResource(id = R.string.not_available))
+        InfoItem(icon = R.drawable.icon_subscription_plan, label = R.string.plan, value = subscriptionPlan ?: stringResource(id = R.string.not_available))
         Line()
-        InfoItem(label = R.string.category, value = Constants.SubscriptionType.transformFromSubscriptionType(type = subscriptionType))
+        InfoItem(icon = R.drawable.icon_category, label = R.string.category, value = Constants.SubscriptionType.transformFromSubscriptionType(type = subscriptionType))
     }
 }
 
@@ -74,9 +75,19 @@ private fun InfoItem(
 ) {
     Row(
         modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 5.dp)
+            .padding(vertical = 10.dp, horizontal = 5.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        icon?.let { Icon(painter = painterResource(id = it), contentDescription = null) }
+        icon?.let { Icon(
+            modifier = Modifier
+                .padding(start = 5.dp)
+                .width(20.dp)
+                .height(20.dp),
+            painter = painterResource(id = it),
+            contentDescription = null,
+            tint = MaterialTheme.colors.secondary
+        )
+        }
         LightText(
             modifier = Modifier
                 .padding(start = 10.dp),

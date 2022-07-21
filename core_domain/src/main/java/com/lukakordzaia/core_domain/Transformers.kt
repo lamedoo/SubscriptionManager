@@ -2,11 +2,12 @@ package com.lukakordzaia.core_domain
 
 import androidx.compose.ui.graphics.Color
 import com.lukakordzaia.core.utils.Constants
+import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.subscriptionmanager.network.networkmodels.SubscriptionItemNetwork
 
-fun List<SubscriptionItemNetwork>.transformToDomain(): List<com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain> {
+fun List<SubscriptionItemNetwork>.transformToDomain(): List<SubscriptionItemDomain> {
     return this.map {
-        com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain(
+        SubscriptionItemDomain(
             id = it.id!!,
             name = it.name!!,
             plan = it.plan,

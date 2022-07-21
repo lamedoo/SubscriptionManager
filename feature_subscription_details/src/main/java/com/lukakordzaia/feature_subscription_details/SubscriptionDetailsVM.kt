@@ -1,9 +1,14 @@
 package com.lukakordzaia.feature_subscription_details
 
+import androidx.lifecycle.viewModelScope
 import com.lukakordzaia.core.helpers.SingleEvent
+import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.viewmodel.BaseViewModel
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SubscriptionDetailsVM : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SingleEvent>() {
     override fun createInitialState(): SubscriptionDetailsState {
@@ -18,8 +23,22 @@ class SubscriptionDetailsVM : BaseViewModel<SubscriptionDetailsState, Subscripti
         sendEvent(SubscriptionDetailsEvent.NavigateToEditSubscription(details))
     }
 
-    fun deleteSubscription() {
+    fun setDeleteDialogState(state: Boolean) {
+        sendEvent(SubscriptionDetailsEvent.DeleteDialogState(state))
+    }
 
+    fun deleteSubscription(id: String) {
+        sendEvent(SubscriptionDetailsEvent.DeleteSubscription(id))
+    }
+
+    private fun deleteSubscriptionFirestore(id: String) {
+        sendEvent(SubscriptionDetailsEvent.ChangeLoadingState(LoadingState.LOADING))
+        sendEvent(SubscriptionDetailsEvent.DeleteDialogState(false))
+
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(2000)
+            sendEvent(SubscriptionDetailsEvent.SubscriptionIsDeleted(LoadingState.LOADED,true))
+        }
     }
 
     override fun handleEvent(event: SubscriptionDetailsEvent) {
@@ -32,6 +51,15 @@ class SubscriptionDetailsVM : BaseViewModel<SubscriptionDetailsState, Subscripti
             }
             is SubscriptionDetailsEvent.NavigateToEditSubscription -> {
                 setSingleEvent { SingleEvent.Navigation(NavConstants.EDIT_SUBSCRIPTION) }
+            }
+            is SubscriptionDetailsEvent.DeleteDialogState -> {
+                setState { copy(deleteDialogIsOpen = event.state) }
+            }
+            is SubscriptionDetailsEvent.DeleteSubscription -> {
+                deleteSubscriptionFirestore(event.id)
+            }
+            is SubscriptionDetailsEvent.SubscriptionIsDeleted -> {
+                setState { copy(isLoading = event.loadingState, isSubscriptionDeleted = event.state) }
             }
         }
     }

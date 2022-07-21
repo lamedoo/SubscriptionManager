@@ -9,16 +9,23 @@ sealed class SubscriptionDetailsEvent: UiEvent {
     data class ChangeLoadingState(val state: LoadingState): SubscriptionDetailsEvent()
     data class GetSubscriptionDetails(val subscription: SubscriptionItemDomain): SubscriptionDetailsEvent()
     data class NavigateToEditSubscription(val details: SubscriptionItemDomain): SubscriptionDetailsEvent()
+    data class DeleteDialogState(val state: Boolean): SubscriptionDetailsEvent()
+    data class DeleteSubscription(val id: String): SubscriptionDetailsEvent()
+    data class SubscriptionIsDeleted(val loadingState: LoadingState, val state: Boolean): SubscriptionDetailsEvent()
 }
 
 data class SubscriptionDetailsState(
     val isLoading: LoadingState,
-    val details: SubscriptionItemDomain?
+    val details: SubscriptionItemDomain?,
+    val deleteDialogIsOpen: Boolean,
+    val isSubscriptionDeleted: Boolean
 ) : UiState {
     companion object {
         fun initial() = SubscriptionDetailsState(
             isLoading = LoadingState.LOADED,
-            details = null
+            details = null,
+            deleteDialogIsOpen = false,
+            isSubscriptionDeleted = false
         )
     }
 }

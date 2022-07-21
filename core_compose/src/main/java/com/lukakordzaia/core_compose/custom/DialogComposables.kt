@@ -1,9 +1,7 @@
 package com.lukakordzaia.core_compose.custom
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
@@ -61,6 +59,36 @@ fun CommonDialog(
                     Text(text = stringResource(id = R.string.ok))
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun QuestionDialog(
+    showDialog: Boolean,
+    onDismiss: (Boolean) -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = { onDismiss(false) }
+        ) {
+           Column(
+               modifier = Modifier
+                   .padding(20.dp)
+                   .fillMaxWidth()
+                   .background(Color.White, shape = RoundedCornerShape(8.dp))
+           ) {
+               Text(text = stringResource(id =R.string.are_you_sure))
+               Row {
+                   Button(onClick = { onDismiss(false) }) {
+                       Text(text = stringResource(id = R.string.no))
+                   }
+                   Button(onClick = { onConfirm.invoke() }) {
+                       Text(text = stringResource(id = R.string.yes))
+                   }
+               }
+           }
         }
     }
 }

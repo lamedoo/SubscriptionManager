@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core_compose.ObserveLoadingState
 import com.lukakordzaia.core_compose.ObserveSingleEvents
+import com.lukakordzaia.core_compose.custom.QuestionDialog
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
 
@@ -33,6 +34,15 @@ fun SubscriptionDetailsScreen(
     vm.getSubscriptionDetails(subscription)
     ObserveSingleEvents(navController = navHostController, singleEvent = vm.singleEvent)
     ObserveLoadingState(loader = state.value.isLoading)
+    ObserveDeleteDialog(
+        deleteDialogState = state.value.deleteDialogIsOpen,
+        onDeleteDialogStateChange = { dialogState -> vm.setDeleteDialogState(dialogState) },
+        onDeleteDialogConfirm = { state.value.details?.id?.let { vm.deleteSubscription(it) } }
+    )
+    ObserveSubscriptionDeleteState(
+        subscriptionDeleteState = state.value.isSubscriptionDeleted,
+        isDeleted = { navHostController.popBackStack() }
+    )
 
     state.value.details?.let { details ->
         DetailsWrapper(
@@ -46,7 +56,7 @@ fun SubscriptionDetailsScreen(
             detailPlan = details.plan,
             onBackClick = { navHostController.popBackStack() },
             onEditClick = { vm.navigateToEditSubscription(details) },
-            onDeleteClick = { vm.deleteSubscription() }
+            onDeleteClick = { vm.setDeleteDialogState(true) }
         )
     }
 }
@@ -118,4 +128,27 @@ private fun NavigationBar(
         imageVector = Icons.Filled.ArrowBack,
         contentDescription = null
     )
+}
+
+@Composable
+private fun ObserveDeleteDialog(
+    deleteDialogState: Boolean,
+    onDeleteDialogStateChange: (Boolean) -> Unit,
+    onDeleteDialogConfirm: () -> Unit
+) {
+    QuestionDialog(
+        showDialog = deleteDialogState,
+        onDismiss = { state -> onDeleteDialogStateChange(state) },
+        onConfirm = onDeleteDialogConfirm
+    )
+}
+
+@Composable
+private fun ObserveSubscriptionDeleteState(
+    subscriptionDeleteState: Boolean,
+    isDeleted: () -> Unit
+) {
+    if (subscriptionDeleteState) {
+        isDeleted.invoke()
+    }
 }
