@@ -72,6 +72,6 @@ object DateHelpers {
     }
 
     fun formatDate(millis: Long): String {
-        return SimpleDateFormat("dd.MMMM.yyyy", Locale.getDefault()).format(Date(millis))
+        return SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault()).format(Date(millis))
     }
 }
