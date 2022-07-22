@@ -3,9 +3,9 @@ package com.lukakordzaia.core.viewmodel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lukakordzaia.core.helpers.UiEvent
-import com.lukakordzaia.core.helpers.UiSingleEvent
-import com.lukakordzaia.core.helpers.UiState
+import com.lukakordzaia.core.helpers.interfaces.UiEvent
+import com.lukakordzaia.core.helpers.interfaces.UiSingleEvent
+import com.lukakordzaia.core.helpers.interfaces.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

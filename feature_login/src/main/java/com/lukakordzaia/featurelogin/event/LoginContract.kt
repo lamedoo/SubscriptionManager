@@ -1,7 +1,7 @@
 package com.lukakordzaia.featurelogin.event
 
-import com.lukakordzaia.core.helpers.UiEvent
-import com.lukakordzaia.core.helpers.UiState
+import com.lukakordzaia.core.helpers.interfaces.UiEvent
+import com.lukakordzaia.core.helpers.interfaces.UiState
 import com.lukakordzaia.core.utils.LoadingState
 
 sealed class LoginEvent: UiEvent {

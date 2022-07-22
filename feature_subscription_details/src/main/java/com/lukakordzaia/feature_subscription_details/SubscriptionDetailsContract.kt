@@ -1,7 +1,7 @@
 package com.lukakordzaia.feature_subscription_details
 
-import com.lukakordzaia.core.helpers.UiEvent
-import com.lukakordzaia.core.helpers.UiState
+import com.lukakordzaia.core.helpers.interfaces.UiEvent
+import com.lukakordzaia.core.helpers.interfaces.UiState
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 

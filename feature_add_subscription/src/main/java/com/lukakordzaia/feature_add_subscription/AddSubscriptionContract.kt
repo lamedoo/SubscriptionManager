@@ -1,7 +1,8 @@
 package com.lukakordzaia.feature_add_subscription
 
 import androidx.compose.ui.graphics.Color
-import com.lukakordzaia.core.helpers.UiEvent
+import com.lukakordzaia.core.helpers.interfaces.UiEvent
+import com.lukakordzaia.core.helpers.interfaces.UiState
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.subscriptionmanager.helpers.StringWithError
 
@@ -40,7 +41,7 @@ data class AddSubscriptionState(
     val currencyDialogIsOpen: Boolean,
     val errorDialogIsOpen: Boolean,
     val isUploaded: Boolean,
-): com.lukakordzaia.core.helpers.UiState {
+): UiState {
     companion object {
         fun initial() = AddSubscriptionState(
             isLoading = LoadingState.LOADED,
