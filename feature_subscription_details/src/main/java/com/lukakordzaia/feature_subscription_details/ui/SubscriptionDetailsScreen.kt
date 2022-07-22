@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.lukakordzaia.core.helpers.DateHelpers
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core_compose.ObserveLoadingState
 import com.lukakordzaia.core_compose.ObserveSingleEvents
@@ -51,7 +52,7 @@ fun SubscriptionDetailsScreen(
             detailAmount = details.amount,
             detailPeriod = details.periodType,
             detailColor = details.color,
-            nextPaymentDate = details.date.toString(),
+            nextPaymentDate = DateHelpers.formatDate(DateHelpers.nextPaymentDate(details.periodType, details.date!!)),
             detailSubscriptionType = details.subscriptionType,
             detailPlan = details.plan,
             onBackClick = { navHostController.popBackStack() },
