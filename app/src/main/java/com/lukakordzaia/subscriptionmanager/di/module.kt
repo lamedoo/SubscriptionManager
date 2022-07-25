@@ -11,7 +11,7 @@ val viewModelModule = module {
     viewModel { SubscriptionsVM(get()) }
     viewModel { AddSubscriptionVM(get()) }
     viewModel { LoginVM(get(), get()) }
-    viewModel { SubscriptionDetailsVM() }
+    viewModel { SubscriptionDetailsVM(get()) }
 }
 
 val generalModule = module {}

@@ -144,6 +144,7 @@ private fun ObserveDeleteDialog(
     QuestionDialog(
         showDialog = deleteDialogState,
         onDismiss = { state -> onDeleteDialogStateChange(state) },
+        question = R.string.delete_subscription_dialog_text,
         yestButtonText = R.string.delete,
         onConfirm = onDeleteDialogConfirm
     )

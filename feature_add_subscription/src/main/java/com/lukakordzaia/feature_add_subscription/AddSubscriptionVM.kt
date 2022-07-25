@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewModelScope
 import com.lukakordzaia.core.helpers.SingleEvent
 import com.lukakordzaia.core.utils.LoadingState
+import com.lukakordzaia.core.viewmodel.BaseViewModel
 import com.lukakordzaia.core_domain.ResultDomain
 import com.lukakordzaia.core_domain.usecases.AddSubscriptionUseCase
 import com.lukakordzaia.feature_add_subscription.helpers.StringWithError
@@ -15,7 +16,7 @@ import java.util.*
 
 class AddSubscriptionVM(
     private val addSubscriptionUseCase: AddSubscriptionUseCase
-): com.lukakordzaia.core.viewmodel.BaseViewModel<AddSubscriptionState, AddSubscriptionEvent, SingleEvent>() {
+): BaseViewModel<AddSubscriptionState, AddSubscriptionEvent, SingleEvent>() {
     
     override fun createInitialState(): AddSubscriptionState {
         return AddSubscriptionState.initial()

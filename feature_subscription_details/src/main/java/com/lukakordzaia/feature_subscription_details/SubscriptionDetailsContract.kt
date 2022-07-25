@@ -15,7 +15,7 @@ sealed class SubscriptionDetailsEvent: UiEvent {
 }
 
 data class SubscriptionDetailsState(
-    val isLoading: LoadingState,
+    var isLoading: LoadingState,
     val details: SubscriptionItemDomain?,
     val deleteDialogIsOpen: Boolean,
     val isSubscriptionDeleted: Boolean

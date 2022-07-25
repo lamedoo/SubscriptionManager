@@ -5,12 +5,15 @@ import com.lukakordzaia.core.helpers.SingleEvent
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.viewmodel.BaseViewModel
+import com.lukakordzaia.core_domain.ResultDomain
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
+import com.lukakordzaia.core_domain.usecases.DeleteSubscriptionUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SubscriptionDetailsVM : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SingleEvent>() {
+class SubscriptionDetailsVM(
+    private val deleteSubscriptionUseCase: DeleteSubscriptionUseCase
+) : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SingleEvent>() {
     override fun createInitialState(): SubscriptionDetailsState {
         return SubscriptionDetailsState.initial()
     }
@@ -36,8 +39,22 @@ class SubscriptionDetailsVM : BaseViewModel<SubscriptionDetailsState, Subscripti
         sendEvent(SubscriptionDetailsEvent.DeleteDialogState(false))
 
         viewModelScope.launch(Dispatchers.IO) {
-            delay(2000)
-            sendEvent(SubscriptionDetailsEvent.SubscriptionIsDeleted(LoadingState.LOADED,true))
+            deleteSubscriptionUseCase.invoke(
+                DeleteSubscriptionUseCase.Params(
+                    auth.currentUser!!.uid,
+                    id
+                )
+            ).collect {
+                when (it) {
+                    is ResultDomain.Success -> {
+                        setSingleEvent { SingleEvent.ShowToast("Deleted Successfully") }
+                        sendEvent(SubscriptionDetailsEvent.SubscriptionIsDeleted(LoadingState.LOADED,true))
+                    }
+                    is ResultDomain.Error -> {
+                        sendEvent(SubscriptionDetailsEvent.ChangeLoadingState(LoadingState.ERROR))
+                    }
+                }
+            }
         }
     }
 

@@ -82,11 +82,13 @@ fun QuestionDialog(
                    .fillMaxWidth()
                    .background(Color.White, shape = RoundedCornerShape(8.dp))
            ) {
-               Text(
+               BoldText(
                    modifier = Modifier
                        .padding(20.dp)
                        .align(Alignment.CenterHorizontally),
-                   text = stringResource(id = question)
+                   text = stringResource(id = question),
+                   fontSize = 16.sp,
+                   color = MaterialTheme.colors.onPrimary
                )
                Row(
                    modifier = Modifier

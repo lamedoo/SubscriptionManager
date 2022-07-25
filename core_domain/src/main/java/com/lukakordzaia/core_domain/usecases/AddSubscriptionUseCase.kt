@@ -3,10 +3,11 @@ package com.lukakordzaia.core_domain.usecases
 import com.lukakordzaia.core_domain.BaseFlowUseCase
 import com.lukakordzaia.core_domain.ResultDomain
 import com.lukakordzaia.core_network.networkmodels.AddSubscriptionItemNetwork
+import com.lukakordzaia.core_network.repository.addsubscription.AddSubscriptionRepository
 import kotlinx.coroutines.flow.Flow
 
 class AddSubscriptionUseCase(
-    private val repository: com.lukakordzaia.core_network.repository.addsubscription.AddSubscriptionRepository
+    private val repository: AddSubscriptionRepository
 ) : BaseFlowUseCase<AddSubscriptionUseCase.Params, Boolean, Boolean>() {
     override suspend fun invoke(args: Params?): Flow<ResultDomain<Boolean, String>> {
         return transformToDomain(repository.addSubscription(
