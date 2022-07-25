@@ -7,21 +7,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -29,11 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.godaddy.android.colorpicker.ClassicColorPicker
-import com.godaddy.android.colorpicker.HsvColor
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
@@ -41,6 +32,9 @@ import com.lukakordzaia.core.utils.Currencies
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core_compose.custom.CommonDialog
 import com.lukakordzaia.core_compose.custom.ProgressDialog
+import com.lukakordzaia.feature_add_subscription.ui.ColorField
+import com.lukakordzaia.feature_add_subscription.ui.CustomTextField
+import com.lukakordzaia.feature_add_subscription.ui.DropDownList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -87,7 +81,18 @@ fun AddSubscriptionScreen(
             .padding(20.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        val (topTitle, close, link, name, plan, color, amount, period, currency, date, button) = createRefs()
+        val (topTitle,
+            close,
+            link,
+            name,
+            plan,
+            color,
+            amount,
+            period,
+            currency,
+            date,
+            button,
+            subscriptionType) = createRefs()
 
         TopTitle(
             modifier = Modifier
@@ -192,14 +197,26 @@ fun AddSubscriptionScreen(
                     top.linkTo(period.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
-            value = state.value.dateField,
+            value = state.value.dateField.field,
             onChange = { value -> vm.setDate(value) },
+            focusRequester = focusRequester,
+            isError = state.value.dateField.isError
+        )
+        SubscriptionTypeField(modifier = Modifier
+            .constrainAs(subscriptionType) {
+                top.linkTo(date.bottom, margin = 10.dp)
+            }
+            .fillMaxWidth(),
+            value = state.value.subscriptionTypeField,
+            subscriptionTypeDialogState = state.value.subscriptionTypeDialogIsOpen,
+            onDialogStateChange =  { state -> vm.setSubscriptionTypeDialogState(state) },
+            onChange = {value -> vm.setSubscriptionType(transformToSubscriptionType(context, value))},
             focusRequester = focusRequester
         )
         LinkField(
             modifier = Modifier
                 .constrainAs(link) {
-                    top.linkTo(date.bottom, margin = 10.dp)
+                    top.linkTo(subscriptionType.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
             value = state.value.linkField,
@@ -251,7 +268,7 @@ private fun NameField(
     focusRequester: FocusRequester,
     isError: Boolean
 ) {
-    AddSubscriptionTextField(
+    CustomTextField(
         modifier = modifier,
         label = R.string.name,
         value = value,
@@ -268,7 +285,7 @@ private fun PlanField(
     onChange: (plan: String) -> Unit,
     focusRequester: FocusRequester
 ) {
-    AddSubscriptionTextField(
+    CustomTextField(
         modifier = modifier,
         label = R.string.plan,
         value = value,
@@ -285,7 +302,7 @@ private fun AmountField(
     focusRequester: FocusRequester,
     isError: Boolean
 ) {
-    AddSubscriptionTextField(
+    CustomTextField(
         modifier = modifier,
         label = R.string.amount,
         value = if (value == "0.0") "" else value,
@@ -304,7 +321,7 @@ private fun LinkField(
     onChange: (link: String) -> Unit,
     focusRequester: FocusRequester
 ) {
-    AddSubscriptionTextField(
+    CustomTextField(
         modifier = modifier,
         label = R.string.link,
         value = value,
@@ -315,73 +332,29 @@ private fun LinkField(
 }
 
 @Composable
-private fun AddSubscriptionTextField(
-    modifier: Modifier = Modifier,
-    label: Int,
-    value: String,
-    imeAction: ImeAction = ImeAction.Next,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    focusRequester: FocusRequester,
-    onChange: (link: String) -> Unit,
-    isError: Boolean = false,
-) {
-    val focusManager = LocalFocusManager.current
-
-    TextField(
-        modifier = modifier
-            .focusRequester(focusRequester),
-        value = value,
-        onValueChange = {
-            onChange(it)
-        },
-        singleLine = true,
-        label = { Text(text = stringResource(id = label)) },
-        shape = MaterialTheme.shapes.small,
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = MaterialTheme.colors.onPrimary,
-            backgroundColor = com.lukakordzaia.core_compose.theme._F1F1F5,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            cursorColor = MaterialTheme.colors.onPrimary,
-            errorLabelColor = MaterialTheme.colors.error,
-            focusedLabelColor = com.lukakordzaia.core_compose.theme.fieldLabel,
-            unfocusedLabelColor = com.lukakordzaia.core_compose.theme.fieldLabel
-        ),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        keyboardActions = KeyboardActions(
-            onNext = { focusManager.moveFocus(FocusDirection.Down) },
-            onDone = { focusManager.clearFocus() }
-        ),
-        isError = isError
-    )
-}
-
-@Composable
 private fun DateField(
     modifier: Modifier,
     value: String,
     onChange: (date: String) -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    isError: Boolean
 ) {
     val c = Calendar.getInstance()
     val timePickerDialog = DatePickerDialog(LocalContext.current,
         {_, year: Int, month : Int, day: Int ->
-            onChange("$day/$month/$year")
+            onChange("$day/${month + 1}/$year")
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
     )
     Box(
         modifier = modifier
     ) {
-        AddSubscriptionTextField(
+        CustomTextField(
             modifier = modifier,
             label = R.string.payment_day,
             value = value,
             onChange = onChange,
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
+            isError = isError
         )
         Spacer(
             modifier = Modifier
@@ -404,7 +377,7 @@ private fun CurrencyField(
     focusRequester: FocusRequester
 ) {
     Box(modifier = modifier) {
-        AddSubscriptionTextField(
+        CustomTextField(
             label = R.string.currency,
             value = Currencies.Currency.getCurrencyName(value),
             onChange = onChange,
@@ -446,7 +419,7 @@ private fun PeriodField(
     Box(
         modifier = modifier
     ) {
-        AddSubscriptionTextField(
+        CustomTextField(
             modifier = modifier,
             label = R.string.period,
             value = transformFromPeriodType(type = Constants.PeriodType.getPeriodType(value)),
@@ -471,109 +444,47 @@ private fun PeriodField(
 }
 
 @Composable
-private fun DropDownList(
-    requestOpen: Boolean = false,
-    list: List<String>,
-    request: (Boolean) -> Unit,
-    selectedString: (String) -> Unit
-) {
-    DropdownMenu(
-        modifier = Modifier
-            .fillMaxWidth(),
-        expanded = requestOpen,
-        onDismissRequest = { request(false) }
-    ) {
-        list.forEach {
-            DropdownMenuItem(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    request(false)
-                    selectedString(it)
-                }
-            ) {
-                Text(text = it, modifier = Modifier.wrapContentWidth())
-            }
-        }
-    }
-}
-
-@Composable
-private fun ColorField(
+private fun SubscriptionTypeField(
     modifier: Modifier,
-    value: Color,
-    colorDialogState: Boolean,
+    value: Int,
+    subscriptionTypeDialogState: Boolean,
     onDialogStateChange: (Boolean) -> Unit,
-    onChange: (color: Color) -> Unit
+    onChange: (type: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
+    val subscriptionTypeList = listOf(
+        stringResource(id = R.string.music),
+        stringResource(id = R.string.entertainment),
+        stringResource(id = R.string.online),
+        stringResource(id = R.string.video_streaming),
+        stringResource(id = R.string.profession),
+        stringResource(id = R.string.other)
+    )
+
     Box(
         modifier = modifier
-            .background(
-                color = value,
-                shape = MaterialTheme.shapes.small
-            )
-            .clickable(
-                onClick = { onDialogStateChange(true) }
-            )
     ) {
-        Text(
-            modifier = Modifier
-                .padding(10.dp),
-            text = stringResource(id = R.string.color),
-            color = com.lukakordzaia.core_compose.theme.fieldLabel
+        CustomTextField(
+            modifier = modifier,
+            label = R.string.subscription_type,
+            value = Constants.SubscriptionType.transformFromSubscriptionType(type = Constants.SubscriptionType.getSubscriptionType(value)),
+            onChange = onChange,
+            focusRequester = focusRequester
         )
-        ColorPickerDialog(
-            requestOpen = colorDialogState,
+        DropDownList(
+            requestOpen = subscriptionTypeDialogState,
+            list = subscriptionTypeList,
             onDialogStateChange,
             onChange
         )
-    }
-}
-
-@Composable
-private fun ColorPickerDialog(
-    requestOpen: Boolean,
-    request: (Boolean) -> Unit,
-    onChange: (color: Color) -> Unit
-) {
-    val chosenColor = remember { mutableStateOf(HsvColor.Companion.DEFAULT) }
-
-    if (requestOpen) {
-        Dialog(
-            onDismissRequest = { request(false) }
-        ) {
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .background(
-                        color = MaterialTheme.colors.primaryVariant,
-                        shape = MaterialTheme.shapes.small
-                    )
-                    .padding(10.dp)
-            ) {
-                ClassicColorPicker(
-                    modifier = Modifier
-                        .height(400.dp),
-                    onColorChanged = {
-                        chosenColor.value = it
-                    }
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .clickable(
+                    onClick = { onDialogStateChange(true) }
                 )
-                Button(
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.secondary
-                    ),
-                    onClick = {
-                        onChange(chosenColor.value.toColor())
-                        request(false)
-                    }
-                ) {
-                    Text(text = stringResource(id = R.string.choose_color), style = com.lukakordzaia.core_compose.theme.smallButtonStyle)
-                }
-            }
-        }
+        )
     }
 }
 
@@ -645,3 +556,13 @@ private fun transformToPeriodType(context: Context, type: String): Int {
     }
 }
 
+private fun transformToSubscriptionType(context: Context, type: String): Int {
+    return when (type) {
+        context.getString(R.string.music) -> 0
+        context.getString(R.string.entertainment) -> 1
+        context.getString(R.string.online) -> 2
+        context.getString(R.string.video_streaming) -> 3
+        context.getString(R.string.profession) -> 4
+        else -> 5
+    }
+}

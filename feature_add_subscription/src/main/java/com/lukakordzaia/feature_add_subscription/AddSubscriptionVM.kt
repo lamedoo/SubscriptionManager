@@ -7,7 +7,7 @@ import com.lukakordzaia.core.helpers.SingleEvent
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core_domain.ResultDomain
 import com.lukakordzaia.core_domain.usecases.AddSubscriptionUseCase
-import com.lukakordzaia.subscriptionmanager.helpers.StringWithError
+import com.lukakordzaia.feature_add_subscription.helpers.StringWithError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -45,12 +45,16 @@ class AddSubscriptionVM(
         sendEvent(AddSubscriptionEvent.ChangePeriod(period))
     }
 
+    fun setSubscriptionType(type: Int) {
+        sendEvent(AddSubscriptionEvent.ChangeSubscriptionType(type))
+    }
+
     fun setCurrency(currency: String) {
         sendEvent(AddSubscriptionEvent.ChangeCurrency(currency))
     }
 
     fun setDate(date: String) {
-        sendEvent(AddSubscriptionEvent.ChangeDate(date))
+        sendEvent(AddSubscriptionEvent.ChangeDate(StringWithError(date, false)))
     }
 
     fun setColor(color: Color) {
@@ -69,6 +73,10 @@ class AddSubscriptionVM(
         sendEvent(AddSubscriptionEvent.PeriodDialogState(state))
     }
 
+    fun setSubscriptionTypeDialogState(state: Boolean) {
+        sendEvent(AddSubscriptionEvent.SubscriptionTypeDialogState(state))
+    }
+
     fun setCurrencyDialogState(state: Boolean) {
         sendEvent(AddSubscriptionEvent.CurrencyDialogState(state))
     }
@@ -79,7 +87,7 @@ class AddSubscriptionVM(
 
     private fun addSubscriptionFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
-            val dateFormat = SimpleDateFormat("d/m/yyyy", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
 
             if (validateFields()) {
                 sendEvent(AddSubscriptionEvent.ChangeLoadingState(LoadingState.LOADING))
@@ -95,7 +103,8 @@ class AddSubscriptionVM(
                         amount = state.value.amountField.field.toDouble(),
                         currency = state.value.currencyField,
                         periodType = state.value.periodField,
-                        date = if (state.value.dateField.isNotEmpty()) dateFormat.parse(state.value.dateField).time else null,
+                        subscriptionType = state.value.subscriptionTypeField,
+                        date = if (state.value.dateField.field.isNotEmpty()) dateFormat.parse(state.value.dateField.field)?.time else null,
                         updateDate = Calendar.getInstance().time.time
                     )
                 )).collect {
@@ -124,7 +133,11 @@ class AddSubscriptionVM(
                 sendEvent(AddSubscriptionEvent.ChangeAmount(StringWithError("", true)))
             }
 
-            return@with !(nameField.field.isEmpty() || amountField.field.isEmpty())
+            if (dateField.field.isEmpty()) {
+                sendEvent(AddSubscriptionEvent.ChangeDate(StringWithError("", true)))
+            }
+
+            return@with !(nameField.field.isEmpty() || amountField.field.isEmpty() || dateField.field.isEmpty())
         }
     }
 
@@ -162,6 +175,12 @@ class AddSubscriptionVM(
             }
             is AddSubscriptionEvent.ChangePeriod -> {
                 setState { copy(periodField = event.period, keyboardIsVisible = true) }
+            }
+            is AddSubscriptionEvent.SubscriptionTypeDialogState -> {
+                setState { copy(subscriptionTypeDialogIsOpen = event.state) }
+            }
+            is AddSubscriptionEvent.ChangeSubscriptionType -> {
+                setState { copy(subscriptionTypeField = event.type, keyboardIsVisible = true) }
             }
             is AddSubscriptionEvent.ChangePlan -> {
                 setState { copy(planField = event.plan, keyboardIsVisible = true) }

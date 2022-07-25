@@ -1,4 +1,4 @@
-package com.lukakordzaia.subscriptionmanager.helpers
+package com.lukakordzaia.feature_add_subscription.helpers
 
 data class StringWithError(
     val field: String,
