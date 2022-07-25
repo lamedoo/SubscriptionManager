@@ -39,7 +39,7 @@ class AddSubscriptionUseCase(
             val currency: String,
             val periodType: Int,
             val date: Long?,
-            val subscriptionType: String? = null,
+            val subscriptionType: Int,
             val updateDate: Long
         )
     }
