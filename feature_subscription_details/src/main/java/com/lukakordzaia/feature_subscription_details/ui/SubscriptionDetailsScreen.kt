@@ -52,6 +52,7 @@ fun SubscriptionDetailsScreen(
             detailAmount = details.amount,
             detailPeriod = details.periodType,
             detailColor = details.color,
+            firstPaymentDay = details.date,
             nextPaymentDate = DateHelpers.formatDate(DateHelpers.nextPaymentDate(details.periodType, details.date!!)),
             detailSubscriptionType = details.subscriptionType,
             detailPlan = details.plan,
@@ -69,6 +70,7 @@ private fun DetailsWrapper(
     detailAmount: Double,
     detailPeriod: Constants.PeriodType,
     detailColor: Color?,
+    firstPaymentDay: Long?,
     nextPaymentDate: String,
     detailSubscriptionType: Constants.SubscriptionType,
     detailPlan: String?,
@@ -103,6 +105,7 @@ private fun DetailsWrapper(
         SubscriptionInfo(
             modifier = Modifier
                 .padding(top = 30.dp, start = 15.dp, end = 15.dp),
+            firstPaymentDay = firstPaymentDay,
             nextPaymentDate = nextPaymentDate,
             paymentPeriod = detailPeriod,
             subscriptionType = detailSubscriptionType,

@@ -52,10 +52,10 @@ object DateHelpers {
                 if (dateInMonth < currentInMonth) {
                     currentDate.add(Calendar.YEAR, 1)
                     currentDate.set(Calendar.DAY_OF_MONTH, dateInMonthDay)
-                    currentDate.set(Calendar.MONTH, dateInMonth)
+                    currentDate.set(Calendar.MONTH, dateInMonth-1)
                 } else if (dateInMonth > currentInMonth) {
                     currentDate.set(Calendar.DAY_OF_MONTH, dateInMonthDay)
-                    currentDate.set(Calendar.MONTH, dateInMonth)
+                    currentDate.set(Calendar.MONTH, dateInMonth-1)
                 } else {
                     if (dateInMonthDay < currentInMonthDay) {
                         currentDate.add(Calendar.YEAR, 1)

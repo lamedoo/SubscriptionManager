@@ -14,12 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lukakordzaia.core.R
+import com.lukakordzaia.core.helpers.DateHelpers
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core_compose.custom.LightText
 
 @Composable
 fun SubscriptionInfo(
     modifier: Modifier,
+    firstPaymentDay: Long?,
     nextPaymentDate: String,
     paymentPeriod: Constants.PeriodType,
     subscriptionType: Constants.SubscriptionType,
@@ -35,6 +37,7 @@ fun SubscriptionInfo(
             fontSize = 16.sp
         )
         InfoWrapper(
+            firstPaymentDay = firstPaymentDay,
             nextPaymentDate = nextPaymentDate,
             paymentPeriod = paymentPeriod,
             subscriptionType = subscriptionType,
@@ -45,6 +48,7 @@ fun SubscriptionInfo(
 
 @Composable
 private fun InfoWrapper(
+    firstPaymentDay: Long?,
     nextPaymentDate: String,
     paymentPeriod: Constants.PeriodType,
     subscriptionType: Constants.SubscriptionType,
@@ -59,6 +63,10 @@ private fun InfoWrapper(
     ) {
         InfoItem(icon = R.drawable.icon_repeat_payment, label = R.string.next_payment_day, value = nextPaymentDate)
         Line()
+        firstPaymentDay?.let {
+            InfoItem(icon = R.drawable.icon_first_payment, label = R.string.first_payment_day, value = DateHelpers.formatDate(it))
+            Line()
+        }
         InfoItem(icon = R.drawable.icon_subscription_period, label = R.string.payment_period, value = "${Constants.PeriodType.transformFromPeriodType(type = paymentPeriod)}ly")
         Line()
         InfoItem(icon = R.drawable.icon_subscription_plan, label = R.string.plan, value = subscriptionPlan ?: stringResource(id = R.string.not_available))
@@ -119,6 +127,7 @@ private fun Line() {
 private fun SubscriptionInfoPreview() {
     SubscriptionInfo(
         modifier = Modifier,
+        firstPaymentDay = 120312931203,
         nextPaymentDate = "18.20.21",
         paymentPeriod = Constants.PeriodType.MONTH,
         subscriptionType = Constants.SubscriptionType.MUSIC,
