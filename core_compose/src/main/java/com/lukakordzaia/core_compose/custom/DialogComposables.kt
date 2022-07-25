@@ -3,16 +3,16 @@ package com.lukakordzaia.core_compose.custom
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.lukakordzaia.core.R
@@ -66,6 +66,9 @@ fun CommonDialog(
 @Composable
 fun QuestionDialog(
     showDialog: Boolean,
+    question: Int = R.string.are_you_sure,
+    noButtonText: Int = R.string.cancel_text,
+    yestButtonText: Int = R.string.yes,
     onDismiss: (Boolean) -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -79,16 +82,57 @@ fun QuestionDialog(
                    .fillMaxWidth()
                    .background(Color.White, shape = RoundedCornerShape(8.dp))
            ) {
-               Text(text = stringResource(id =R.string.are_you_sure))
-               Row {
-                   Button(onClick = { onDismiss(false) }) {
-                       Text(text = stringResource(id = R.string.no))
+               Text(
+                   modifier = Modifier
+                       .padding(20.dp)
+                       .align(Alignment.CenterHorizontally),
+                   text = stringResource(id = question)
+               )
+               Row(
+                   modifier = Modifier
+                       .padding(top = 50.dp)
+               ) {
+                   Button(
+                       modifier = Modifier
+                           .padding(5.dp),
+                       onClick = { onDismiss(false) },
+                       elevation = null
+                   ) {
+                       LightText(
+                           modifier = Modifier
+                               .padding(5.dp),
+                           text = stringResource(id = noButtonText),
+                           fontWeight = FontWeight.Bold,
+                           fontSize = 15.sp
+                       )
                    }
-                   Button(onClick = { onConfirm.invoke() }) {
-                       Text(text = stringResource(id = R.string.yes))
+                   Button(
+                       modifier = Modifier
+                           .padding(5.dp)
+                           .fillMaxWidth(),
+                       onClick = { onConfirm.invoke() },
+                       colors = ButtonDefaults.buttonColors(
+                           backgroundColor = MaterialTheme.colors.secondary,
+                           contentColor = MaterialTheme.colors.onSecondary
+                       )
+                   ) {
+                       LightText(
+                           modifier = Modifier
+                               .padding(5.dp),
+                           text = stringResource(id = yestButtonText),
+                           fontWeight = FontWeight.Bold,
+                           fontSize = 15.sp,
+                           color = MaterialTheme.colors.onSecondary
+                       )
                    }
                }
            }
         }
     }
+}
+
+@Preview
+@Composable
+fun QuestionDialogPreview() {
+    QuestionDialog(showDialog = true, onDismiss = {}) {}
 }

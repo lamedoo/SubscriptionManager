@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.lukakordzaia.core.R
 import com.lukakordzaia.core.helpers.DateHelpers
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core_compose.ObserveLoadingState
@@ -143,6 +144,7 @@ private fun ObserveDeleteDialog(
     QuestionDialog(
         showDialog = deleteDialogState,
         onDismiss = { state -> onDeleteDialogStateChange(state) },
+        yestButtonText = R.string.delete,
         onConfirm = onDeleteDialogConfirm
     )
 }
