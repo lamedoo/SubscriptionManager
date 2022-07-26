@@ -9,7 +9,7 @@ fun ObserveLoadingState(
     loader: LoadingState,
     isLoading: @Composable () -> Unit = { ProgressDialog(showDialog = true) },
     isLoaded: @Composable () -> Unit = { ProgressDialog(showDialog = false) },
-    isError: () -> Unit = {}
+    isError: @Composable () -> Unit = {}
 ) {
     when (loader) {
         LoadingState.LOADING -> isLoading.invoke()

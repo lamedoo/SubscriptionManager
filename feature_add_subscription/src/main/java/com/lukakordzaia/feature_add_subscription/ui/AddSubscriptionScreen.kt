@@ -1,4 +1,4 @@
-package com.lukakordzaia.feature_add_subscription
+package com.lukakordzaia.feature_add_subscription.ui
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -29,12 +29,9 @@ import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
 import com.lukakordzaia.core.utils.Currencies
-import com.lukakordzaia.core.utils.LoadingState
+import com.lukakordzaia.core_compose.ObserveLoadingState
 import com.lukakordzaia.core_compose.custom.CommonDialog
-import com.lukakordzaia.core_compose.custom.ProgressDialog
-import com.lukakordzaia.feature_add_subscription.ui.ColorField
-import com.lukakordzaia.feature_add_subscription.ui.CustomTextField
-import com.lukakordzaia.feature_add_subscription.ui.DropDownList
+import com.lukakordzaia.feature_add_subscription.AddSubscriptionVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -51,11 +48,15 @@ fun AddSubscriptionScreen(
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
 
+    ObserveLoadingState(
+        loader = state.value.isLoading,
+        isError = {
+            CommonDialog(showDialog = state.value.errorDialogIsOpen, onDismiss = { state -> vm.setErrorDialogState(state) })
+        }
+    )
+
     StateObservers(
-        isLoading = state.value.isLoading,
         isUploaded = state.value.isUploaded,
-        errorDialogState = state.value.errorDialogIsOpen,
-        onDialogStateChange = { value -> vm.setErrorDialogState(value) },
         onDone = {
             scope.launch {
                 vm.emptyState()
@@ -526,21 +527,9 @@ private fun HandleBack(
 
 @Composable
 private fun StateObservers(
-    isLoading: LoadingState?,
     isUploaded: Boolean,
-    errorDialogState: Boolean,
-    onDialogStateChange: (Boolean) -> Unit,
     onDone: () -> Unit
 ) {
-    when (isLoading) {
-        LoadingState.LOADING -> ProgressDialog(showDialog = true)
-        LoadingState.LOADED -> {
-            ProgressDialog(showDialog = false)
-        }
-        LoadingState.ERROR -> CommonDialog(showDialog = errorDialogState, onDismiss = { state -> onDialogStateChange(state) })
-        else -> {}
-    }
-
     if (isUploaded) {
         onDone.invoke()
     }

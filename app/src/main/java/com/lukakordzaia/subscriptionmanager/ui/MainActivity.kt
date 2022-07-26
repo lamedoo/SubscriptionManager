@@ -15,16 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lukakordzaia.core.activity.BaseComponentActivity
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core_compose.theme.SubscriptionManagerTheme
-import com.lukakordzaia.feature_add_subscription.AddSubscriptionScreen
+import com.lukakordzaia.feature_add_subscription.ui.AddSubscriptionScreen
 import com.lukakordzaia.subscriptionmanager.navigation.GeneralNavGraph
 import com.lukakordzaia.subscriptionmanager.navigation.bottomnav.BottomNavigationComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
-class MainActivity : com.lukakordzaia.core.activity.BaseComponentActivity() {
+class MainActivity : BaseComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +42,14 @@ fun MainContent() {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            AddSubscriptionScaffold()
+            MainScaffoldWithAddSubscriptionBottomSheetLayout()
         }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun AddSubscriptionScaffold() {
+fun MainScaffoldWithAddSubscriptionBottomSheetLayout() {
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, confirmStateChange = { false })
     val coroutineScope = rememberCoroutineScope()
 

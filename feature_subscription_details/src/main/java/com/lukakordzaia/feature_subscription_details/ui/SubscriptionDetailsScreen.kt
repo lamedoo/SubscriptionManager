@@ -46,10 +46,6 @@ fun SubscriptionDetailsScreen(
         onDeleteDialogStateChange = { dialogState -> vm.setDeleteDialogState(dialogState) },
         onDeleteDialogConfirm = { state.value.details?.id?.let { vm.deleteSubscription(it) } }
     )
-//    ObserveSubscriptionDeleteState(
-//        subscriptionDeleteState = state.value.isSubscriptionDeleted,
-//        isDeleted = { navHostController.popBackStack() }
-//    )
     state.value.details?.let { details ->
         DetailsWrapper(
             detailName = details.name,
