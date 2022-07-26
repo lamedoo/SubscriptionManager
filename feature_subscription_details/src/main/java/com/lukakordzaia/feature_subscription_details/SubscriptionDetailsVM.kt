@@ -1,7 +1,6 @@
 package com.lukakordzaia.feature_subscription_details
 
 import androidx.lifecycle.viewModelScope
-import com.lukakordzaia.core.helpers.SingleEvent
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.viewmodel.BaseViewModel
@@ -13,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class SubscriptionDetailsVM(
     private val deleteSubscriptionUseCase: DeleteSubscriptionUseCase
-) : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SingleEvent>() {
+) : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SubscriptionDetailsSingleEvent>() {
     override fun createInitialState(): SubscriptionDetailsState {
         return SubscriptionDetailsState.initial()
     }
@@ -47,11 +46,12 @@ class SubscriptionDetailsVM(
             ).collect {
                 when (it) {
                     is ResultDomain.Success -> {
-                        setSingleEvent { SingleEvent.ShowToast("Deleted Successfully") }
-                        sendEvent(SubscriptionDetailsEvent.SubscriptionIsDeleted(LoadingState.LOADED,true))
+                        sendEvent(SubscriptionDetailsEvent.ChangeLoadingState(LoadingState.LOADED))
+                        setSingleEvent { SubscriptionDetailsSingleEvent.SubscriptionIsDeleted(true) }
                     }
                     is ResultDomain.Error -> {
                         sendEvent(SubscriptionDetailsEvent.ChangeLoadingState(LoadingState.ERROR))
+                        setSingleEvent { SubscriptionDetailsSingleEvent.SubscriptionIsDeleted(false) }
                     }
                 }
             }
@@ -67,7 +67,7 @@ class SubscriptionDetailsVM(
                 setState { copy(details = event.subscription) }
             }
             is SubscriptionDetailsEvent.NavigateToEditSubscription -> {
-                setSingleEvent { SingleEvent.Navigation(NavConstants.EDIT_SUBSCRIPTION) }
+                setSingleEvent { SubscriptionDetailsSingleEvent.Navigation(NavConstants.EDIT_SUBSCRIPTION) }
             }
             is SubscriptionDetailsEvent.DeleteDialogState -> {
                 setState { copy(deleteDialogIsOpen = event.state) }
