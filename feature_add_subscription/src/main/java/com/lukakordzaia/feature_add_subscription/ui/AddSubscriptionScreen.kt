@@ -7,9 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -19,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -27,7 +27,6 @@ import androidx.navigation.NavHostController
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
-import com.lukakordzaia.core.utils.Currencies
 import com.lukakordzaia.core_compose.ObserveLoadingState
 import com.lukakordzaia.core_compose.custom.CommonDialog
 import com.lukakordzaia.feature_add_subscription.AddSubscriptionVM
@@ -61,40 +60,30 @@ fun AddSubscriptionScreen(
             .padding(20.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        val (topTitle,
-            close,
+        val (topBar,
             link,
             name,
             plan,
             color,
-            amount,
+            amountCurrency,
             period,
-            currency,
             date,
             button,
             subscriptionType) = createRefs()
 
-        TopTitle(
+        TopBar(
             modifier = Modifier
-                .constrainAs(topTitle) {
+                .constrainAs(topBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }
-        )
-        CloseButton(
-            modifier = Modifier
-                .constrainAs(close) {
-                    top.linkTo(topTitle.top)
-                    bottom.linkTo(topTitle.bottom)
-                    end.linkTo(parent.end)
                 },
-            close = { navHostController.popBackStack() }
+            onClose = { navHostController.popBackStack() }
         )
         NameField(
             modifier = Modifier
                 .constrainAs(name) {
-                    top.linkTo(topTitle.bottom, margin = 30.dp)
+                    top.linkTo(topBar.bottom, margin = 30.dp)
                     start.linkTo(parent.start)
                 }
                 .fillMaxWidth(0.67F),
@@ -118,7 +107,7 @@ fun AddSubscriptionScreen(
             modifier = Modifier
                 .constrainAs(color) {
                     top.linkTo(name.top)
-                    bottom.linkTo(currency.top, margin = 10.dp)
+                    bottom.linkTo(amountCurrency.top, margin = 10.dp)
                     end.linkTo(parent.end)
                     height = Dimension.fillToConstraints
                 }
@@ -128,35 +117,28 @@ fun AddSubscriptionScreen(
             onDialogStateChange = { state -> vm.setColorDialogState(state) },
             onChange = { value -> vm.setColor(value) }
         )
-        AmountField(
+
+        AmountCurrencyField(
             modifier = Modifier
-                .constrainAs(amount) {
+                .constrainAs(amountCurrency) {
                     top.linkTo(plan.bottom, margin = 10.dp)
                     start.linkTo(parent.start)
                 }
-                .fillMaxWidth(0.67F),
-            value = state.value.amountField.field,
-            onChange = { value -> vm.setAmount(value) },
-            focusRequester = focusRequester,
-            isError = state.value.amountField.isError
-        )
-        CurrencyField(
-            modifier = Modifier
-                .constrainAs(currency) {
-                    top.linkTo(amount.top)
-                    end.linkTo(parent.end)
-                }
-                .fillMaxWidth(0.3F),
-            value = state.value.currencyField,
+                .fillMaxWidth(),
+            amountValue = state.value.amountField.field,
+            onAmountChange = { value -> vm.setAmount(value) },
+            amountIsError = state.value.amountField.isError,
+            currencyValue = state.value.currencyField,
             currencyDialogState = state.value.currencyDialogIsOpen,
-            onDialogStateChange = { state -> vm.setCurrencyDialogState(state) },
-            onChange = { value -> vm.setCurrency(value.substring(0, 3)) },
+            onCurrencyDialogStateChange = { state -> vm.setCurrencyDialogState(state) },
+            onCurrencyChange = { value -> vm.setCurrency(value.substring(0, 3)) },
             focusRequester = focusRequester
         )
+
         PeriodField(
             modifier = Modifier
                 .constrainAs(period) {
-                    top.linkTo(amount.bottom, margin = 10.dp)
+                    top.linkTo(amountCurrency.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
             value = state.value.periodField,
@@ -209,32 +191,6 @@ fun AddSubscriptionScreen(
 }
 
 @Composable
-private fun TopTitle(modifier: Modifier) {
-    Text(
-        modifier = modifier,
-        text = stringResource(id = R.string.new_sub_title),
-        style = com.lukakordzaia.core_compose.theme.titleStyle
-    )
-}
-
-@Composable
-private fun CloseButton(
-    modifier: Modifier,
-    close: () -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        content = {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = null,
-            )
-        },
-        onClick = close
-    )
-}
-
-@Composable
 private fun NameField(
     modifier: Modifier,
     value: String,
@@ -244,7 +200,7 @@ private fun NameField(
 ) {
     CustomTextField(
         modifier = modifier,
-        label = R.string.name,
+        label = stringResource(id = R.string.name),
         value = value,
         onChange = onChange,
         focusRequester = focusRequester,
@@ -261,30 +217,10 @@ private fun PlanField(
 ) {
     CustomTextField(
         modifier = modifier,
-        label = R.string.plan,
+        label = stringResource(id = R.string.plan),
         value = value,
         onChange = onChange,
         focusRequester = focusRequester
-    )
-}
-
-@Composable
-private fun AmountField(
-    modifier: Modifier,
-    value: String,
-    onChange: (amount: String) -> Unit,
-    focusRequester: FocusRequester,
-    isError: Boolean
-) {
-    CustomTextField(
-        modifier = modifier,
-        label = R.string.amount,
-        value = if (value == "0.0") "" else value,
-        onChange = onChange,
-        imeAction = ImeAction.Done,
-        keyboardType = KeyboardType.Number,
-        focusRequester = focusRequester,
-        isError = isError
     )
 }
 
@@ -297,7 +233,7 @@ private fun LinkField(
 ) {
     CustomTextField(
         modifier = modifier,
-        label = R.string.link,
+        label = stringResource(id = R.string.link),
         value = value,
         onChange = onChange,
         focusRequester = focusRequester,
@@ -324,7 +260,7 @@ private fun DateField(
     ) {
         CustomTextField(
             modifier = modifier,
-            label = R.string.payment_day,
+            label = stringResource(id = R.string.payment_day),
             value = value,
             onChange = onChange,
             focusRequester = focusRequester,
@@ -336,39 +272,6 @@ private fun DateField(
                 .background(Color.Transparent)
                 .clickable(
                     onClick = { timePickerDialog.show() }
-                )
-        )
-    }
-}
-
-@Composable
-private fun CurrencyField(
-    modifier: Modifier,
-    value: String,
-    currencyDialogState: Boolean,
-    onDialogStateChange: (Boolean) -> Unit,
-    onChange: (currency: String) -> Unit,
-    focusRequester: FocusRequester
-) {
-    Box(modifier = modifier) {
-        CustomTextField(
-            label = R.string.currency,
-            value = Currencies.Currency.getCurrencyName(value),
-            onChange = onChange,
-            focusRequester = focusRequester
-        )
-        DropDownList(
-            requestOpen = currencyDialogState,
-            list = Currencies.Currency.getCurrencyList(),
-            onDialogStateChange,
-            onChange
-        )
-        Spacer(
-            modifier = Modifier
-                .matchParentSize()
-                .background(Color.Transparent)
-                .clickable(
-                    onClick = { onDialogStateChange(true) }
                 )
         )
     }
@@ -395,7 +298,7 @@ private fun PeriodField(
     ) {
         CustomTextField(
             modifier = modifier,
-            label = R.string.period,
+            label = stringResource(id = R.string.period),
             value = transformFromPeriodType(type = Constants.PeriodType.getPeriodType(value)),
             onChange = onChange,
             focusRequester = focusRequester
@@ -440,7 +343,7 @@ private fun SubscriptionTypeField(
     ) {
         CustomTextField(
             modifier = modifier,
-            label = R.string.subscription_type,
+            label = stringResource(id = R.string.subscription_type),
             value = Constants.SubscriptionType.transformFromSubscriptionType(type = Constants.SubscriptionType.getSubscriptionType(value)),
             onChange = onChange,
             focusRequester = focusRequester
