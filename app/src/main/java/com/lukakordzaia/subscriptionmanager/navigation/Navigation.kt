@@ -2,38 +2,55 @@ package com.lukakordzaia.subscriptionmanager.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.material.BottomSheetNavigator
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.bottomSheet
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.utils.fromJson
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
+import com.lukakordzaia.feature_add_subscription.ui.AddSubscriptionScreen
 import com.lukakordzaia.feature_statistics.StatisticsScreen
 import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
 import com.lukakordzaia.feature_subscription_details.ui.SubscriptionDetailsScreen
 import com.lukakordzaia.feature_subscriptions.SubscriptionsVM
-import com.lukakordzaia.feature_subscriptions.ui.HomeScreen
+import com.lukakordzaia.feature_subscriptions.ui.SubscriptionsScreen
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
-fun GeneralNavGraph(padding: PaddingValues, navController: NavHostController) {
-    NavHost(
-        modifier = Modifier
-            .padding(padding),
-        navController = navController,
-        startDestination = NavConstants.SUBSCRIPTIONS,
-        route = NavConstants.BOTTOM_NAV_ROUTE
+fun GeneralNavGraph(padding: PaddingValues, navHostController: NavHostController, bottomSheetNavigator: BottomSheetNavigator) {
+
+    ModalBottomSheetLayout(
+        bottomSheetNavigator = bottomSheetNavigator,
+        sheetShape = RoundedCornerShape(50.dp, 50.dp, 0.dp, 0.dp)
     ) {
-        composable(NavConstants.SUBSCRIPTIONS) {
-            val viewModel = getViewModel<SubscriptionsVM>()
-            HomeScreen(navController, viewModel)
+        NavHost(
+            modifier = Modifier
+                .padding(padding),
+            navController = navHostController,
+            startDestination = NavConstants.SUBSCRIPTIONS,
+            route = NavConstants.BOTTOM_NAV_ROUTE
+        ) {
+            composable(NavConstants.SUBSCRIPTIONS) {
+                val viewModel = getViewModel<SubscriptionsVM>()
+                SubscriptionsScreen(navHostController, viewModel)
+            }
+            composable(NavConstants.STATISTICS) {
+                StatisticsScreen()
+            }
+            subscriptionDetailsNavGraph(navController = navHostController)
+            bottomSheet(NavConstants.ADD_SUBSCRIPTION) {
+                AddSubscriptionScreen(getViewModel(), navHostController)
+            }
         }
-        composable(NavConstants.STATISTICS) {
-            StatisticsScreen()
-        }
-        subscriptionDetailsNavGraph(navController = navController)
     }
 }
 

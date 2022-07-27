@@ -20,7 +20,7 @@ import com.lukakordzaia.core_compose.theme._A6AEC0
 import com.lukakordzaia.feature_subscriptions.SubscriptionsVM
 
 @Composable
-fun HomeScreen(
+fun SubscriptionsScreen(
     navHostController: NavHostController,
     vm: SubscriptionsVM
 ) {

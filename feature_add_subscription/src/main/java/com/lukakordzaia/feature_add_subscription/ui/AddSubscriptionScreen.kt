@@ -2,7 +2,6 @@ package com.lukakordzaia.feature_add_subscription.ui
 
 import android.app.DatePickerDialog
 import android.content.Context
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,13 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavHostController
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
@@ -32,19 +31,14 @@ import com.lukakordzaia.core.utils.Currencies
 import com.lukakordzaia.core_compose.ObserveLoadingState
 import com.lukakordzaia.core_compose.custom.CommonDialog
 import com.lukakordzaia.feature_add_subscription.AddSubscriptionVM
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddSubscriptionScreen(
     vm: AddSubscriptionVM,
-    bottomSheetState: ModalBottomSheetState,
-    scope: CoroutineScope,
+    navHostController: NavHostController
 ) {
     val state = vm.state.collectAsState()
-    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
 
@@ -57,23 +51,8 @@ fun AddSubscriptionScreen(
 
     StateObservers(
         isUploaded = state.value.isUploaded,
-        onDone = {
-            scope.launch {
-                vm.emptyState()
-                bottomSheetState.hide()
-            }
-        }
+        onDone = { navHostController.popBackStack() }
     )
-
-    HandleBack(
-        state = bottomSheetState
-    ) {
-        scope.launch {
-            focusManager.clearFocus()
-            vm.emptyState()
-            bottomSheetState.hide()
-        }
-    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -110,13 +89,7 @@ fun AddSubscriptionScreen(
                     bottom.linkTo(topTitle.bottom)
                     end.linkTo(parent.end)
                 },
-            close = {
-                scope.launch {
-                    focusManager.clearFocus()
-                    vm.emptyState()
-                    bottomSheetState.hide()
-                }
-            }
+            close = { navHostController.popBackStack() }
         )
         NameField(
             modifier = Modifier
@@ -512,17 +485,6 @@ private fun AddButtonView() {
         text = stringResource(id = R.string.add_subscription),
         style = com.lukakordzaia.core_compose.theme.generalButtonStyle
     )
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun HandleBack(
-    state: ModalBottomSheetState,
-    onBack: () -> Unit
-) {
-    BackHandler(enabled = state.isVisible) {
-        onBack.invoke()
-    }
 }
 
 @Composable
