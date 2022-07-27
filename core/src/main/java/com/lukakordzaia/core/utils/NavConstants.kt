@@ -6,6 +6,7 @@ object NavConstants {
     const val STATISTICS = "statistics"
     const val SUBSCRIPTION_DETAILS = "subscription_details"
     const val EDIT_SUBSCRIPTION = "edit_subscription"
+    const val ADD_SUBSCRIPTION = "add_subscription"
 
     // Routes
     const val BOTTOM_NAV_ROUTE = "bottom_route"

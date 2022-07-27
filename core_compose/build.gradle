@@ -49,6 +49,7 @@ dependencies {
     api "androidx.constraintlayout:constraintlayout-compose:$compose_constraint"
     api "androidx.navigation:navigation-compose:$navigation_compose"
     api "com.google.accompanist:accompanist-systemuicontroller:$accompanist_systemui"
+    api "com.google.accompanist:accompanist-navigation-material:$accompanist_bottomsheet"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

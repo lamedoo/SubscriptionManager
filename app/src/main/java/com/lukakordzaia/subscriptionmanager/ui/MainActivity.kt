@@ -6,27 +6,24 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.material.BottomSheetNavigator
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.lukakordzaia.core.activity.BaseComponentActivity
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core_compose.theme.SubscriptionManagerTheme
-import com.lukakordzaia.feature_add_subscription.ui.AddSubscriptionScreen
 import com.lukakordzaia.subscriptionmanager.navigation.GeneralNavGraph
 import com.lukakordzaia.subscriptionmanager.navigation.bottomnav.BottomNavigationComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 
 class MainActivity : BaseComponentActivity() {
-    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,39 +32,28 @@ class MainActivity : BaseComponentActivity() {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun MainContent() {
     SubscriptionManagerTheme {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            MainScaffoldWithAddSubscriptionBottomSheetLayout()
+            MainScaffold()
         }
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun MainScaffoldWithAddSubscriptionBottomSheetLayout() {
-    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, confirmStateChange = { false })
-    val coroutineScope = rememberCoroutineScope()
-
-    ModalBottomSheetLayout(
-        sheetState = modalBottomSheetState,
-        sheetContent = { AddSubscriptionScreen(getViewModel(), modalBottomSheetState, coroutineScope) },
-        sheetShape = RoundedCornerShape(50.dp, 50.dp, 0.dp, 0.dp)
-    ) {
-        MainScaffold(modalBottomSheetState, coroutineScope)
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun MainScaffold(state: ModalBottomSheetState, scope: CoroutineScope) {
+fun MainScaffold() {
     val bottomBarState = remember { (mutableStateOf(true)) }
 
-    val navController = rememberNavController()
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true
+    )
+    val bottomSheetNavigator = remember { BottomSheetNavigator(sheetState) }
+    val navController = rememberNavController(bottomSheetNavigator)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     when (navBackStackEntry?.destination?.route) {
@@ -77,17 +63,16 @@ fun MainScaffold(state: ModalBottomSheetState, scope: CoroutineScope) {
 
     Scaffold(
         bottomBar = { BottomNavigationComponent(navController = navController, bottomBarState) } ,
-        floatingActionButton = { AddButton(
-            bottomBarState = bottomBarState,
-            click = {
-                scope.launch {
-                    state.animateTo(ModalBottomSheetValue.Expanded)
-                }
-            }) },
+        floatingActionButton = {
+            AddButton(
+                bottomBarState = bottomBarState,
+                click = { (navController as NavHostController).navigate(NavConstants.ADD_SUBSCRIPTION) }
+            )
+        },
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
-        GeneralNavGraph(padding = padding, navController = navController)
+        GeneralNavGraph(padding = padding, navHostController = navController, bottomSheetNavigator = bottomSheetNavigator)
     }
 }
 
