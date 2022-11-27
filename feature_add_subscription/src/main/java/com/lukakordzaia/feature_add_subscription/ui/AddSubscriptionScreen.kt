@@ -4,7 +4,11 @@ import android.app.DatePickerDialog
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -29,8 +33,9 @@ import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
 import com.lukakordzaia.core_compose.ObserveLoadingState
 import com.lukakordzaia.core_compose.custom.CommonDialog
+import com.lukakordzaia.core_compose.theme.generalButtonStyle
 import com.lukakordzaia.feature_add_subscription.AddSubscriptionVM
-import java.util.*
+import java.util.Calendar
 
 @Composable
 fun AddSubscriptionScreen(
@@ -386,7 +391,7 @@ private fun AddButtonView() {
         modifier = Modifier
             .padding(12.dp),
         text = stringResource(id = R.string.add_subscription),
-        style = com.lukakordzaia.core_compose.theme.generalButtonStyle
+        style = generalButtonStyle
     )
 }
 
