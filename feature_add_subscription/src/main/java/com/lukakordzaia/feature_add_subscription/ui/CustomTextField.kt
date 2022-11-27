@@ -16,7 +16,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -26,7 +25,7 @@ import com.lukakordzaia.core_compose.theme.fieldLabel
 @Composable
 fun CustomTextField(
     modifier: Modifier = Modifier,
-    label: Int,
+    label: String,
     value: String,
     imeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -46,7 +45,7 @@ fun CustomTextField(
                 onChange(it)
             },
             singleLine = true,
-            label = { Text(text = stringResource(id = label)) },
+            label = { Text(text = label) },
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colors.onPrimary,
