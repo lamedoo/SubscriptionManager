@@ -25,7 +25,7 @@ fun SubscriptionsScreen(
     vm: SubscriptionsVM
 ) {
     val state = vm.state.collectAsState()
-    ObserveSingleEvents(navController = navHostController, singleEvent = vm.singleEvent)
+    ObserveSingleEvents(navController = navHostController, singleEvent = vm.generalEvent)
     ObserveLoadingState(loader = state.value.isLoading)
 
     Column(

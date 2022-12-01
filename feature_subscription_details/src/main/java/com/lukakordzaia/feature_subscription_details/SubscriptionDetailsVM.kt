@@ -1,8 +1,10 @@
 package com.lukakordzaia.feature_subscription_details
 
 import androidx.lifecycle.viewModelScope
+import com.lukakordzaia.core.helpers.SingleEvent
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core.utils.NavConstants
+import com.lukakordzaia.core.utils.toJson
 import com.lukakordzaia.core.viewmodel.BaseViewModel
 import com.lukakordzaia.core_domain.ResultDomain
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
@@ -12,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class SubscriptionDetailsVM(
     private val deleteSubscriptionUseCase: DeleteSubscriptionUseCase
-) : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SubscriptionDetailsSingleEvent>() {
+) : BaseViewModel<SubscriptionDetailsState, SubscriptionDetailsEvent, SingleEvent>() {
     override fun createInitialState(): SubscriptionDetailsState {
         return SubscriptionDetailsState.initial()
     }
@@ -22,7 +24,8 @@ class SubscriptionDetailsVM(
     }
 
     fun navigateToEditSubscription(details: SubscriptionItemDomain) {
-        sendEvent(SubscriptionDetailsEvent.NavigateToEditSubscription(details))
+        val subscription = details.toJson()
+        sendEvent(SubscriptionDetailsEvent.NavigateToEditSubscription(subscription!!))
     }
 
     fun setDeleteDialogState(state: Boolean) {
@@ -47,11 +50,11 @@ class SubscriptionDetailsVM(
                 when (it) {
                     is ResultDomain.Success -> {
                         sendEvent(SubscriptionDetailsEvent.ChangeLoadingState(LoadingState.LOADED))
-                        setSingleEvent { SubscriptionDetailsSingleEvent.SubscriptionIsDeleted(true) }
+                        sendEvent(SubscriptionDetailsEvent.SubscriptionIsDeleted(true))
                     }
                     is ResultDomain.Error -> {
                         sendEvent(SubscriptionDetailsEvent.ChangeLoadingState(LoadingState.ERROR))
-                        setSingleEvent { SubscriptionDetailsSingleEvent.SubscriptionIsDeleted(false) }
+                        sendEvent(SubscriptionDetailsEvent.SubscriptionIsDeleted(false))
                     }
                 }
             }
@@ -61,13 +64,13 @@ class SubscriptionDetailsVM(
     override fun handleEvent(event: SubscriptionDetailsEvent) {
         when (event) {
             is SubscriptionDetailsEvent.ChangeLoadingState -> {
-                setState { copy(isLoading = event.state) }
+                setState { copy(loadingState = event.state) }
             }
             is SubscriptionDetailsEvent.GetSubscriptionDetails -> {
                 setState { copy(details = event.subscription) }
             }
             is SubscriptionDetailsEvent.NavigateToEditSubscription -> {
-                setSingleEvent { SubscriptionDetailsSingleEvent.Navigation(NavConstants.EDIT_SUBSCRIPTION) }
+                setSingleEvent { SingleEvent.Navigation("${NavConstants.EDIT_SUBSCRIPTION}/${event.details}") }
             }
             is SubscriptionDetailsEvent.DeleteDialogState -> {
                 setState { copy(deleteDialogIsOpen = event.state) }
@@ -76,7 +79,7 @@ class SubscriptionDetailsVM(
                 deleteSubscriptionFirestore(event.id)
             }
             is SubscriptionDetailsEvent.SubscriptionIsDeleted -> {
-                setState { copy(isLoading = event.loadingState, isSubscriptionDeleted = event.state) }
+                setState { copy(isSubscriptionDeleted = event.state) }
             }
         }
     }

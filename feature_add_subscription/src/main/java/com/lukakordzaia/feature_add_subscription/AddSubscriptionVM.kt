@@ -3,16 +3,23 @@ package com.lukakordzaia.feature_add_subscription
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewModelScope
+import com.lukakordzaia.core.helpers.DateHelpers
 import com.lukakordzaia.core.helpers.SingleEvent
+import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.LoadingState
+import com.lukakordzaia.core.utils.NavConstants
+import com.lukakordzaia.core.utils.toJson
 import com.lukakordzaia.core.viewmodel.BaseViewModel
 import com.lukakordzaia.core_domain.ResultDomain
+import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.core_domain.usecases.AddSubscriptionUseCase
 import com.lukakordzaia.feature_add_subscription.helpers.StringWithError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.UUID
 
 class AddSubscriptionVM(
     private val addSubscriptionUseCase: AddSubscriptionUseCase
@@ -22,8 +29,8 @@ class AddSubscriptionVM(
         return AddSubscriptionState.initial()
     }
 
-    fun emptyState() {
-        sendEvent(AddSubscriptionEvent.EmptyFields)
+    fun setSubscriptionToEdit(subscription: SubscriptionItemDomain) {
+        sendEvent(AddSubscriptionEvent.SetEditableSubscription(subscription))
     }
 
     fun setLink(link: String) {
@@ -86,6 +93,25 @@ class AddSubscriptionVM(
         sendEvent(AddSubscriptionEvent.ChangeErrorDialogState(state))
     }
 
+    fun navigateToDetails() {
+        val dateFormat = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
+
+        val subscription = SubscriptionItemDomain(
+            id = state.value.editSubscriptionId ?: UUID.randomUUID().toString(),
+            name = state.value.nameField.field,
+            plan = state.value.planField,
+            color = state.value.colorField,
+            amount = state.value.amountField.field.toDouble(),
+            currency = state.value.currencyField,
+            periodType = Constants.PeriodType.getPeriodType(state.value.periodField),
+            subscriptionType = Constants.SubscriptionType.getSubscriptionType(state.value.subscriptionTypeField),
+            date = if (state.value.dateField.field.isNotEmpty()) dateFormat.parse(state.value.dateField.field)?.time else null,
+            updateDate = Calendar.getInstance().time.time
+        ).toJson()
+
+        sendEvent(AddSubscriptionEvent.NavigateToDetails(subscription!!))
+    }
+
     private fun addSubscriptionFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
             val dateFormat = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
@@ -97,7 +123,7 @@ class AddSubscriptionVM(
                     AddSubscriptionUseCase.Params(
                     auth.currentUser!!.uid,
                     subscription = AddSubscriptionUseCase.Params.AddSubscriptionItem(
-                        id = UUID.randomUUID().toString(),
+                        id = state.value.editSubscriptionId ?: UUID.randomUUID().toString(),
                         name = state.value.nameField.field,
                         plan = state.value.planField,
                         color = state.value.colorField?.toArgb(),
@@ -144,8 +170,25 @@ class AddSubscriptionVM(
 
     override fun handleEvent(event: AddSubscriptionEvent) {
         when (event) {
-            is AddSubscriptionEvent.EmptyFields -> {
-                setState { AddSubscriptionState.initial() }
+            is AddSubscriptionEvent.SetEditableSubscription -> {
+                setState {
+                    copy(
+                        editIsSet = true,
+                        editSubscriptionId = event.subscription.id,
+                        nameField = StringWithError(event.subscription.name, false),
+                        colorField = event.subscription.color,
+                        amountField = StringWithError(event.subscription.amount.toString(), false),
+                        currencyField = event.subscription.currency,
+                        dateField = event.subscription.date?.let {
+                            StringWithError(DateHelpers.formatDate(it, "dd/MM/yyyy"), false)
+                        } ?: run {
+                            StringWithError("", false)
+                        },
+                        periodField = event.subscription.periodType.type,
+                        subscriptionTypeField = event.subscription.subscriptionType.type,
+                        planField = event.subscription.plan ?: ""
+                    )
+                }
             }
             is AddSubscriptionEvent.ChangeLink -> {
                 setState { copy(linkField = event.link, keyboardIsVisible = true) }
@@ -197,6 +240,9 @@ class AddSubscriptionVM(
             }
             is AddSubscriptionEvent.UploadDone -> {
                 setState { copy(isUploaded = true) }
+            }
+            is AddSubscriptionEvent.NavigateToDetails -> {
+                setSingleEvent { SingleEvent.Navigation("${NavConstants.SUBSCRIPTION_DETAILS}/${event.subscription}") }
             }
         }
     }

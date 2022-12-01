@@ -8,21 +8,21 @@ import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 sealed class SubscriptionDetailsEvent: UiEvent {
     data class ChangeLoadingState(val state: LoadingState): SubscriptionDetailsEvent()
     data class GetSubscriptionDetails(val subscription: SubscriptionItemDomain): SubscriptionDetailsEvent()
-    data class NavigateToEditSubscription(val details: SubscriptionItemDomain): SubscriptionDetailsEvent()
+    data class NavigateToEditSubscription(val details: String): SubscriptionDetailsEvent()
     data class DeleteDialogState(val state: Boolean): SubscriptionDetailsEvent()
     data class DeleteSubscription(val id: String): SubscriptionDetailsEvent()
-    data class SubscriptionIsDeleted(val loadingState: LoadingState, val state: Boolean): SubscriptionDetailsEvent()
+    data class SubscriptionIsDeleted(val state: Boolean): SubscriptionDetailsEvent()
 }
 
 data class SubscriptionDetailsState(
-    var isLoading: LoadingState,
+    var loadingState: LoadingState,
     val details: SubscriptionItemDomain?,
     val deleteDialogIsOpen: Boolean,
     val isSubscriptionDeleted: Boolean
 ) : UiState {
     companion object {
         fun initial() = SubscriptionDetailsState(
-            isLoading = LoadingState.LOADED,
+            loadingState = LoadingState.LOADED,
             details = null,
             deleteDialogIsOpen = false,
             isSubscriptionDeleted = false

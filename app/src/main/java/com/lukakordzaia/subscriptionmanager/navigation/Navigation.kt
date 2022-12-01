@@ -50,6 +50,7 @@ fun GeneralNavGraph(padding: PaddingValues, navHostController: NavHostController
             bottomSheet(NavConstants.ADD_SUBSCRIPTION) {
                 AddSubscriptionScreen(getViewModel(), navHostController)
             }
+            editSubscriptionNavGraph(navController = navHostController)
         }
     }
 }
@@ -67,6 +68,26 @@ fun NavGraphBuilder.subscriptionDetailsNavGraph(navController: NavHostController
                     subscription = subscription,
                     navHostController = navController,
                     vm = viewModel
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialNavigationApi::class)
+fun NavGraphBuilder.editSubscriptionNavGraph(navController: NavHostController) {
+    navigation(startDestination = NavConstants.EDIT_SUBSCRIPTION, route = NavConstants.EDIT_ROUTE) {
+        bottomSheet(
+            route = NavConstants.EDIT_SUBSCRIPTION + "/{${NavConstants.SUBSCRIPTION_ARG}}",
+            arguments = listOf(navArgument(NavConstants.SUBSCRIPTION_ARG) { type = NavType.StringType })
+        ) {
+            it.arguments?.getString(NavConstants.SUBSCRIPTION_ARG)?.let { jsonString ->
+                val subscription = jsonString.fromJson(SubscriptionItemDomain::class.java)
+                val viewModel = getViewModel<SubscriptionDetailsVM>()
+                AddSubscriptionScreen(
+                    vm = getViewModel(),
+                    navHostController = navController,
+                    subscriptionToEdit = subscription
                 )
             }
         }

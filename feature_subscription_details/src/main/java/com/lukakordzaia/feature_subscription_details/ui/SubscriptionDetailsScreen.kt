@@ -1,6 +1,5 @@
 package com.lukakordzaia.feature_subscription_details.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -12,24 +11,22 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.helpers.DateHelpers
 import com.lukakordzaia.core.utils.Constants
+import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core_compose.ObserveLoadingState
+import com.lukakordzaia.core_compose.ObserveSingleEvents
 import com.lukakordzaia.core_compose.custom.QuestionDialog
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
-import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsSingleEvent
 import com.lukakordzaia.feature_subscription_details.SubscriptionDetailsVM
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SubscriptionDetailsScreen(
@@ -37,16 +34,20 @@ fun SubscriptionDetailsScreen(
     navHostController: NavHostController,
     vm: SubscriptionDetailsVM
 ) {
-    val state = vm.state.collectAsState()
+    val state = vm.state.collectAsState().value
     vm.getSubscriptionDetails(subscription)
-    ObserveSubscriptionDetailsSingleEvents(navHostController = navHostController, singleEvent = vm.singleEvent)
-    ObserveLoadingState(loader = state.value.isLoading)
+    ObserveSingleEvents(navController = navHostController, singleEvent = vm.generalEvent)
+    ObserveLoadingState(loader = state.loadingState)
     ObserveDeleteDialog(
-        deleteDialogState = state.value.deleteDialogIsOpen,
+        deleteDialogState = state.deleteDialogIsOpen,
         onDeleteDialogStateChange = { dialogState -> vm.setDeleteDialogState(dialogState) },
-        onDeleteDialogConfirm = { state.value.details?.id?.let { vm.deleteSubscription(it) } }
+        onDeleteDialogConfirm = { state.details?.id?.let { vm.deleteSubscription(it) } }
     )
-    state.value.details?.let { details ->
+    ObserveDeleteStatus(isDeleted = state.isSubscriptionDeleted) {
+        vm.deleteSubscription(stringResource(id = R.string.deleted_successfully))
+        navHostController.popBackStack(route = NavConstants.SUBSCRIPTIONS, inclusive = false, saveState = false)
+    }
+    state.details?.let { details ->
         DetailsWrapper(
             detailName = details.name,
             detailCurrency = details.currency,
@@ -144,45 +145,18 @@ private fun ObserveDeleteDialog(
     QuestionDialog(
         showDialog = deleteDialogState,
         onDismiss = { state -> onDeleteDialogStateChange(state) },
-        question = R.string.delete_subscription_dialog_text,
-        yestButtonText = R.string.delete,
+        question = stringResource(id = R.string.delete_subscription_dialog_text),
+        yestButtonText = stringResource(id = R.string.delete),
         onConfirm = onDeleteDialogConfirm
     )
 }
 
 @Composable
-private fun ObserveSubscriptionDeleteState(
-    subscriptionDeleteState: Boolean,
-    isDeleted: () -> Unit
+private fun ObserveDeleteStatus(
+    isDeleted: Boolean,
+    onDelete: @Composable () -> Unit
 ) {
-    if (subscriptionDeleteState) {
-        isDeleted.invoke()
-    }
-}
-
-@Composable
-fun ObserveSubscriptionDetailsSingleEvents(
-    navHostController: NavHostController,
-    singleEvent: Flow<SubscriptionDetailsSingleEvent>
-) {
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = null) {
-        singleEvent.collectLatest {
-            when (it) {
-                is SubscriptionDetailsSingleEvent.Navigation -> {
-                    navHostController.navigate(it.destination)
-                }
-                is SubscriptionDetailsSingleEvent.ShowToast -> {
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
-                is SubscriptionDetailsSingleEvent.SubscriptionIsDeleted -> {
-                    if (it.state) {
-                        Toast.makeText(context, context.getString(R.string.deleted_successfully), Toast.LENGTH_SHORT).show()
-                        navHostController.popBackStack()
-                    }
-                }
-            }
-        }
+    if (isDeleted) {
+        onDelete.invoke()
     }
 }

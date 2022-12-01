@@ -11,6 +11,7 @@ object NavConstants {
     // Routes
     const val BOTTOM_NAV_ROUTE = "bottom_route"
     const val DETAILS_ROUTE = "details_route"
+    const val EDIT_ROUTE = "edit_route"
 
     // Args
     const val SUBSCRIPTION_ARG = "subscription"

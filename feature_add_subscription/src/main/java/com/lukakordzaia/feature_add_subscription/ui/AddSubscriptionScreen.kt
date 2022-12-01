@@ -31,31 +31,40 @@ import androidx.navigation.NavHostController
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.Constants.PeriodType.Companion.transformFromPeriodType
+import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core_compose.ObserveLoadingState
+import com.lukakordzaia.core_compose.ObserveSingleEvents
 import com.lukakordzaia.core_compose.custom.CommonDialog
 import com.lukakordzaia.core_compose.theme.generalButtonStyle
+import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.feature_add_subscription.AddSubscriptionVM
 import java.util.Calendar
 
 @Composable
 fun AddSubscriptionScreen(
     vm: AddSubscriptionVM,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    subscriptionToEdit: SubscriptionItemDomain? = null
 ) {
-    val state = vm.state.collectAsState()
+    val state = vm.state.collectAsState().value
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
 
+    subscriptionToEdit?.let {
+        if (!state.editIsSet) vm.setSubscriptionToEdit(it)
+    }
+
+    ObserveSingleEvents(navController = navHostController, singleEvent = vm.generalEvent) { it.popUpTo(NavConstants.SUBSCRIPTIONS) }
     ObserveLoadingState(
-        loader = state.value.isLoading,
+        loader = state.isLoading,
         isError = {
-            CommonDialog(showDialog = state.value.errorDialogIsOpen, onDismiss = { state -> vm.setErrorDialogState(state) })
+            CommonDialog(showDialog = state.errorDialogIsOpen, onDismiss = { state -> vm.setErrorDialogState(state) })
         }
     )
 
     StateObservers(
-        isUploaded = state.value.isUploaded,
-        onDone = { navHostController.popBackStack() }
+        isUploaded = state.isUploaded,
+        onDone = { vm.navigateToDetails() }
     )
 
     ConstraintLayout(
@@ -92,10 +101,10 @@ fun AddSubscriptionScreen(
                     start.linkTo(parent.start)
                 }
                 .fillMaxWidth(0.67F),
-            value = state.value.nameField.field,
+            value = state.nameField.field,
             onChange = { value -> vm.setName(value) },
             focusRequester = focusRequester,
-            isError = state.value.nameField.isError
+            isError = state.nameField.isError
         )
         PlanField(
             modifier = Modifier
@@ -104,7 +113,7 @@ fun AddSubscriptionScreen(
                     start.linkTo(parent.start)
                 }
                 .fillMaxWidth(0.67F),
-            value = state.value.planField,
+            value = state.planField,
             onChange = { value -> vm.setPlan(value) },
             focusRequester = focusRequester
         )
@@ -117,8 +126,8 @@ fun AddSubscriptionScreen(
                     height = Dimension.fillToConstraints
                 }
                 .fillMaxWidth(0.3F),
-            value = state.value.colorField ?: MaterialTheme.colors.background,
-            colorDialogState = state.value.colorDialogIsOpen,
+            value = state.colorField ?: MaterialTheme.colors.background,
+            colorDialogState = state.colorDialogIsOpen,
             onDialogStateChange = { state -> vm.setColorDialogState(state) },
             onChange = { value -> vm.setColor(value) }
         )
@@ -130,11 +139,11 @@ fun AddSubscriptionScreen(
                     start.linkTo(parent.start)
                 }
                 .fillMaxWidth(),
-            amountValue = state.value.amountField.field,
+            amountValue = state.amountField.field,
             onAmountChange = { value -> vm.setAmount(value) },
-            amountIsError = state.value.amountField.isError,
-            currencyValue = state.value.currencyField,
-            currencyDialogState = state.value.currencyDialogIsOpen,
+            amountIsError = state.amountField.isError,
+            currencyValue = state.currencyField,
+            currencyDialogState = state.currencyDialogIsOpen,
             onCurrencyDialogStateChange = { state -> vm.setCurrencyDialogState(state) },
             onCurrencyChange = { value -> vm.setCurrency(value.substring(0, 3)) },
             focusRequester = focusRequester
@@ -146,8 +155,8 @@ fun AddSubscriptionScreen(
                     top.linkTo(amountCurrency.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
-            value = state.value.periodField,
-            periodDialogState = state.value.periodDialogIsOpen,
+            value = state.periodField,
+            periodDialogState = state.periodDialogIsOpen,
             onDialogStateChange = { state -> vm.setPeriodDialogState(state) },
             onChange = { value -> vm.setPeriod(transformToPeriodType(context, value)) },
             focusRequester = focusRequester
@@ -158,18 +167,18 @@ fun AddSubscriptionScreen(
                     top.linkTo(period.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
-            value = state.value.dateField.field,
+            value = state.dateField.field,
             onChange = { value -> vm.setDate(value) },
             focusRequester = focusRequester,
-            isError = state.value.dateField.isError
+            isError = state.dateField.isError
         )
         SubscriptionTypeField(modifier = Modifier
             .constrainAs(subscriptionType) {
                 top.linkTo(date.bottom, margin = 10.dp)
             }
             .fillMaxWidth(),
-            value = state.value.subscriptionTypeField,
-            subscriptionTypeDialogState = state.value.subscriptionTypeDialogIsOpen,
+            value = state.subscriptionTypeField,
+            subscriptionTypeDialogState = state.subscriptionTypeDialogIsOpen,
             onDialogStateChange =  { state -> vm.setSubscriptionTypeDialogState(state) },
             onChange = {value -> vm.setSubscriptionType(transformToSubscriptionType(context, value))},
             focusRequester = focusRequester
@@ -180,7 +189,7 @@ fun AddSubscriptionScreen(
                     top.linkTo(subscriptionType.bottom, margin = 10.dp)
                 }
                 .fillMaxWidth(),
-            value = state.value.linkField,
+            value = state.linkField,
             onChange = { value -> vm.setLink(value) },
             focusRequester = focusRequester
         )

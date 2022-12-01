@@ -3,6 +3,7 @@ package com.lukakordzaia.core.viewmodel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.lukakordzaia.core.helpers.SingleEvent
 import com.lukakordzaia.core.helpers.interfaces.UiEvent
 import com.lukakordzaia.core.helpers.interfaces.UiSingleEvent
 import com.lukakordzaia.core.helpers.interfaces.UiState
@@ -17,17 +18,17 @@ abstract class BaseViewModel<STATE: UiState, EVENT: UiEvent, SINGLE_EVENT: UiSin
     protected val auth = Firebase.auth
 
     private val initialState : STATE by lazy { createInitialState() }
-    abstract fun createInitialState() : STATE
+    protected abstract fun createInitialState() : STATE
 
-    abstract fun handleEvent(event: EVENT)
+    protected abstract fun handleEvent(event: EVENT)
 
     private val _state = MutableStateFlow(initialState)
     val state: StateFlow<STATE> = _state.asStateFlow()
 
-    private val _singleEvent : Channel<SINGLE_EVENT> = Channel()
-    val singleEvent = _singleEvent.receiveAsFlow()
+    private val _generalEvent : Channel<SingleEvent> = Channel()
+    val generalEvent = _generalEvent.receiveAsFlow()
 
-    fun setState(reduce: STATE.() -> STATE) {
+    protected fun setState(reduce: STATE.() -> STATE) {
         _state.tryEmit(_state.value.reduce())
     }
 
@@ -35,7 +36,11 @@ abstract class BaseViewModel<STATE: UiState, EVENT: UiEvent, SINGLE_EVENT: UiSin
         handleEvent(event)
     }
 
-    fun setSingleEvent(builder: () -> SINGLE_EVENT) {
-        _singleEvent.trySend(builder())
+    protected fun setSingleEvent(builder: () -> SingleEvent) {
+        _generalEvent.trySend(builder())
+    }
+
+    fun createToast(message: String) {
+        setSingleEvent { SingleEvent.ShowToast(message = message) }
     }
 }

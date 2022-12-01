@@ -2,7 +2,9 @@ package com.lukakordzaia.core.helpers
 
 import com.lukakordzaia.core.utils.Constants
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 object DateHelpers {
     fun nextPaymentDate(periodType: Constants.PeriodType, date: Long): Long {
@@ -71,7 +73,7 @@ object DateHelpers {
         return currentDate.timeInMillis
     }
 
-    fun formatDate(millis: Long): String {
-        return SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault()).format(Date(millis))
+    fun formatDate(millis: Long, pattern: String = "dd MMMM, yyyy"): String {
+        return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(millis))
     }
 }

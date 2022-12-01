@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import com.lukakordzaia.core.helpers.SingleEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -12,7 +13,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ObserveSingleEvents(
     navController: NavHostController,
-    singleEvent: Flow<SingleEvent>
+    singleEvent: Flow<SingleEvent>,
+    popUp: ((builder: NavOptionsBuilder) -> Unit?)? = null
 ) {
     val context = LocalContext.current
 
@@ -20,7 +22,9 @@ fun ObserveSingleEvents(
         singleEvent.collectLatest {
             when (it) {
                 is SingleEvent.Navigation -> {
-                    navController.navigate(it.destination)
+                    navController.navigate(it.destination) {
+                        popUp?.invoke(this)
+                    }
                 }
                 is SingleEvent.ShowToast -> {
                     Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()

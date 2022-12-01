@@ -4,11 +4,12 @@ import androidx.compose.ui.graphics.Color
 import com.lukakordzaia.core.helpers.interfaces.UiEvent
 import com.lukakordzaia.core.helpers.interfaces.UiState
 import com.lukakordzaia.core.utils.LoadingState
+import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.feature_add_subscription.helpers.StringWithError
 
 sealed class AddSubscriptionEvent: UiEvent {
-    object EmptyFields: AddSubscriptionEvent()
     data class ChangeLoadingState(val state: LoadingState): AddSubscriptionEvent()
+    data class SetEditableSubscription(val subscription: SubscriptionItemDomain): AddSubscriptionEvent()
     data class ChangeLink(val link: String): AddSubscriptionEvent()
     data class ChangeName(val name: StringWithError): AddSubscriptionEvent()
     data class ChangePlan(val plan: String): AddSubscriptionEvent()
@@ -25,9 +26,12 @@ sealed class AddSubscriptionEvent: UiEvent {
     data class ChangeErrorDialogState(val state: Boolean): AddSubscriptionEvent()
     object AddSubscription: AddSubscriptionEvent()
     object UploadDone: AddSubscriptionEvent()
+    data class NavigateToDetails(val subscription: String): AddSubscriptionEvent()
 }
 
 data class AddSubscriptionState(
+    val editIsSet: Boolean,
+    val editSubscriptionId: String?,
     val isLoading: LoadingState,
     val linkField: String,
     val nameField: StringWithError,
@@ -48,6 +52,8 @@ data class AddSubscriptionState(
 ): UiState {
     companion object {
         fun initial() = AddSubscriptionState(
+            editIsSet = false,
+            editSubscriptionId = null,
             isLoading = LoadingState.LOADED,
             linkField = "",
             nameField = StringWithError("", false),

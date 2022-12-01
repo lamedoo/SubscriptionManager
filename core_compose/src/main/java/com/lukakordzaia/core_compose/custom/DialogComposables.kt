@@ -1,9 +1,18 @@
 package com.lukakordzaia.core_compose.custom
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,9 +75,9 @@ fun CommonDialog(
 @Composable
 fun QuestionDialog(
     showDialog: Boolean,
-    question: Int = R.string.are_you_sure,
-    noButtonText: Int = R.string.cancel_text,
-    yestButtonText: Int = R.string.yes,
+    question: String = stringResource(id = R.string.are_you_sure),
+    noButtonText: String = stringResource(id = R.string.cancel_text),
+    yestButtonText: String = stringResource(id = R.string.yes),
     onDismiss: (Boolean) -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -86,7 +95,7 @@ fun QuestionDialog(
                    modifier = Modifier
                        .padding(20.dp)
                        .align(Alignment.CenterHorizontally),
-                   text = stringResource(id = question),
+                   text = question,
                    fontSize = 16.sp,
                    color = MaterialTheme.colors.onPrimary
                )
@@ -103,7 +112,7 @@ fun QuestionDialog(
                        LightText(
                            modifier = Modifier
                                .padding(5.dp),
-                           text = stringResource(id = noButtonText),
+                           text = noButtonText,
                            fontWeight = FontWeight.Bold,
                            fontSize = 15.sp
                        )
@@ -121,7 +130,7 @@ fun QuestionDialog(
                        LightText(
                            modifier = Modifier
                                .padding(5.dp),
-                           text = stringResource(id = yestButtonText),
+                           text = yestButtonText,
                            fontWeight = FontWeight.Bold,
                            fontSize = 15.sp,
                            color = MaterialTheme.colors.onSecondary
