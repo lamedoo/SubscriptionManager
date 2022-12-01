@@ -24,6 +24,7 @@ import com.lukakordzaia.core_compose.theme.Shapes
 @Composable
 fun MonthlyCostBar(
     modifier: Modifier = Modifier,
+    totalBalance: Double,
     onMoreClick: () -> Unit
 ) {
     ConstraintLayout(
@@ -50,7 +51,8 @@ fun MonthlyCostBar(
                 .constrainAs(amount) {
                     top.linkTo(title.bottom, margin = 10.dp)
                     start.linkTo(parent.start)
-                }
+                },
+            monthlyAmount = totalBalance
         )
         MoreButton(
             modifier = Modifier
@@ -80,7 +82,7 @@ private fun Title(
 @Composable
 private fun Amount(
     modifier: Modifier,
-    monthlyAmount: Double = 248.22,
+    monthlyAmount: Double,
     currency: String = Currencies.Currency.USD.symbol
 ) {
     BoldText(
@@ -106,5 +108,5 @@ private fun MoreButton(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun MonthlyCostPreview() {
-    MonthlyCostBar(modifier = Modifier, {})
+    MonthlyCostBar(modifier = Modifier, totalBalance = 248.0) {}
 }

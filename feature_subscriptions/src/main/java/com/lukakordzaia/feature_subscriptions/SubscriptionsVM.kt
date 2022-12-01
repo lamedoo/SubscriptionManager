@@ -2,18 +2,20 @@ package com.lukakordzaia.feature_subscriptions
 
 import androidx.lifecycle.viewModelScope
 import com.lukakordzaia.core.helpers.SingleEvent
-import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.core.utils.LoadingState
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.viewmodel.BaseViewModel
 import com.lukakordzaia.core_domain.ResultDomain
-import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
 import com.lukakordzaia.core_domain.usecases.GetSubscriptionsUseCase
+import com.lukakordzaia.feature_subscriptions.validators.SortSubscriptionsValidator
+import com.lukakordzaia.feature_subscriptions.validators.SubscriptionTotalBalanceValidator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SubscriptionsVM(
-    private val getSubscriptionsUseCase: GetSubscriptionsUseCase
+    private val getSubscriptionsUseCase: GetSubscriptionsUseCase,
+    private val sortSubscriptionsValidator: SortSubscriptionsValidator,
+    private val subscriptionTotalBalanceValidator: SubscriptionTotalBalanceValidator
 ): BaseViewModel<SubscriptionsState, SubscriptionsEvent, SingleEvent>() {
 
     override fun createInitialState(): SubscriptionsState {
@@ -42,7 +44,8 @@ class SubscriptionsVM(
                         if (it.data.isEmpty()) {
                             sendEvent(SubscriptionsEvent.SubscriptionsIsEmpty)
                         } else {
-                            sendEvent(SubscriptionsEvent.SetSubscriptions(sortSubscriptions(it.data)))
+                            sendEvent(SubscriptionsEvent.SetSubscriptions(sortSubscriptionsValidator.invoke(it.data)))
+                            sendEvent(SubscriptionsEvent.SetSubscriptionTotalBalance(subscriptionTotalBalanceValidator.invoke(it.data)))
                         }
                         sendEvent(SubscriptionsEvent.ChangeLoadingState(LoadingState.LOADED))
                     }
@@ -52,49 +55,6 @@ class SubscriptionsVM(
                 }
             }
         }
-    }
-
-    private fun sortSubscriptions(data: List<SubscriptionItemDomain>): List<SubscriptionListType> {
-        val music = data.filter { it.subscriptionType == Constants.SubscriptionType.MUSIC }
-        val entertainment = data.filter { it.subscriptionType == Constants.SubscriptionType.ENTERTAINMENT }
-        val online = data.filter { it.subscriptionType == Constants.SubscriptionType.ONLINE }
-        val videoStreaming = data.filter { it.subscriptionType == Constants.SubscriptionType.VIDEO_STREAMING }
-        val profession = data.filter { it.subscriptionType == Constants.SubscriptionType.PROFESSION }
-        val other = data.filter { it.subscriptionType == Constants.SubscriptionType.OTHER }
-
-        val list: MutableList<SubscriptionListType> = ArrayList()
-
-        if (music.isNotEmpty()) {
-            list.add(0, SubscriptionListType.Header(com.lukakordzaia.core.R.string.music))
-            list.addAll(list.size, music.map { SubscriptionListType.Item(it) })
-        }
-
-        if (entertainment.isNotEmpty()) {
-            list.add(if (list.isEmpty()) 0 else list.size, SubscriptionListType.Header(com.lukakordzaia.core.R.string.entertainment))
-            list.addAll(list.size, entertainment.map { SubscriptionListType.Item(it) })
-        }
-
-        if (online.isNotEmpty()) {
-            list.add(if (list.isEmpty()) 0 else list.size, SubscriptionListType.Header(com.lukakordzaia.core.R.string.online))
-            list.addAll(list.size, online.map { SubscriptionListType.Item(it) })
-        }
-
-        if (videoStreaming.isNotEmpty()) {
-            list.add(if (list.isEmpty()) 0 else list.size, SubscriptionListType.Header(com.lukakordzaia.core.R.string.video_streaming))
-            list.addAll(list.size, videoStreaming.map { SubscriptionListType.Item(it) })
-        }
-
-        if (profession.isNotEmpty()) {
-            list.add(if (list.isEmpty()) 0 else list.size, SubscriptionListType.Header(com.lukakordzaia.core.R.string.profession))
-            list.addAll(list.size, profession.map { SubscriptionListType.Item(it) })
-        }
-
-        if (other.isNotEmpty()) {
-            list.add(if (list.isEmpty()) 0 else list.size, SubscriptionListType.Header(com.lukakordzaia.core.R.string.other))
-            list.addAll(list.size, other.map { SubscriptionListType.Item(it) })
-        }
-
-        return list
     }
 
     override fun handleEvent(event: SubscriptionsEvent) {
@@ -107,6 +67,9 @@ class SubscriptionsVM(
             }
             is SubscriptionsEvent.SetSubscriptions -> {
                 setState { copy(subscriptionItems = event.items, noSubscriptions = false) }
+            }
+            is SubscriptionsEvent.SetSubscriptionTotalBalance -> {
+                setState { copy(subscriptionTotalBalance = event.total) }
             }
             is SubscriptionsEvent.ChangeLoadingState -> {
                 setState { copy(isLoading = event.state) }

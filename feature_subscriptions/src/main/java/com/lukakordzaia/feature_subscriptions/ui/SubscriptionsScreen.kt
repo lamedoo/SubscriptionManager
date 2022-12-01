@@ -33,6 +33,7 @@ fun SubscriptionsScreen(
             .padding(horizontal = 10.dp, vertical = 25.dp)
     ) {
         MonthlyCostBar(
+            totalBalance = state.value.subscriptionTotalBalance,
             onMoreClick = { vm.navigateToStatistics() }
         )
         SubscriptionList(

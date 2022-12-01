@@ -3,6 +3,7 @@ package com.lukakordzaia.subscriptionmanager
 import android.app.Application
 import com.lukakordzaia.core_domain.di.useCaseModule
 import com.lukakordzaia.core_network.di.repositoryModule
+import com.lukakordzaia.feature_subscriptions.di.addSubscriptionModule
 import com.lukakordzaia.subscriptionmanager.di.generalModule
 import com.lukakordzaia.subscriptionmanager.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -16,7 +17,7 @@ class App: Application() {
             startKoin {
                 androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
                 androidContext(this@App)
-                modules(listOf(viewModelModule, repositoryModule, generalModule, useCaseModule))
+                modules(listOf(viewModelModule, repositoryModule, generalModule, useCaseModule, addSubscriptionModule))
         }
     }
 }
