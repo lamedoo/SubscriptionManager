@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
@@ -71,7 +71,7 @@ private fun LoginContent(
 
     LoginTheme {
         Surface(
-            color = MaterialTheme.colors.secondary
+            color = MaterialTheme.colorScheme.surface
         ) {
             LoginScreen(
                 getViewModel(),

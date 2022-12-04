@@ -8,14 +8,14 @@ import com.lukakordzaia.core.viewmodel.BaseViewModel
 import com.lukakordzaia.core_domain.ResultDomain
 import com.lukakordzaia.core_domain.usecases.GetSubscriptionsUseCase
 import com.lukakordzaia.feature_subscriptions.validators.SortSubscriptionsValidator
-import com.lukakordzaia.feature_subscriptions.validators.SubscriptionTotalBalanceValidator
+import com.lukakordzaia.feature_subscriptions.validators.SubscriptionTotalBalanceUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SubscriptionsVM(
     private val getSubscriptionsUseCase: GetSubscriptionsUseCase,
     private val sortSubscriptionsValidator: SortSubscriptionsValidator,
-    private val subscriptionTotalBalanceValidator: SubscriptionTotalBalanceValidator
+    private val subscriptionTotalBalanceUseCase: SubscriptionTotalBalanceUseCase,
 ): BaseViewModel<SubscriptionsState, SubscriptionsEvent, SingleEvent>() {
 
     override fun createInitialState(): SubscriptionsState {
@@ -43,9 +43,10 @@ class SubscriptionsVM(
                     is ResultDomain.Success -> {
                         if (it.data.isEmpty()) {
                             sendEvent(SubscriptionsEvent.SubscriptionsIsEmpty)
+                            sendEvent(SubscriptionsEvent.SetSubscriptionTotalBalance(0.0))
                         } else {
                             sendEvent(SubscriptionsEvent.SetSubscriptions(sortSubscriptionsValidator.invoke(it.data)))
-                            sendEvent(SubscriptionsEvent.SetSubscriptionTotalBalance(subscriptionTotalBalanceValidator.invoke(it.data)))
+                            sendEvent(SubscriptionsEvent.SetSubscriptionTotalBalance(subscriptionTotalBalanceUseCase.invoke(it.data)))
                         }
                         sendEvent(SubscriptionsEvent.ChangeLoadingState(LoadingState.LOADED))
                     }

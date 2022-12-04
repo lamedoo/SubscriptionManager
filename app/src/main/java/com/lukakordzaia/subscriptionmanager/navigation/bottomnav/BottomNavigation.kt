@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -18,7 +20,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.lukakordzaia.core_compose.theme._A6AEC0
 import com.lukakordzaia.core_compose.theme.bottomNavLabelStyle
 import com.lukakordzaia.subscriptionmanager.navigation.bottomnav.BottomNavHelper.bottomNav
 
@@ -30,9 +31,10 @@ fun BottomNavigationComponent(navController: NavHostController, bottomBarState: 
         exit = slideOutVertically(targetOffsetY = { it }),
     ) {
         BottomAppBar(
+            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
             cutoutShape = CircleShape
         ) {
-            BottomNavigation {
+            BottomNavigation(backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
@@ -49,8 +51,8 @@ fun BottomNavigationComponent(navController: NavHostController, bottomBarState: 
                                },
                         label = { Text(text = stringResource(id = item.label), style = bottomNavLabelStyle) },
                         selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                        selectedContentColor = MaterialTheme.colors.secondary,
-                        unselectedContentColor = _A6AEC0,
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                        unselectedContentColor = MaterialTheme.colorScheme.secondary,
                         onClick = {
                             navController.navigate(item.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

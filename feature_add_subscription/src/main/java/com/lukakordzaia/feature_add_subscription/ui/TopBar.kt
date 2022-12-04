@@ -4,19 +4,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.lukakordzaia.core.R
-import com.lukakordzaia.core_compose.theme.titleStyle
+import com.lukakordzaia.core_compose.custom.LightText
 
 @Composable
 fun TopBar(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
     ConstraintLayout(
@@ -49,10 +50,11 @@ fun TopBar(
 
 @Composable
 private fun TopTitle(modifier: Modifier) {
-    Text(
+    LightText(
         modifier = modifier,
         text = stringResource(id = R.string.new_sub_title),
-        style = titleStyle
+        color = MaterialTheme.colorScheme.onSurface,
+        fontSize = 20.sp
     )
 }
 
@@ -67,6 +69,7 @@ private fun CloseButton(
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
             )
         },
         onClick = close

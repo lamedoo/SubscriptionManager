@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -74,7 +75,8 @@ private fun DetailName(
     BoldText(
         modifier = modifier,
         text = name,
-        fontSize = 25.sp
+        fontSize = 25.sp,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -89,7 +91,8 @@ private fun DetailAmount(
         modifier = modifier,
         text = "${Currencies.Currency.getCurrencySymbol(currency)}$amount / ${Constants.PeriodType.transformFromPeriodType(period)}",
         fontSize = 17.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -102,7 +105,7 @@ private fun Line(
         modifier = modifier
             .width(50.dp)
             .height(2.dp)
-            .background(color = color ?: MaterialTheme.colors.secondary)
+            .background(color = color ?: MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
     )
 }
 
@@ -115,6 +118,6 @@ private fun DetailNameAmountPreview() {
         detailCurrency = "USD",
         detailAmount = 14.99,
         detailPeriod = Constants.PeriodType.MONTH,
-        detailColor = MaterialTheme.colors.secondary
+        detailColor = MaterialTheme.colorScheme.secondary
     )
 }

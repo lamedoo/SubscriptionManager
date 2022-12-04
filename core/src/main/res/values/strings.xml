@@ -7,7 +7,7 @@
     <string name="name">Name</string>
     <string name="plan">Plan</string>
     <string name="amount">Amount</string>
-    <string name="period">Period</string>
+    <string name="payment_interval">Payment interval</string>
     <string name="currency">Currency</string>
     <string name="payment_day">Payment day</string>
     <string name="add_subscription">Add subscription</string>
@@ -56,4 +56,5 @@
     <string name="subscription_type">Subscripton type</string>
     <string name="cancel_text">Cancel</string>
     <string name="deleted_successfully">Deleted successfully</string>
+    <string name="enter">Enter</string>
 </resources>

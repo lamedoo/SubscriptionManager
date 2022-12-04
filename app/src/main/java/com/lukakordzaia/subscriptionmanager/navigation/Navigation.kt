@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.bottomSheet
 import com.lukakordzaia.core.utils.NavConstants
 import com.lukakordzaia.core.utils.fromJson
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
@@ -47,7 +46,7 @@ fun GeneralNavGraph(padding: PaddingValues, navHostController: NavHostController
                 StatisticsScreen()
             }
             subscriptionDetailsNavGraph(navController = navHostController)
-            bottomSheet(NavConstants.ADD_SUBSCRIPTION) {
+            composable(NavConstants.ADD_SUBSCRIPTION) {
                 AddSubscriptionScreen(getViewModel(), navHostController)
             }
             editSubscriptionNavGraph(navController = navHostController)
@@ -77,7 +76,7 @@ fun NavGraphBuilder.subscriptionDetailsNavGraph(navController: NavHostController
 @OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.editSubscriptionNavGraph(navController: NavHostController) {
     navigation(startDestination = NavConstants.EDIT_SUBSCRIPTION, route = NavConstants.EDIT_ROUTE) {
-        bottomSheet(
+        composable(
             route = NavConstants.EDIT_SUBSCRIPTION + "/{${NavConstants.SUBSCRIPTION_ARG}}",
             arguments = listOf(navArgument(NavConstants.SUBSCRIPTION_ARG) { type = NavType.StringType })
         ) {

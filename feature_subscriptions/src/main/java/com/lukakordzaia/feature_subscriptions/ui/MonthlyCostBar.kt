@@ -5,7 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,7 +33,7 @@ fun MonthlyCostBar(
             .fillMaxWidth()
             .wrapContentHeight()
             .background(
-                color = MaterialTheme.colors.secondary,
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
                 shape = Shapes.small
             )
             .padding(20.dp)
@@ -74,7 +75,7 @@ private fun Title(
         modifier = modifier,
         text = stringResource(id = R.string.this_month_expense),
         fontSize = 15.sp,
-        color = MaterialTheme.colors.onSecondary,
+        color = MaterialTheme.colorScheme.onSurface,
         fontWeight = FontWeight.Bold
     )
 }
@@ -89,7 +90,7 @@ private fun Amount(
         modifier = modifier,
         text = "$currency $monthlyAmount",
         fontSize = 20.sp,
-        color = MaterialTheme.colors.onSecondary
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 

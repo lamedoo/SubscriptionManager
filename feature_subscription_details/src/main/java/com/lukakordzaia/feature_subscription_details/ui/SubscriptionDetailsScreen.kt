@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -85,7 +85,7 @@ private fun DetailsWrapper(
             .fillMaxWidth()
             .fillMaxHeight()
             .background(
-                color = MaterialTheme.colors.background,
+                color = MaterialTheme.colorScheme.surface,
                 shape = MaterialTheme.shapes.medium
             )
             .padding(10.dp)
@@ -132,7 +132,8 @@ private fun NavigationBar(
             .clickable { click.invoke() }
             .padding(10.dp),
         imageVector = Icons.Filled.ArrowBack,
-        contentDescription = null
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSurface
     )
 }
 

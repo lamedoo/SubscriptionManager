@@ -24,26 +24,28 @@ fun SubscriptionsScreen(
     navHostController: NavHostController,
     vm: SubscriptionsVM
 ) {
-    val state = vm.state.collectAsState()
+    val state = vm.state.collectAsState().value
     ObserveSingleEvents(navController = navHostController, singleEvent = vm.generalEvent)
-    ObserveLoadingState(loader = state.value.isLoading)
+    ObserveLoadingState(loader = state.isLoading)
 
     Column(
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 25.dp)
     ) {
         MonthlyCostBar(
-            totalBalance = state.value.subscriptionTotalBalance,
+            totalBalance = state.subscriptionTotalBalance,
             onMoreClick = { vm.navigateToStatistics() }
         )
-        SubscriptionList(
-            modifier = Modifier
-                .padding(top = 20.dp),
-            subscriptionItems = state.value.subscriptionItems,
-            onCLick = { subscription -> vm.navigateToDetails(subscription) }
-        )
+        if (!state.noSubscriptions) {
+            SubscriptionList(
+                modifier = Modifier
+                    .padding(top = 20.dp),
+                subscriptionItems = state.subscriptionItems,
+                onCLick = { subscription -> vm.navigateToDetails(subscription) }
+            )
+        }
         EmptyList(
-            isEmpty = state.value.noSubscriptions,
+            isEmpty = state.noSubscriptions,
             modifier = Modifier
                 .padding(top = 10.dp)
         )

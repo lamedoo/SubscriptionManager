@@ -2,7 +2,9 @@ package com.lukakordzaia.core_domain
 
 import androidx.compose.ui.graphics.Color
 import com.lukakordzaia.core.utils.Constants
+import com.lukakordzaia.core_domain.domainmodels.CurrencyExchangeDomain
 import com.lukakordzaia.core_domain.domainmodels.SubscriptionItemDomain
+import com.lukakordzaia.core_network.networkmodels.CurrencyExchangeNetwork
 import com.lukakordzaia.subscriptionmanager.network.networkmodels.SubscriptionItemNetwork
 
 fun List<SubscriptionItemNetwork>.transformToDomain(): List<SubscriptionItemDomain> {
@@ -20,4 +22,22 @@ fun List<SubscriptionItemNetwork>.transformToDomain(): List<SubscriptionItemDoma
             updateDate = it.updateDate!!
         )
     }
+}
+
+fun CurrencyExchangeNetwork.transformToDomain(): CurrencyExchangeDomain {
+    return CurrencyExchangeDomain(
+        data = data.transformToDomain()
+    )
+}
+
+fun CurrencyExchangeNetwork.ExchangeDataNetwork.transformToDomain(): CurrencyExchangeDomain.ExchangeDataDomain {
+    return CurrencyExchangeDomain.ExchangeDataDomain(
+        amount = amount,
+        rate = rate,
+        amountSelf = amountSelf,
+        rateSelf = rateSelf,
+        rateDifference = rateDifference,
+        baseCcy = baseCcy,
+        baseCcyRateWeight = baseCcyRateWeight
+    )
 }

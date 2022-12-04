@@ -2,7 +2,7 @@ package com.lukakordzaia.core_compose.custom
 
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,8 +12,8 @@ import com.lukakordzaia.core_compose.theme.Shapes
 @Composable
 fun GeneralTextButton(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colors.primary,
-    textColor: Color = MaterialTheme.colors.onPrimary,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
     text: String,
     onClick: () -> Unit
 ) {

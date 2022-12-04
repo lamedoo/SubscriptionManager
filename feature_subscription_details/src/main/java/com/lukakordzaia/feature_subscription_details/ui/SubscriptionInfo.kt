@@ -1,9 +1,16 @@
 package com.lukakordzaia.feature_subscription_details.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +41,8 @@ fun SubscriptionInfo(
             modifier = Modifier
                 .padding(bottom = 15.dp),
             text = stringResource(id = R.string.subscription_details),
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onSurface
         )
         InfoWrapper(
             firstPaymentDay = firstPaymentDay,
@@ -57,7 +65,7 @@ private fun InfoWrapper(
     Column(
         modifier = Modifier
             .background(
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
             shape = MaterialTheme.shapes.medium
             )
     ) {
@@ -93,21 +101,23 @@ private fun InfoItem(
                 .height(20.dp),
             painter = painterResource(id = it),
             contentDescription = null,
-            tint = MaterialTheme.colors.secondary
+            tint = MaterialTheme.colorScheme.primary
         )
         }
         LightText(
             modifier = Modifier
                 .padding(start = 10.dp),
             text = stringResource(id = label),
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.primary
         )
         LightText(
             modifier = Modifier
                 .padding(start = 10.dp),
             text = value,
             fontWeight = FontWeight.Bold,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -118,7 +128,7 @@ private fun Line() {
         modifier = Modifier
             .height(1.dp)
             .fillMaxWidth()
-            .background(color = MaterialTheme.colors.background)
+            .background(color = MaterialTheme.colorScheme.onSurface)
     )
 }
 
