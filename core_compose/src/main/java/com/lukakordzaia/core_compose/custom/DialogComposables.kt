@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +43,7 @@ fun ProgressDialog(
             ) {
                 CircularProgressIndicator(
                     strokeWidth = 5.dp,
-                    color = MaterialTheme.colors.secondary
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }
@@ -63,7 +63,7 @@ fun CommonDialog(
                 modifier = Modifier
                     .size(80.dp)
             ) {
-                Text(text = stringResource(id = R.string.common_error))
+                LightText(text = stringResource(id = R.string.common_error))
                 Button(onClick = { onDismiss(true) }) {
                     Text(text = stringResource(id = R.string.ok))
                 }
@@ -89,7 +89,7 @@ fun QuestionDialog(
                modifier = Modifier
                    .padding(20.dp)
                    .fillMaxWidth()
-                   .background(Color.White, shape = RoundedCornerShape(8.dp))
+                   .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
            ) {
                BoldText(
                    modifier = Modifier
@@ -97,24 +97,26 @@ fun QuestionDialog(
                        .align(Alignment.CenterHorizontally),
                    text = question,
                    fontSize = 16.sp,
-                   color = MaterialTheme.colors.onPrimary
+                   color = MaterialTheme.colorScheme.onSurface
                )
                Row(
-                   modifier = Modifier
-                       .padding(top = 50.dp)
+                   modifier = Modifier.padding(top = 50.dp)
                ) {
                    Button(
-                       modifier = Modifier
-                           .padding(5.dp),
+                       modifier = Modifier.padding(5.dp),
                        onClick = { onDismiss(false) },
-                       elevation = null
+                       elevation = null,
+                       colors = ButtonDefaults.buttonColors(
+                           containerColor = MaterialTheme.colorScheme.surface,
+                           contentColor = MaterialTheme.colorScheme.onSurface
+                       )
                    ) {
                        LightText(
-                           modifier = Modifier
-                               .padding(5.dp),
+                           modifier = Modifier.padding(5.dp),
                            text = noButtonText,
                            fontWeight = FontWeight.Bold,
-                           fontSize = 15.sp
+                           fontSize = 15.sp,
+                           color = MaterialTheme.colorScheme.onSurface
                        )
                    }
                    Button(
@@ -123,17 +125,16 @@ fun QuestionDialog(
                            .fillMaxWidth(),
                        onClick = { onConfirm.invoke() },
                        colors = ButtonDefaults.buttonColors(
-                           backgroundColor = MaterialTheme.colors.secondary,
-                           contentColor = MaterialTheme.colors.onSecondary
+                           containerColor = MaterialTheme.colorScheme.primary,
+                           contentColor = MaterialTheme.colorScheme.onPrimary
                        )
                    ) {
                        LightText(
-                           modifier = Modifier
-                               .padding(5.dp),
+                           modifier = Modifier.padding(5.dp),
                            text = yestButtonText,
                            fontWeight = FontWeight.Bold,
                            fontSize = 15.sp,
-                           color = MaterialTheme.colors.onSecondary
+                           color = MaterialTheme.colorScheme.onPrimary
                        )
                    }
                }
