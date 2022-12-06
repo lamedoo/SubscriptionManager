@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Currencies
 import com.lukakordzaia.feature_add_subscription.ui.fields.AddSubscriptionField
+import com.lukakordzaia.feature_add_subscription.ui.fields.DropDownList
 import java.util.Calendar
 
 @Composable

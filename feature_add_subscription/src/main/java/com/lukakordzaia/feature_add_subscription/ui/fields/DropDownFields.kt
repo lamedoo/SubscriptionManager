@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import com.lukakordzaia.core.R
 import com.lukakordzaia.core.utils.Constants
 import com.lukakordzaia.feature_add_subscription.ui.fields.AddSubscriptionField
+import com.lukakordzaia.feature_add_subscription.ui.fields.DropDownList
 
 @Composable
 internal fun PeriodField(
